@@ -1,4 +1,4 @@
-# cits3403-project
+# Quester's Cache (cits3403-project)
 Group project for building a request application
 
 # Project Description
