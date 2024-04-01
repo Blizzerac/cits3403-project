@@ -6,3 +6,10 @@
 .bg-wood-nav {
     background-color: #2e1e0b;
 }
+
+.bg-village {
+    background-image: url("bg-village.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top;
+}
