@@ -2,3 +2,7 @@
     background-image: url("bg-woodplank-scaled.png");
     background-repeat: repeat;
 }
+
+.bg-wood-nav {
+    background-color: #2e1e0b;
+}
