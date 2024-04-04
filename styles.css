@@ -13,3 +13,16 @@
     background-size: cover;
     background-position: top;
 }
+
+#log-in-form {
+    background-image: url("bg-woodplank.png");
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.account-link {
+    display: block;
+}
