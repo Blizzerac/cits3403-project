@@ -29,7 +29,6 @@ function handle_login(event) {
 
   const username  = formData.get('username');
   const pass      = formData.get('password');
-  console.log(pass);
 
   // If the password matches requirements, submit the account for validation from server.
   if (check_passRequirements(pass)) {
