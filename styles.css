@@ -13,3 +13,9 @@
     background-size: cover;
     background-position: top;
 }
+
+.navbar-svg-icon {
+    width: 42px;
+    margin-left: 6px;
+    fill: white;
+}
