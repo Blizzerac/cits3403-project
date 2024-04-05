@@ -16,7 +16,31 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('ERROR:', error.message);
   }
 
+  // Add event listener for login submission
+  document.getElementById('loginForm').addEventListener('submit',handle_login)
 });
+
+// Handle login submission
+function handle_login(event) {
+  event.preventDefault(); // Prevent default form submission
+
+  const form      = document.getElementById('loginForm');
+  const formData  = new FormData(form);
+
+  const username  = formData.get('username');
+  const pass      = formData.get('password');
+  console.log(pass);
+
+  // If the password matches requirements, submit the account for validation from server.
+  if (check_passRequirements(pass)) {
+    // Server stuff
+  }
+
+  else {
+    alert("Password Failed Requirements!");
+  }
+}
+
 
 // Obtain current password requirements from server
 function get_passRequirements() {
@@ -25,18 +49,21 @@ function get_passRequirements() {
     throw new Error("Failed to get password requirements from sever.");
   }
 
-  return {
+  const req = {
     'maxLength': 10,
     'minLength': 5,
     'regex': '^[a-zA-Z0-9?_!-]*$'
   };
+
+  return req;
 }
 
 // Ensure password submitted has the correct requirements
 function check_passRequirements(pass) {
   // Ensure password requirements are obtained correctly.
-  if (passRequirements === null || Object.keys(passRequirements).length > 1) {
+  if (passRequirements === null || Object.keys(passRequirements).length <= 1) {
     console.log("Password requirements incorrectly set!");
+    if (verbose) { console.log("Password requirements:", passRequirements); }
     return false; 
   }
 
