@@ -1,3 +1,8 @@
+a.link-mute {
+    color: inherit; /* Inherit the colour from the parent element (non-hypertext colouring) */
+    text-decoration: none;
+}
+
 .bg-wood {
     background-image: url("bg-woodplank-scaled.png");
     background-repeat: repeat;
