@@ -9,12 +9,22 @@ document.addEventListener('DOMContentLoaded', () => {
   if (verbose) { console.log("Page loaded!"); }
 
   // Get password requirements from server (TO DO LATER)
-  passRequirements = get_passRequirements();
+  try {
+    passRequirements = get_passRequirements();
+  } catch (error) {
+    // Handle failure of the request
+    console.log('ERROR:', error.message);
+  }
 
 });
 
 // Obtain current password requirements from server
 function get_passRequirements() {
+  // Throw new error on failure (example)
+  if (false) {
+    throw new Error("Failed to get password requirements from sever.");
+  }
+
   return {
     'maxLength': 10,
     'minLength': 5,
