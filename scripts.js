@@ -33,6 +33,7 @@ function handle_login(event) {
   // If the password matches requirements, submit the account for validation from server.
   if (check_passRequirements(pass)) {
     // Server stuff
+    console.log("Validate user login request...")
   }
 
   else {
