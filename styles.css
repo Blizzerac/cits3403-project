@@ -1,0 +1,26 @@
+a.link-mute {
+    color: inherit; /* Inherit the colour from the parent element (non-hypertext colouring) */
+    text-decoration: none;
+}
+
+.bg-wood {
+    background-image: url("bg-woodplank-scaled.png");
+    background-repeat: repeat;
+}
+
+.bg-wood-nav {
+    background-color: #2e1e0b;
+}
+
+.bg-village {
+    background-image: url("bg-village.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top;
+}
+
+.navbar-svg-icon {
+    width: 42px;
+    margin-left: 6px;
+    fill: white;
+}
