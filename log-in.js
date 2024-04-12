@@ -11,4 +11,7 @@ function handleAccount() {
 
     emailLabel.classList.remove("hidden");
     emailInput.classList.remove("hidden");
+
+    let legend = document.getElementById("legend");
+    legend.textContent = "Account Creation";
 }
