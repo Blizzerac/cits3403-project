@@ -8,6 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <!-- Custom Scripts and CSS -->
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="log-in.css">
   <title>The Quester's Cache</title>
 </head>
 
@@ -45,7 +46,9 @@
   <div class="col-md-5 border p-4 rounded" id="log-in-form">
     <fieldset>
       <legend class="text-center">Log In</legend>
-      <form id='loginForm' action="/submit_login" method="post">
+      <form id='login-form' action="/submit_login" method="post">
+        <label for="email" class="hidden" id="email-label">Email:</label>
+        <input name="email" class="form-control form-control-lg hidden" id="email-input" placeholder="email@domain.com" required>
         <label for="username">Username:</label>
         <input name="username" class="form-control form-control-lg" placeholder="(re)Quester123" required>
         <label for="password">Password:</label>
