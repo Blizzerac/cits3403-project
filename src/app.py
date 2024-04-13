@@ -1,5 +1,5 @@
 # Imports
-from flash import *
+from flask import *
 
 app = Flask(__name__)
 
