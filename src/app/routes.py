@@ -20,3 +20,8 @@ def home():
 @app.route("/login")
 def login():
     return render_template("login.html")
+
+# Leaderboard
+@app.route("/leaderboard")
+def leaderboard():
+    return render_template("leaderboard.html")
