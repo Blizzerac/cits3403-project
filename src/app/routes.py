@@ -13,7 +13,7 @@ from app import app
 @app.route("/home")
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("home.html")
 
 # Login
 @app.route("/signup")
