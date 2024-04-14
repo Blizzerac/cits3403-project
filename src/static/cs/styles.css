@@ -4,7 +4,7 @@ a.link-mute {
 }
 
 .bg-wood {
-    background-image: url("../static/img/bg-woodplank-scaled.png");
+    background-image: url("../img/bg-woodplank-scaled.png");
     background-repeat: repeat;
 }
 
@@ -13,7 +13,7 @@ a.link-mute {
 }
 
 .bg-village {
-    background-image: url("../static/img/bg-village.jpeg");
+    background-image: url("../img/bg-village.jpeg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: top;

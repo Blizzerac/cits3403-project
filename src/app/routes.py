@@ -6,15 +6,17 @@ from app import app
 ###########
 # Routes  #
 ###########
+# Please rememeber that the last app.route tag is what the page will be displayed as.
 
 # Home page
-@app.route("/")
 @app.route("/index")
+@app.route("/home")
+@app.route("/")
 def home():
     return render_template("index.html")
 
 # Login
-@app.route("/login")
 @app.route("/signup")
+@app.route("/login")
 def login():
     return render_template("log-in.html")
