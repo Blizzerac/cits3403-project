@@ -19,4 +19,4 @@ def home():
 @app.route("/signup")
 @app.route("/login")
 def login():
-    return render_template("log-in.html")
+    return render_template("login.html")
