@@ -39,7 +39,7 @@ a.link-mute {
 }
 
 #log-in-form {
-    background-image: url("bg-woodplank.png");
+    background-image: url("../img/bg-woodplank.png");
     color: white;
     position: absolute;
     top: 50%;
