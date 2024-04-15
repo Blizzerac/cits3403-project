@@ -58,3 +58,16 @@ a.link-mute {
 .account-link {
     display: block;
 }
+
+.background-overlay {
+    position: relative;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
+    padding: 2rem 1rem;
+}
+
+.content-container {
+    position: relative;
+    z-index: 2; /* Ensures content is above the overlay */
+    color: white; /* White text color for better readability */
+}
