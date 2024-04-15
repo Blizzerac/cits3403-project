@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Questers Cache || Login{% endblock %}
+{% block content %}
+
+<div class="col-md-5 border p-4 rounded" id="log-in-form">
+  <fieldset>
+    <legend class="text-center">Log In</legend>
+    <form id='loginForm' action="/submit_login" method="post">
+      <label for="username">Username:</label>
+      <input name="username" class="form-control form-control-lg" placeholder="(re)Quester123" required>
+      <label for="password">Password:</label>
+      <input name='password' class="form-control form-control-lg" placeholder="supersecretpassword" type="password" required>
+      <a href="password.html" class="account-link">Forgot password?</a>
+      <a href="account.html" class="account-link">Create new account</a>
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-dark">Submit</button>
+      </div>
+    </form>
+  </fieldset>
+</div>
+
+{% endblock %}
