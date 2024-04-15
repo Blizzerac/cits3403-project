@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Questers Cache || Login{% endblock %}
+{% block content %}
+
+<div class="col-md-5 border p-4 rounded" id="log-in-form">
+  <fieldset>
+    <legend class="text-center" id="legend">Login</legend>
+    <form id='login-form' action="/submit_login" method="post">
+      <label for="email" class="hidden account-creation" id="email-label">Email:</label>
+      <input name="email" class="form-control form-control-lg hidden account-creation" id="email-input" placeholder="email@domain.com"  type="email" required>
+      <label for="username">Username:</label>
+      <input name="username" class="form-control form-control-lg" placeholder="(re)Quester123" required>
+      <label for="password">Password:</label>
+      <input name="password" class="form-control form-control-lg" placeholder="supersecretpassword" type="password" required>
+      <label for="password-confirm" class="hidden account-creation">Confirm Password:</label>
+      <input name="password-confirm" class="form-control form-control-lg hidden account-creation" placeholder="supersecretpassword" type="password" required>
+      <a href="password.html" class="account-link">Forgot password?</a>
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-dark">Submit</button>
+        <button type="button" class="btn btn-primary" id="create-account-button">Create New Account</button>
+      </div>
+    </form>
+  </fieldset>
+</div>
+
+{% endblock %}
