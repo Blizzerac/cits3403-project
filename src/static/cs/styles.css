@@ -11,6 +11,14 @@ body {
     background-position: top;
 }
 
+.hidden {
+    display: none;
+}
+
+#login-form input {
+    margin-bottom: 20px;
+}
+
 a.link-mute {
     color: inherit; /* Inherit the colour from the parent element (non-hypertext colouring) */
     text-decoration: none;
