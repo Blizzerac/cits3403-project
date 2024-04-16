@@ -27,6 +27,10 @@ a.link-mute {
 .bg-wood {
     background-image: url("../img/bg-woodplank-scaled.png");
     background-repeat: repeat;
+    border-width: 10px;
+    border-radius: 5px;
+    border-color: #2e1e0b;
+    border-style: solid;
 }
 
 .bg-wood-nav {
