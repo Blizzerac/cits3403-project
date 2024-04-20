@@ -8,7 +8,24 @@ body {
     background-image: url("../img/town.jpeg");
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: top;
+    /* background-position: top; -- OLD CODE */
+    background-attachment: fixed;       /* So that you cant scroll past the background image */
+    background-position: center center; /* Centre the background image */
+}
+
+.background-overlay {
+    position: relative;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
+    padding: 2rem 1rem 0 1rem;
+
+}
+
+.content-container {
+    min-height: 100vh; /* ensure 100% of viewport height */
+    position: relative;
+    z-index: 2; /* Ensures content is above the overlay */
+    color: white; /* White text color for better readability */
 }
 
 .hidden {
@@ -61,17 +78,4 @@ a.link-mute {
 
 .account-link {
     display: block;
-}
-
-.background-overlay {
-    position: relative;
-    z-index: 1;
-    background: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
-    padding: 2rem 1rem;
-}
-
-.content-container {
-    position: relative;
-    z-index: 2; /* Ensures content is above the overlay */
-    color: white; /* White text color for better readability */
 }
