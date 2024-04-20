@@ -1,5 +1,5 @@
 # Imports
-from flask import *
+from flask import render_template, request, redirect, url_for
 from app import app
 
 
@@ -17,7 +17,7 @@ def home():
 
 # Login
 @app.route("/signup")
-@app.route("/login")
+@app.route("/login", methods=["POST", "GET"])
 def login():
     return render_template("login.html")
 
