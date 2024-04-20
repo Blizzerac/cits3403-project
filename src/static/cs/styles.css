@@ -18,6 +18,7 @@ body {
     z-index: 1;
     background: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
     padding: 2rem 1rem 0 1rem;
+    border-radius: 0.5rem
 
 }
 
@@ -26,6 +27,14 @@ body {
     position: relative;
     z-index: 2; /* Ensures content is above the overlay */
     color: white; /* White text color for better readability */
+}
+
+.footer-content {
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 1rem 2rem 0 2rem;
+    color: white; /* Ensure text visability */
+    border-radius: 0.5rem;
+
 }
 
 .hidden {
