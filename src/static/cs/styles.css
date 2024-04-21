@@ -92,3 +92,8 @@ a.link-mute {
 .underline {
     text-decoration: underline;
 }
+
+.tutorial-images {
+    width: 500px;
+    height: 500px;
+}
