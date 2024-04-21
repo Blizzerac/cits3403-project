@@ -24,7 +24,7 @@ body {
 
 /* Declare heights because of positioning of img element */
 .carousel .carousel-item {
-  height: 32rem;
+  height: 20rem;
   background-color: #777; /* Fallback for browsers that dont support RGBA */
   background-color: rgba(0, 0, 0, 0.60) !important; /* Semi-transparent background */
 }
