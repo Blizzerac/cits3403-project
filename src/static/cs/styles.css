@@ -88,3 +88,7 @@ a.link-mute {
 .account-link {
     display: block;
 }
+
+.underline {
+    text-decoration: underline;
+}
