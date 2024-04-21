@@ -1,6 +1,6 @@
 # Imports
 from flask import render_template, request, redirect, url_for
-from app import app
+from app import app, models, forms
 
 
 ###########
@@ -16,10 +16,12 @@ def home():
     return render_template("home.html")
 
 # Login
-@app.route("/signup")
+@app.route("/signup", methods=["POST", "GET"])
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    return render_template("login.html")
+    login_form = forms.LoginForm()
+    signup_form = forms.SignupForm()
+    return render_template("login.html", login_form=login_form, signup_form=signup_form)
 
 # Leaderboard
 @app.route("/leaderboard")

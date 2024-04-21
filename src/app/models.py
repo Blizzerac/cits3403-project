@@ -14,11 +14,3 @@ class User(db.Model, UserMixin):
 def init_db():
     with app.app_context():
         db.create_all()
-
-def validate_username(username):
-   existing_user = User.query.filter_by(username=username.data).first()
-
-   if existing_user:
-      return False
-   
-   return True
