@@ -1,8 +1,10 @@
 from app import app
-from models import User # The user table in the database
+from app.models import User # The user table in the database
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError, Email
+
+#need pip packages: email_validator, flask_wtf, flask_bcrypt, flask_login
 
 # Custom validator - apply validator to email or username depending on login type
 def username_or_email(form, field):
