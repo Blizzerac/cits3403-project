@@ -1,4 +1,4 @@
-from app import db
+from app import app, db
 from flask_login import UserMixin
 from datetime import datetime
 
@@ -20,4 +20,5 @@ def validate_username(username):
 
    if existing_user:
       return False
+   
    return True

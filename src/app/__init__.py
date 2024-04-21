@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 
 # Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/database.db'  # Connects flask to databse
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../instance/database.db'  # Connects flask to databse
 app.config['SECRET_KEY'] = 'placeholder'  ### CHANGE THIS!
 
 # Initialise SQLAlchemy
