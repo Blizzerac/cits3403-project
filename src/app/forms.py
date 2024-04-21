@@ -1,7 +1,7 @@
 from app import app
 from models import User # The user table in the database
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError, Email
 
 # Custom validator - apply validator to email or username depending on login type
@@ -25,4 +25,5 @@ class SignupForm(FlaskForm):
 class LoginForm(FlaskForm):
     login = StringField('Username or Email', validators=[InputRequired(), username_or_email], render_kw={"placeholder": "Username or Email"})
     password = PasswordField('Password', validators=[InputRequired(), Length(min=5, max=25)], render_kw={"placeholder": "Password"})
+    remember_me = BooleanField('Remember me')
     submit = SubmitField("Login")
