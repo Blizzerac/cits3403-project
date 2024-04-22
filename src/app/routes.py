@@ -25,3 +25,7 @@ def login():
 @app.route("/leaderboard")
 def leaderboard():
     return render_template("leaderboard.html")
+
+@app.route("/search")
+def search():
+    return render_template("search.html")
