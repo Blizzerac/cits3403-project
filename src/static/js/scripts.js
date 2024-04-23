@@ -1,3 +1,5 @@
+/*
+
 // Set verbosity
 const verbose = true;
 
@@ -101,3 +103,5 @@ function check_passRequirements(pass) {
 
   return false;
 }
+
+*/
