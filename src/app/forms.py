@@ -29,3 +29,8 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired(), Length(min=5, max=25)], render_kw={"placeholder": "Password"})
     remember_me = BooleanField('Remember me')
     submit = SubmitField("Login")
+
+class PostForm(FlaskForm):
+    post_name = StringField('Name of ReQuest', validators=[InputRequired(), Length(min=5, max=30)], render_kw={"placeholder": "Track down gold atop Mount Dragon"})
+    post_description = StringField('Description', validators=[InputRequired(), Length(min=5, max=500)], render_kw={"placeholder": "I have left my gold atop Mount Dragon and need it back!"})
+    submit = SubmitField("Submit")
