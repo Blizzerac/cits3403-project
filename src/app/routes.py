@@ -51,3 +51,7 @@ def leaderboard():
 @app.route("/search")
 def search():
     return render_template("search.html")
+
+@app.route("/posting")
+def posting():
+    return render_template("posting.html")
