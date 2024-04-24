@@ -103,6 +103,7 @@ a.link-mute {
     margin-top: 3rem;
 }
 
+/*general post-form styling*/
 #post-form {
     color: white;
     position: absolute;
@@ -112,6 +113,7 @@ a.link-mute {
     background-image: url("../img/post-board.jpg");
 }
 
+/*styling of input areas for post-form*/
 #post-form input:not([type="submit"]),
 #post-form textarea {
     margin-bottom: 15px;
