@@ -52,6 +52,7 @@ def leaderboard():
 def search():
     return render_template("search.html")
 
-@app.route("/posting")
+@app.route("/posting", methods=["POST", "GET"])
 def posting():
-    return render_template("posting.html")
+    posting_form = forms.PostForm()
+    return render_template("posting.html", posting_form=posting_form)

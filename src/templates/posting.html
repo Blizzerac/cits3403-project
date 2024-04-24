@@ -15,5 +15,25 @@
 
 <body>
 
+  <div class="col-md-5 border p-4 rounded" id="post-form">
+    <fieldset>
+      <legend class="text-center">Post a ReQuest</legend>
+      <form method="POST" action="">
+        {{ posting_form.hidden_tag() }}
+        <div>
+            {{ posting_form.post_name.label }}<br>
+            {{ posting_form.post_name(size=32) }}<br>
+        </div>
+        <div>
+            {{ posting_form.post_description.label }}<br>
+            {{ posting_form.post_description(rows=10, cols=50) }}<br>
+        </div>
+        <div>
+            {{ posting_form.submit() }}
+        </div>
+      </form>
+    </fieldset>
+  </div>
+
 </body>
 </html>
