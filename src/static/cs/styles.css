@@ -61,7 +61,9 @@ a.link-mute {
 }
 
 .bg-wood-nav {
-    background-color: #2e1e0b;
+    background-image: url("../img/navbar-scaled.png");
+    background-repeat: repeat-x;
+    height: 64px;
 }
 
 /* .bg-village {
