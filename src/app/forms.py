@@ -55,12 +55,15 @@ class PostForm(FlaskForm):
     post_name = TextAreaField(
         'Name of ReQuest', 
         validators=[InputRequired(), Length(min=5, max=48)], 
-        render_kw={"placeholder": "Track down gold atop Mount Dragon", "class": "form-control form-control-lg"})
+        render_kw={"placeholder": "Track down gold atop Mount Dragon", "class": "form-control form-control-lg"},
+        id="first-post-input")
 
     post_description = TextAreaField(
         'Description', 
         validators=[InputRequired(), Length(min=5, max=1000)], 
-        render_kw={"placeholder": "I have left my gold atop Mount Dragon and need it back!", "class": "form-control form-control-lg", "rows": 10})
+        render_kw={"placeholder": "I have left my gold atop Mount Dragon and need it back!", "class": "form-control form-control-lg", "rows": 10},
+        id="second-post-input")
 
     submit = SubmitField("Submit", 
-    render_kw={"class": "btn btn-success rounded"})
+    render_kw={"class": "btn btn-success rounded disabled"},
+    id="submit-post")

@@ -15,8 +15,11 @@
           {{ posting_form.post_description.label(class="form-label") }}
           {{ posting_form.post_description() }}
       </div>
+      <div class="d-flex justify-content-center flex-column offset-sm-5 col-sm-2">
+        {{ posting_form.submit() }}
+      </div>
       <div class="d-flex justify-content-center">
-          {{ posting_form.submit() }}
+        <p id="disabled-info">The ReQuest name and description must each be at least 5 characters long.</p>
       </div>
     </form>
   </fieldset>

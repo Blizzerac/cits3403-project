@@ -121,6 +121,12 @@ a.link-mute {
     color: black;
 }
 
+#disabled-info {
+    color: red;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
 /* CAROUSEL CUSTOMISATION
 -------------------------------------------------- */
 /* Carousel base class */
