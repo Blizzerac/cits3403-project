@@ -1,7 +1,19 @@
-/*
-
 // Set verbosity
 const verbose = true;
+
+$(document).ready(function() {
+  // Change signup to login form
+  $('#toggle-login').click(swapLoginForm)
+});
+
+// Swap between account login and account creation
+function swapLoginForm() {
+  $('#login-form-container').toggleClass('hidden');
+  $('#signup-form-container').toggleClass('hidden');
+}
+
+/*
+##### DEPRICATED CODE - SLATED FOR DELETION
 
 // Password requirements (global so only gotten once)
 let passRequirements = null;

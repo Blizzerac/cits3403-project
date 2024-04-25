@@ -41,7 +41,8 @@ body {
     display: none;
 }
 
-#login-form input {
+#login-form input,
+#signup-form input {
     margin-bottom: 20px;
 }
 
@@ -76,7 +77,7 @@ a.link-mute {
     fill: white;
 }
 
-#log-in-form {
+.form-container {
     background-image: url("../img/bg-woodplank.png");
     color: white;
     position: absolute;

@@ -10,6 +10,10 @@ class Users(db.Model, UserMixin):
   password = db.Column(db.String(80), nullable=False)
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # User account creation date
 
+  # Override flask's expected 'id' naming scheme
+  def get_id(self):
+    return str(self.userID)
+
 # Posts tables to handle each ReQuest
 class Posts(db.Model):
   postID = db.Column(db.Integer, primary_key=True)
