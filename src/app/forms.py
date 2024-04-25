@@ -1,5 +1,5 @@
 from app import app
-from app.models import User # The user table in the database
+from app.models import Users # The user table in the database
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError, Email
@@ -20,7 +20,7 @@ class SignupForm(FlaskForm):
   submit = SubmitField("Register")
 
   def validate_username(self, username):
-   existing_user = User.query.filter_by(username=username.data).first()
+   existing_user = Users.query.filter_by(username=username.data).first()
    if existing_user:
       raise ValidationError("That username already exists. Please choose a different one.")
 

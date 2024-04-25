@@ -1,7 +1,7 @@
 # Imports
 from flask import render_template, request, redirect, url_for, flash
 from flask_bcrypt import bcrypt
-from app.models import User # The user table in the database
+from app.models import Users # The user table in the database
 from app import models, forms
 from app import app, bcrypt, db
 from datetime import datetime
@@ -29,7 +29,7 @@ def login():
     # If signup form submitted
     if signup_form.validate_on_submit():
         hashed_pass = bcrypt.generate_password_hash(signup_form.password.data)
-        new_user = User(username=signup_form.username.data, email=signup_form.email.data, password=hashed_pass)
+        new_user = Users(username=signup_form.username.data, email=signup_form.email.data, password=hashed_pass)
         db.session.add(new_user)
         # Try commit new user to database.
         try:
