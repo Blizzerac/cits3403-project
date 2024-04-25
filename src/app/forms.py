@@ -52,9 +52,9 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 class PostForm(FlaskForm):
-    post_name = StringField(
+    post_name = TextAreaField(
         'Name of ReQuest', 
-        validators=[InputRequired(), Length(min=5, max=40)], 
+        validators=[InputRequired(), Length(min=5, max=48)], 
         render_kw={"placeholder": "Track down gold atop Mount Dragon", "class": "form-control form-control-lg"})
 
     post_description = TextAreaField(
