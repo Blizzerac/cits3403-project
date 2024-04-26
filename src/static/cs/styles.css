@@ -90,11 +90,11 @@ a.link-mute {
   background-image: url("../img/bg-woodplank.png");
   background-repeat: repeat; 
   padding: 20px;
-  border: 2px solid white;
+  border: 2px solid #ddd;
 }
 
 #leaderboard table {
-  color: white;
+  color: #ddd;
 }
 
 	
