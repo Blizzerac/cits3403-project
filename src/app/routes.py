@@ -10,7 +10,7 @@ from app import app
 
 # Hardcoded user data for leaderboard testing purposes
 leaderboard_users = [
-    {"username": f"User {i+1}", "quests_complete": 1000 - i} for i in range(1000)
+    {"username": f"User {i+1}", "quests_complete": 10000 - i} for i in range(10000)
 ]
 
 
