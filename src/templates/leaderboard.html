@@ -24,6 +24,14 @@
             {% endfor %}
           </tbody>
         </table>
+        <div class="pagination mt-4">
+          {% if prev_page %}
+            <a href="?page={{ prev_page }}" class="btn btn-primary mr-2">Previous</a>
+          {% endif %}
+          {% if next_page %}
+            <a href="?page={{ next_page }}" class="btn btn-primary">Next</a>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
