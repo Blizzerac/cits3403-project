@@ -7,6 +7,9 @@ from app import models, forms
 from app import app, bcrypt, db
 from datetime import datetime
 
+# Settings
+debug = True
+
 
 ###########
 # Routes  #
@@ -40,7 +43,10 @@ def login():
         # If failed, rollback database and warn user.
         except Exception as e:
             db.session.rollback()
-            flash('Error adding user to database. {}'.format(e), 'error')
+            if debug:
+                flash('Error adding user to database. {}'.format(e), 'error')
+            else: 
+                flash('Error adding user to database.', 'error')
     
     # If login form submitted
     if login_form.validate_on_submit():
