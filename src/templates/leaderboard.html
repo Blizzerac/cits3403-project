@@ -24,14 +24,20 @@
             {% endfor %}
           </tbody>
         </table>
-        <div class="pagination mt-4 d-flex justify-content-end align-items-center">
+        <div class="pagination mt-4 d-flex justify-content-between align-items-center">
           {% if start_index > 0 %}
             <a href="?page={{ prev_page }}" class="btn btn-custom-gray  mr-2">Previous</a>
           {% endif %}
-          <span class="mr-2">Page {{ current_page }} of {{ total_pages }}</span>
+          <span>Page {{ current_page }} of {{ total_pages }}</span>
           {% if end_index < total_users %}
             <a href="?page={{ next_page }}" class="btn btn-custom-gray ">Next</a>
           {% endif %}
+          <form class="form-inline" action="" method="GET">
+            <div class="form-group mx-2">
+              <input type="number" id="pageInput" name="page" class="form-control" min="1" max="{{ total_pages }}" placeholder='pgNum'>
+            </div>
+            <button type="submit" class="btn btn-custom-gray">Go</button>
+          </form>
         </div>
       </div>
     </div>
