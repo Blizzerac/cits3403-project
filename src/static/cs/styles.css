@@ -90,7 +90,7 @@ a.link-mute {
   background-image: url("../img/bg-woodplank.png");
   background-repeat: repeat; 
   padding: 20px;
-  border: 2px solid #ddd;
+  border: 2px solid #999;
 }
 
 #leaderboard table {
