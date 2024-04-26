@@ -15,56 +15,13 @@
             </tr>
           </thead>
           <tbody>
+            {% for i in range(1, 51) %}
             <tr>
-              <td>1</td>
-              <td>User 1</td>
-              <td>10</td>
+              <td>{{ i }}</td>
+              <td>User {{ i }}</td>
+              <td>{{ 51 - i }}</td>
             </tr>
-            <tr>
-              <td>2</td>
-              <td>User 2</td>
-              <td>8</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>User 3</td>
-              <td>7</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>User 4</td>
-              <td>6</td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>User 5</td>
-              <td>5</td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td>User 6</td>
-              <td>4</td>
-            </tr>
-            <tr>
-              <td>7</td>
-              <td>User 7</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <td>8</td>
-              <td>User 8</td>
-              <td>2</td>
-            </tr>
-            <tr>
-              <td>9</td>
-              <td>User 9</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>10</td>
-              <td>User 10</td>
-              <td>0</td>
-            </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
