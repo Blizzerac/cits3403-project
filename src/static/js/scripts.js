@@ -6,7 +6,9 @@ $(document).ready(function() {
   $('#toggle-login').click(swapLoginForm)
 
   // Show the toast if any exist
-  $('.toast').toast('show');
+  $('.toast').toast({
+    delay: 1500  // Delay in milliseconds
+  }).toast('show');
 });
 
 // Swap between account login and account creation

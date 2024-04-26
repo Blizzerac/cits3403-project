@@ -102,4 +102,6 @@ a.link-mute {
 
 .toast {
     min-width: 200px;
+    align-items: center;
+    text-align: center;
 }
