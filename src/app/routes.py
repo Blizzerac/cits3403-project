@@ -10,32 +10,13 @@ from app import app
 
 # Hardcoded user data for leaderboard testing purposes
 leaderboard_users = [
-    {"username": "User 1", "quests_complete": 10},
-    {"username": "User 2", "quests_complete": 8},
-    {"username": "User 3", "quests_complete": 7},
-    {"username": "User 4", "quests_complete": 6},
-    {"username": "User 5", "quests_complete": 5},
-    {"username": "User 6", "quests_complete": 4},
-    {"username": "User 7", "quests_complete": 3},
-    {"username": "User 8", "quests_complete": 2},
-    {"username": "User 9", "quests_complete": 1},
-    {"username": "User 10", "quests_complete": 0},
-    {"username": "User 11", "quests_complete": 0},
-    {"username": "User 12", "quests_complete": 0},
-    {"username": "User 13", "quests_complete": 0},
-    {"username": "User 14", "quests_complete": 0},
-    {"username": "User 15", "quests_complete": 0},
-    {"username": "User 16", "quests_complete": 0},
-    {"username": "User 17", "quests_complete": 0},
-    {"username": "User 18", "quests_complete": 0},
-    {"username": "User 19", "quests_complete": 0},
-    {"username": "User 20", "quests_complete": 0}
+    {"username": f"User {i+1}", "quests_complete": 1000 - i} for i in range(1000)
 ]
 
 
 
 # Home page
-@app.route("/index")
+@app.route("/index")    
 @app.route("/home")
 @app.route("/")
 def home():
