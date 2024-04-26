@@ -86,6 +86,13 @@ a.link-mute {
     transform: translate(-50%, -50%);
 }
 
+#leaderboard {
+  background-image: url("../img/bg-woodplank-scaled.png");
+  background-size: cover; 
+  padding: 20px;
+}
+
+	
 .account-link {
     display: block;
 }
