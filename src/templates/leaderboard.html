@@ -17,19 +17,20 @@
           <tbody>
             {% for user in users %}
             <tr>
-              <td>{{ loop.index }}</td>
+              <td>{{ (current_page - 1) * page_size + loop.index }}</td>
               <td>{{ user.username }}</td>
               <td>{{ user.quests_complete }}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
-        <div class="pagination mt-4">
-          {% if prev_page %}
-            <a href="?page={{ prev_page }}" class="btn btn-primary mr-2">Previous</a>
+        <div class="pagination mt-4 d-flex justify-content-end align-items-center">
+          {% if start_index > 0 %}
+            <a href="?page={{ prev_page }}" class="btn btn-custom-gray  mr-2">Previous</a>
           {% endif %}
-          {% if next_page %}
-            <a href="?page={{ next_page }}" class="btn btn-primary">Next</a>
+          <span class="mr-2">Page {{ current_page }} of {{ total_pages }}</span>
+          {% if end_index < total_users %}
+            <a href="?page={{ next_page }}" class="btn btn-custom-gray ">Next</a>
           {% endif %}
         </div>
       </div>

@@ -97,6 +97,18 @@ a.link-mute {
   color: #ddd;
 }
 
+.btn-custom-gray {
+    background-color: #999; 
+    color: #fff; 
+    border-color: #999; 
+}
+
+.btn-custom-gray:hover {
+    background-color: #777; 
+    border-color: #777; 
+}
+
+
 	
 .account-link {
     display: block;
