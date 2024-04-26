@@ -89,3 +89,17 @@ a.link-mute {
 .account-link {
     display: block;
 }
+
+/* Toast */
+#toast-container {
+    /* Position the toast container bottom right of page */
+    position: fixed;
+    min-height: 200px;
+    bottom: 0;
+    right: 0;
+    z-index: 1050;
+}
+
+.toast {
+    min-width: 200px;
+}

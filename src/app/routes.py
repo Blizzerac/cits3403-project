@@ -63,7 +63,7 @@ def login():
             flash('Logged in successfully!', 'success')
             return redirect(url_for('dashboard'))
         else:
-            flash('Invalid username/email or password.', 'error')
+            flash('Invalid account details', 'error')
 
     return render_template("login.html", login_form=login_form, signup_form=signup_form)
 
