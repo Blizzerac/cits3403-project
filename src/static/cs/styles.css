@@ -87,8 +87,8 @@ a.link-mute {
 }
 
 #leaderboard {
-  background-image: url("../img/bg-woodplank-scaled.png");
-  background-size: cover; 
+  background-image: url("../img/bg-woodplank.png");
+  background-repeat: repeat; 
   padding: 20px;
 }
 
