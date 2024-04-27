@@ -5,7 +5,7 @@
 
 <div class="col-md-5 rounded form-container hidden" id="login-form-container">
   <fieldset>
-    <legend class="text-center" id="legend">Login</legend>
+    <legend class="text-center" id="legend"><span class="toggle-login">Sign-up</span> | <b>Login</b></legend>
     <form method='POST' id='login-form' action=''>
       {{ login_form.hidden_tag() }}
       <div>
@@ -28,7 +28,7 @@
 
 <div class="col-md-5 rounded form-container" id="signup-form-container">
   <fieldset>
-    <legend class="text-center" id="legend">Sign-up</legend>
+    <legend class="text-center" id="legend"><b>Sign-up</b> | <span class="toggle-login">Login</span></legend>
     <form method='POST' id='signup-form' action=''>
       {{ signup_form.hidden_tag() }}
       <div>
@@ -49,8 +49,6 @@
     </form>
   </fieldset>
 </div>
-
-<button type="button" class="btn btn-info" id="toggle-login">Toggle Form</button>
 
 <div id='toast-container' aria-live="polite" aria-atomic="true">
   {% with messages = get_flashed_messages(with_categories=true) %}

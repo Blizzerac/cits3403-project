@@ -46,6 +46,11 @@ body {
     margin-bottom: 20px;
 }
 
+.toggle-login {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 a.link-mute {
     color: inherit; /* Inherit the colour from the parent element (non-hypertext colouring) */
     text-decoration: none;
@@ -84,16 +89,12 @@ a.link-mute {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /*
-    border-width: 10px;
-    border-color: #421c00;
-    border-style: solid;
-    */
     border-image-slice: 60 60 60 60;
     border-image-width: 10px 10px 10px 10px;
     border-image-outset: 0px 0px 0px 0px;
     border-image-repeat: stretch stretch;
     border-image-source: url("../img/border-image.png");
+    border-style: solid;
 }
 
 .account-link {
