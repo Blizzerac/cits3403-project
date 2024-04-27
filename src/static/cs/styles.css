@@ -78,12 +78,22 @@ a.link-mute {
 }
 
 .form-container {
-    background-image: url("../img/bg-woodplank.png");
+    background-image: url("../img/bg-woodplank-scaled.png");
     color: white;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    /*
+    border-width: 10px;
+    border-color: #421c00;
+    border-style: solid;
+    */
+    border-image-slice: 60 60 60 60;
+    border-image-width: 10px 10px 10px 10px;
+    border-image-outset: 0px 0px 0px 0px;
+    border-image-repeat: stretch stretch;
+    border-image-source: url("../img/border-image.png");
 }
 
 .account-link {
