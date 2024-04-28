@@ -109,10 +109,23 @@ a.link-mute {
     bottom: 0;
     right: 0;
     z-index: 1050;
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
 }
 
 .toast {
     min-width: 200px;
     align-items: center;
     text-align: center;
+}
+
+.alert-warning {
+    background-color: lightcoral;
+    color:black;
+}
+
+.alert-success {
+    background-color: lightgreen;
+    color:black;
 }

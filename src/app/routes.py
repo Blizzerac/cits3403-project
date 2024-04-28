@@ -44,9 +44,9 @@ def login():
         except Exception as e:
             db.session.rollback()
             if debug:
-                flash('Error adding user to database. {}'.format(e), 'error')
+                flash('Error adding user to database. {}'.format(e), 'danger')
             else: 
-                flash('Error adding user to database.', 'error')
+                flash('Error adding user to database.', 'warning')
     
     # If login form submitted
     if login_form.validate_on_submit():
@@ -63,7 +63,7 @@ def login():
             flash('Logged in successfully!', 'success')
             return redirect(url_for('dashboard'))
         else:
-            flash('Invalid account details', 'error')
+            flash('Invalid account details', 'warning')
 
     return render_template("login.html", login_form=login_form, signup_form=signup_form)
 
