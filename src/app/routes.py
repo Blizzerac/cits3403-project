@@ -38,6 +38,7 @@ def login():
         # Try commit new user to database.
         try:
             db.session.commit()
+            login_user(new_user,remember=False) # Assuming dont remember them
             flash('Account created successfully!', 'success')
             return redirect(url_for('home'))
         # If failed, rollback database and warn user.
