@@ -27,6 +27,7 @@ def home():
 @app.route("/signup", methods=["POST", "GET"])
 @app.route("/login", methods=["POST", "GET"])
 def login():
+    is_signup = request.path.endswith('signup') # Determine if linked straight to signup
     login_form = forms.LoginForm()
     signup_form = forms.SignupForm()
 
@@ -66,7 +67,7 @@ def login():
         else:
             flash('Invalid account details', 'warning')
 
-    return render_template("login.html", login_form=login_form, signup_form=signup_form)
+    return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup)
 
 # User logout
 @app.route('/logout', methods=["POST", "GET"])
