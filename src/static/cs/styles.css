@@ -134,3 +134,12 @@ a.link-mute {
 .form-error {
     margin-top: -10px; /* Pull form error up to the field input */
 }
+
+#signup-password-errors ul {
+    padding-left: 20px;  /* Add padding to the list for better alignment */
+    list-style-type: disc;  /* Optional: style list bullets */
+}
+
+#signup-password-errors li {
+    margin-bottom: 5px;  /* Space out the list items */
+}
