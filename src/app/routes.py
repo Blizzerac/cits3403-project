@@ -58,7 +58,7 @@ def login():
                 if debug:
                     flash('Error adding user to database. {}'.format(e), 'danger')
                 else: 
-                    flash('Error adding user to database.', 'warning')
+                    flash('Error adding user to database.', 'danger')
     
     # If login form submitted
     if login_form.validate_on_submit():
