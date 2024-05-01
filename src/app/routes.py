@@ -33,22 +33,32 @@ def login():
 
     # If signup form submitted
     if signup_form.validate_on_submit():
-        hashed_pass = bcrypt.generate_password_hash(signup_form.password.data).decode('utf-8')
-        new_user = Users(username=signup_form.username.data, email=signup_form.email.data, password=hashed_pass)
-        db.session.add(new_user)
-        # Try commit new user to database.
-        try:
-            db.session.commit()
-            login_user(new_user,remember=False) # Assuming dont remember them
-            flash('Account created successfully!', 'success')
-            return redirect(url_for('home'))
-        # If failed, rollback database and warn user.
-        except Exception as e:
-            db.session.rollback()
-            if debug:
-                flash('Error adding user to database. {}'.format(e), 'danger')
-            else: 
-                flash('Error adding user to database.', 'warning')
+        existing_user = Users.query.filter_by(username=signup_form.username.data).first()
+        existing_email = Users.query.filter_by(email=signup_form.email.data).first()
+
+        # Check for existing users
+        if existing_user:
+            signup_form.username.errors.append('Username is already taken.')
+        if existing_email:
+            signup_form.email.errors.append('An account with this email already exists.')
+
+        if not existing_user and not existing_email:
+            hashed_pass = bcrypt.generate_password_hash(signup_form.password.data).decode('utf-8')
+            new_user = Users(username=signup_form.username.data, email=signup_form.email.data, password=hashed_pass)
+            db.session.add(new_user)
+            # Try commit new user to database.
+            try:
+                db.session.commit()
+                login_user(new_user,remember=False) # Assuming dont remember them
+                flash('Account created successfully!', 'success')
+                return redirect(url_for('home'))
+            # If failed, rollback database and warn user.
+            except Exception as e:
+                db.session.rollback()
+                if debug:
+                    flash('Error adding user to database. {}'.format(e), 'danger')
+                else: 
+                    flash('Error adding user to database.', 'warning')
     
     # If login form submitted
     if login_form.validate_on_submit():
@@ -65,7 +75,7 @@ def login():
             flash('Logged in successfully!', 'success')
             return redirect(url_for('dashboard'))
         else:
-            flash('Invalid account details', 'warning')
+            login_form.login.errors.append('Incorrect account details.')
 
     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup)
 

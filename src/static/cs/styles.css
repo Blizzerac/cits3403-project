@@ -41,16 +41,6 @@ body {
     display: none;
 }
 
-#login-form input,
-#signup-form input {
-    margin-bottom: 20px;
-}
-
-.toggle-login {
-    cursor: pointer;
-    text-decoration: underline;
-}
-
 a.link-mute {
     color: inherit; /* Inherit the colour from the parent element (non-hypertext colouring) */
     text-decoration: none;
@@ -128,4 +118,19 @@ a.link-mute {
 .alert-success {
     background-color: lightgreen;
     color:black;
+}
+
+/* Login/Signup Form */
+#login-form input,
+#signup-form input {
+    margin-bottom: 20px;
+}
+
+.toggle-login {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.form-error {
+    margin-top: -10px; /* Pull form error up to the field input */
 }

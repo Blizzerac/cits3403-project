@@ -22,6 +22,9 @@
       <div class="d-flex justify-content-center">
         {{ login_form.submit() }}
       </div>
+      {% for error in login_form.login.errors %}
+          <div class="form-error alert alert-danger">{{ error }}</div>
+        {% endfor %}
     </form>
   </fieldset>
 </div>
@@ -34,14 +37,23 @@
       <div>
         {{ signup_form.username.label }} <br>
         {{ signup_form.username() }}
+        {% for error in signup_form.username.errors %}
+          <div class="form-error alert alert-danger">{{ error }}</div>
+        {% endfor %}
       </div>
       <div>
         {{ signup_form.email.label }} <br>
         {{ signup_form.email() }}
+        {% for error in signup_form.email.errors %}
+          <div class="form-error alert alert-danger">{{ error }}</div>
+        {% endfor %}
       </div>
       <div>
         {{ signup_form.password.label }} <br>
         {{ signup_form.password() }}
+        {% for error in signup_form.password.errors %}
+          <div class="form-error alert alert-danger">{{ error }}</div>
+        {% endfor %}
       </div>
       <div class="d-flex justify-content-center">
         {{ signup_form.submit() }}
