@@ -25,9 +25,9 @@
           </tbody>
         </table>
         <div class="pagination mt-4 d-flex justify-content-center align-items-center">
-          <a href="{% if start_index > 0 %}?page={{ prev_page }}{% endif %}" class="btn btn-custom-gray{% if start_index == 0 %} disabled{% endif %}">Previous</a>
+          <a href="{% if start_index > 0 %}?page={{ prev_page }}{% endif %}" class="btn btn-primary{% if start_index == 0 %} disabled{% endif %}">Previous</a>
           <div class="col-md-auto text-center mx-md-3">Page {{ current_page }} of {{ total_pages }}</div>
-          <a href="{% if end_index < total_users %}?page={{ next_page }}{% endif %}" class="btn btn-custom-gray{% if end_index == total_users %} disabled{% endif %}">Next</a>
+          <a href="{% if end_index < total_users %}?page={{ next_page }}{% endif %}" class="btn btn-primary{% if end_index == total_users %} disabled{% endif %}">Next</a>
         </div>
       </div>
     </div>
