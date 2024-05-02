@@ -9,17 +9,17 @@
         <table class="table text-center">
           <thead>
             <tr>
-              <th class="text-center">Rank</th>
-              <th class="text-center">User</th>
-              <th class="text-center">Quests Complete</th>
+              <th>Rank</th>
+              <th>User</th>
+              <th>Quests Complete</th>
             </tr>
           </thead>
           <tbody>
             {% for user in users %}
             <tr>
-              <td class="text-center">{{ (current_page - 1) * page_size + loop.index }}</td>
-              <td class="text-center">{{ user.username }}</td>
-              <td class="text-center">{{ user.quests_complete }}</td>
+              <td>{{ (current_page - 1) * page_size + loop.index }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.quests_complete }}</td>
             </tr>
             {% endfor %}
           </tbody>
