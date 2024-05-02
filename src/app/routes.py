@@ -3,14 +3,6 @@ from flask import *
 from app import app
 
 
-import random
-import string
-
-def generate_username(length):
-    """Generate a random username of specified length."""
-    return ''.join(random.choices(string.ascii_letters, k=length))
-
-
 
 ###########
 # Routes  #
@@ -37,7 +29,7 @@ def leaderboard():
     # Hardcoded user data for leaderboard testing purposes
     # Replace this with link to DB at later point
     leaderboard_users = [
-        {"username": generate_username(50), "quests_complete": 10000 - i} for i in range(10000)
+        {"username": f"User {i+1}", "quests_complete": 10000 - i} for i in range(10000)
     ]
     
     # Variable defines users per page on leaderboard
