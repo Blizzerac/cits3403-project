@@ -90,9 +90,9 @@ a.link-mute {
   background-image: url("../img/bg-woodplank-scaled.png");
   background-repeat: repeat; 
   background-size: 5%; /* background is scaled down to improve readability while still displaying wood texture */
-  /*padding: 20px;*/ 
-  /*border: 2px solid #999;*/ 
-  /*border-radius: 5px; /* Set border radius to 5px for rounded corners */ 
+  padding: 20px;
+  border: 2px solid #999; 
+  border-radius: 5px; /* Set border radius to 5px for rounded corners */ 
 }
 
 #leaderboard table {
