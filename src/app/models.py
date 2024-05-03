@@ -59,8 +59,8 @@ class Posts(db.Model):
 class Responses(db.Model):
   postID = db.Column(db.Integer, db.ForeignKey('posts.postID'), nullable=False) # Quest ID
   responseID = db.Column(db.Integer, primary_key=True, nullable=False) # Unique ID of the response
-  userID = db.Column(db.Integer, db.ForeignKey('users.userID'), nullable=False) # Responder ID
-  response = db.Column(db.Text, nullable=False) # Response to the quest
+  responderID = db.Column(db.Integer, db.ForeignKey('users.userID'), nullable=False) # Responder ID
+  msg = db.Column(db.Text, nullable=False) # Response to the quest
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # Response creation date
 
 # Data base initialisation
