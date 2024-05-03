@@ -13,8 +13,9 @@ class Users(db.Model, UserMixin):
   password = db.Column(db.String(80), nullable=False)
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # User account creation date
 
-  posts = db.relationship('Posts', backref='poster', lazy=True) # Link user to posts they made
-  responses = db.relationship('Responses', backref='responder', lazy=True) # Link user to responses theyve made
+  posts = db.relationship('Posts', backref='poster', lazy='dynamic', foreign_keys='Posts.posterID') # Link user to posts they made
+  claims = db.relationship('Posts', backref='claimer', lazy='dynamic', foreign_keys='Posts.claimerID') # Link user to posts they've claimed
+  responses = db.relationship('Responses', backref='responder', lazy='dynamic', foreign_keys='Responses.responderID') # Link user to responses theyve made
 
   # Number of quests a user has posted
   @hybrid_property
