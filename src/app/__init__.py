@@ -16,11 +16,12 @@ app.debug = True
 # Initialise extensions
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
+migrate = Migrate(app, db)
 
 # Import routes and models at the end to avoid circular imports
 from app import routes, models
 
-# Initialise database on startup.
+# Initialise database on startup (if it doesnt exist).
 models.init_db()
 
 # Login manager

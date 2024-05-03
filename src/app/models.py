@@ -1,6 +1,9 @@
 from app import app, db
 from flask_login import UserMixin
 from datetime import datetime
+from sqlalchemy import func, select
+from sqlalchemy.ext.hybrid import hybrid_property
+
 
 # Users table to handle logins
 class Users(db.Model, UserMixin):
@@ -9,6 +12,25 @@ class Users(db.Model, UserMixin):
   email = db.Column(db.String(80), unique=True, nullable=False) # Emails are also unique
   password = db.Column(db.String(80), nullable=False)
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # User account creation date
+
+  posts = db.relationship('Posts', backref='poster', lazy=True) # Link user to posts they made
+  responses = db.relationship('Responses', backref='responder', lazy=True) # Link user to responses theyve made
+
+  # Number of quests a user has posted
+  @hybrid_property
+  def questCount(self):
+    return len(self.posts)
+  
+  # Number of quests a user has completed
+  @hybrid_property
+  def questsCompleted(self):
+    return sum(1 for post in self.posts if (post.claimed) and (post.completed) and (post.claimerID == self.userID))
+  
+  @questsCompleted.expression
+  def questsCompleted(cls): # For use at the class level
+    return (select([func.count(Posts.postID)])
+            .where((Posts.claimerID == cls.userID) & (Posts.claimed == True) & (Posts.completed == True))
+            .label("quests_completed"))
 
   # Override flask's expected 'id' naming scheme
   def get_id(self):
@@ -30,6 +52,8 @@ class Posts(db.Model):
   description = db.Column(db.Text, nullable=False) # Description of the quest
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # Post creation date
   claimDate = db.Column(db.DateTime, nullable=True) # Current claim's start date
+
+  responses = db.relationship('Responses', backref='post', lazy=True) # Link posts to their responses
 
 # Each reponse to a certain ReQuest
 class Responses(db.Model):
