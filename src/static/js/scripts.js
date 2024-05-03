@@ -49,13 +49,18 @@ function checkPass() {
   errorContainer.html(''); // Clear previous errors
   if (errors.length > 0) {
     var errorList = $('<ul>'); // Create an unordered list
+    
     $.each(errors, function(i, error) {
       errorList.append($('<li>').text(error)); // Append each error as a list item
     });
     errorContainer.append(errorList);
     errorContainer.removeClass('alert-success').addClass('alert-danger');
+
+    // Disable register button
+    $('#signup-submit-button').prop('disabled', true)
+
   } else {
-    errorContainer.html('<div>Password is valid.</div>'); // Display success message
-    errorContainer.removeClass('alert-danger').addClass('alert-success');
+    // Enable register button
+    $('#signup-submit-button').prop('disabled', false)
   }
 }
