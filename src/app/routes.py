@@ -59,6 +59,10 @@ def login():
                     flash('Error adding user to database. {}'.format(e), 'danger')
                 else: 
                     flash('Error adding user to database.', 'danger')
+
+    # If signup form submission fails with errors, return to signup form
+    elif not signup_form.validate_on_submit() and request.method == 'POST':
+        return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=True)
     
     # If login form submitted
     if login_form.validate_on_submit():
