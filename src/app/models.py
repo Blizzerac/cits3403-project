@@ -13,6 +13,11 @@ class Users(db.Model, UserMixin):
   # Override flask's expected 'id' naming scheme
   def get_id(self):
     return str(self.userID)
+  
+  # Console printing representation
+  def __repr__(self) -> str:
+    # Assume to keep email and hashed password hidden for security
+    return f'<USER {self.username} ({self.userID}) - Created: {self.creationDate}>'
 
 # Posts tables to handle each ReQuest
 class Posts(db.Model):
