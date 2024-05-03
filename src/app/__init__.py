@@ -3,13 +3,14 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
+from app.config import Config
 
 # Main application name
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 
 # Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../instance/database.db'  # Connects flask to databse
-app.config['SECRET_KEY'] = 'placeholder'  ### CHANGE THIS!
+app.config.from_object(Config)
 app.debug = True
 
 # Initialise extensions
