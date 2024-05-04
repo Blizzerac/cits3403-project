@@ -64,6 +64,10 @@ a.link-mute {
     background-color: #2e1e0b;
 }
 
+.quest-card {
+    background-color: #FFFBF4;
+}
+
 /* .bg-village {
     background-image: url("../img/bg-village.jpeg");
     background-repeat: no-repeat;
