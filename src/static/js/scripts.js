@@ -11,7 +11,7 @@ $(document).ready(function() {
   }).toast('show');
 
   // Check for valid password on signup form
-  $('#signup-password-input').keyup(checkPass)
+  //$('#signup-password-input').keyup(checkPass)
 });
 
 // Swap between account login and account creation
@@ -20,13 +20,14 @@ function swapLoginForm() {
   $('#signup-form-container').toggleClass('hidden');
 }
 
+// Redudent for now, may be used in future
 function checkPass() {
   let password = $(this).val();
   let errors = [];
 
-  // Check for minimum length
-  if (password.length < 5) {
-    errors.push("Password must be at least 5 characters long.");
+  // Check for length requirements (min=5, max=25)
+  if (password.length < 5 && password.length > 2) {
+    errors.push("Password must be between 5-25 characters long.");
   }
 
   // Check for allowed characters: letters, numbers, and specific special characters

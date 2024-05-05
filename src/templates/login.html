@@ -51,7 +51,10 @@
       <div>
         {{ signup_form.password.label }} <br>
         {{ signup_form.password(id='signup-password-input') }}
-        <div id="password-errors" class="form-error"></div>
+        <!-- <div id="password-errors" class="form-error"></div> -->
+        {% for error in signup_form.password.errors %}
+          <div class="form-error alert alert-danger">{{ error }}</div>
+        {% endfor %}
       </div>
       <div class="d-flex justify-content-center">
         {{ signup_form.submit(id='signup-submit-button') }}
