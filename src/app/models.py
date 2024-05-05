@@ -9,7 +9,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 class Users(db.Model, UserMixin):
   userID = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(20), unique=True, nullable=False) # Usernames are unique
-  email = db.Column(db.String(80), unique=True, nullable=False) # Emails are also unique
+  email = db.Column(db.String(320), unique=True, nullable=False) # Emails are also unique (maximum determined from physical maximum researched)
   password = db.Column(db.String(80), nullable=False)
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # User account creation date
 

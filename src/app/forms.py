@@ -34,7 +34,7 @@ def newPassword(form, field):
 
 class SignupForm(FlaskForm):
   username = StringField('Username', validators=[InputRequired(), noSpaces, Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-  email = StringField('Email', validators=[InputRequired(), Length(max=80), Email(message='Invalid email address.')], render_kw={"placeholder": "Email"})
+  email = StringField('Email', validators=[InputRequired(), Length(max=320), Email(message='Invalid email address.')], render_kw={"placeholder": "Email"})
   password = PasswordField('Password', validators=[InputRequired(), newPassword, Length(min=5, max=25)], render_kw={"placeholder": "Password"})
   submit = SubmitField("Register")
 
