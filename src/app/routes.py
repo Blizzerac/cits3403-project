@@ -96,6 +96,11 @@ def logout():
 def dashboard():
     return render_template('home.html') #TEMP UNTIL DASH FINISHED
 
+# Post request
+@app.route('/post', methods=["POST", "GET"])
+@login_required
+def post_quest():
+    return render_template('home.html') # TEMP UNTIL COMPLETED
 
 # Leaderboard
 @app.route("/leaderboard")
