@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block uniqueStyles %}<link rel="stylesheet" href="../static/cs/home.css">{% endblock %}
+{% block uniqueStyles %}<link rel="stylesheet" href="{{ url_for('static', filename='cs/home.css') }}">{% endblock %}
 {% block title %}Quester's Cache{% endblock %}
 {% block content %}
 
