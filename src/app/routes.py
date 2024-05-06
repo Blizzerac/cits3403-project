@@ -1,6 +1,6 @@
 # Imports
 from flask import render_template, request, redirect, url_for, flash
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_required, login_user, logout_user, current_user
 from flask_bcrypt import bcrypt
 from app.models import Users # The user table in the database
 from app import models, forms
@@ -27,6 +27,10 @@ def home():
 @app.route("/signup", methods=["POST", "GET"])
 @app.route("/login", methods=["POST", "GET"])
 def login():
+    # Check if user is already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+
     is_signup = request.path.endswith('signup') # Determine if linked straight to signup
     login_form = forms.LoginForm()
     signup_form = forms.SignupForm()
@@ -80,6 +84,10 @@ def login():
             return redirect(url_for('dashboard'))
         else:
             login_form.login.errors.append('Incorrect account details.')
+
+    # If login fails with errors, return to login form
+    elif not login_form.validate_on_submit() and request.method == 'POST':
+        return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=False)
 
     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup)
 
