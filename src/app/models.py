@@ -11,6 +11,7 @@ class Users(db.Model, UserMixin):
   username = db.Column(db.String(20), unique=True, nullable=False) # Usernames are unique
   email = db.Column(db.String(320), unique=True, nullable=False) # Emails are also unique (maximum determined from physical maximum researched)
   password = db.Column(db.String(80), nullable=False)
+  gold = db.Column(db.BigInteger, default=0, nullable=False) # User's currency
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # User account creation date
 
   posts = db.relationship('Posts', backref='poster', lazy='dynamic', foreign_keys='Posts.posterID') # Link user to posts they made
@@ -53,6 +54,7 @@ class Posts(db.Model):
   completed = db.Column(db.Boolean, nullable=False, default=False) # If a quest is completed
   title = db.Column(db.Text, nullable=False) # Title of the quest
   description = db.Column(db.Text, nullable=False) # Description of the quest
+  reward = db.Column(db.BigInteger, nullable=False)
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # Post creation date
   claimDate = db.Column(db.DateTime, nullable=True) # Current claim's start date
 
