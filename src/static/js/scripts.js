@@ -10,6 +10,9 @@ $(document).ready(function() {
     delay: 1500  // Delay in milliseconds
   }).toast('show');
 
+  // Initialise Bootstrap dropdowns and other events
+  handle_dropdownMenu()
+
   // Check for valid password on signup form
   //$('#signup-password-input').keyup(checkPass)
 });
@@ -19,6 +22,29 @@ function swapLoginForm() {
   $('#login-form-container').toggleClass('hidden');
   $('#signup-form-container').toggleClass('hidden');
 }
+
+// Handle dropdown menu
+function handle_dropdownMenu() {
+  // Toggle dropdown visibility when clicking button
+  $('.dropdown-toggle').click(function(event) {
+    event.stopPropagation(); // Prevent click event from bubbling up (and triggering event to close menu)
+
+    // Hide any other dropdown menus (only have one open at a time)
+    let $dropdownMenu = $(this).next('.dropdown-menu');
+    $('.dropdown-menu').not($dropdownMenu).hide();
+
+    $dropdownMenu.toggle();
+  });
+
+  // Close dropdown when clicking anywhere on the page
+  $(document).click(function(event) {
+    let $target = $(event.target);
+    if (!$target.closest('.dropdown').length) {
+      $('.dropdown-menu').hide();
+    }
+  });
+}
+
 
 // Redudent for now, may be used in future
 function checkPass() {

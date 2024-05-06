@@ -91,6 +91,7 @@ a.link-mute {
     display: block;
 }
 
+
 /* Toast */
 #toast-container {
     /* Position the toast container bottom right of page */
@@ -120,6 +121,7 @@ a.link-mute {
     color:black;
 }
 
+
 /* Login/Signup Form */
 #login-form input,
 #signup-form input {
@@ -135,11 +137,39 @@ a.link-mute {
     margin-top: -10px; /* Pull form error up to the field input */
 }
 
+/* DEPRICATED STYLING
 #signup-password-errors ul {
-    padding-left: 20px;  /* Add padding to the list for better alignment */
-    list-style-type: disc;  /* Optional: style list bullets */
+    padding-left: 20px;  /* Add padding to the list for better alignment *\/
+    list-style-type: disc;  /* Optional: style list bullets *\/
 }
 
 #signup-password-errors li {
-    margin-bottom: 5px;  /* Space out the list items */
+    margin-bottom: 5px;  /* Space out the list items *\/
+} */
+
+
+/* Dropdown menu styling */
+button.btn.dropdown-toggle {
+    padding: 0 0 0 0.5rem; /* Remove padding around dropdown button */
+}
+
+.dropdown-menu {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem; /* Rounded corners */
+    padding: 0; /* No padding inside the menu */
+    position: absolute;
+    top: 105%; /* Position below the button */
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+.dropdown-menu > a.dropdown-item {
+    padding: 0.5rem 1rem; /* Padding for menu items */
+    display: block; /* Display as block for full width */
+    color: #333;
+}
+
+.dropdown-menu > a.dropdown-item:hover {
+    background-color: #f0f0f0; /* Hover background color */
+    color: #555; /* Hover text color */
 }
