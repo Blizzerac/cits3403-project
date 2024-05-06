@@ -80,7 +80,8 @@ def leaderboard():
 
 @app.route("/search")
 def search():
-    return render_template("search.html")
+    searching_form = forms.SearchForm()
+    return render_template("search.html", searching_form=searching_form)
 
 @app.route("/posting", methods=["POST", "GET"])
 def posting():

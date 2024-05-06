@@ -67,3 +67,14 @@ class PostForm(FlaskForm):
     submit = SubmitField("Submit", 
     render_kw={"class": "btn btn-success rounded disabled"},
     id="submit-post")
+
+class SearchForm(FlaskForm):
+    post_search_name = StringField(
+        'Search for ReQuest', 
+        validators=[InputRequired(), Length(min=5, max=48)], 
+        render_kw={"placeholder": "Track down gold atop Mount Dragon", "class": "form-control form-control-lg"},
+        id="search-input")
+
+    submit = SubmitField("Submit", 
+    render_kw={"class": "btn btn-success rounded"},
+    id="submit-search")
