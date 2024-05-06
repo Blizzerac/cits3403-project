@@ -35,59 +35,56 @@ def login():
     login_form = forms.LoginForm()
     signup_form = forms.SignupForm()
 
-    # If signup form submitted
-    if signup_form.validate_on_submit():
-        existing_user = Users.query.filter_by(username=signup_form.username.data).first()
-        existing_email = Users.query.filter_by(email=signup_form.email.data).first()
+    if request.method == 'POST':
+        # If signup form submitted
+        if signup_form.validate_on_submit():
+            existing_user = Users.query.filter_by(username=signup_form.username.data).first()
+            existing_email = Users.query.filter_by(email=signup_form.email.data).first()
 
-        # Check for existing users
-        if existing_user:
-            signup_form.username.errors.append('Username is already taken.')
-        if existing_email:
-            signup_form.email.errors.append('An account with this email already exists.')
+            # Check for existing users
+            if existing_user:
+                signup_form.username.errors.append('Username is already taken.')
+            if existing_email:
+                signup_form.email.errors.append('An account with this email already exists.')
 
-        if not existing_user and not existing_email:
-            hashed_pass = bcrypt.generate_password_hash(signup_form.password.data).decode('utf-8')
-            new_user = Users(username=signup_form.username.data, email=signup_form.email.data, password=hashed_pass)
-            db.session.add(new_user)
-            # Try commit new user to database.
-            try:
-                db.session.commit()
-                login_user(new_user,remember=False) # Assuming dont remember them
-                flash('Account created successfully!', 'success')
-                return redirect(url_for('home'))
-            # If failed, rollback database and warn user.
-            except Exception as e:
-                db.session.rollback()
-                if debug:
-                    flash('Error adding user to database. {}'.format(e), 'danger')
-                else: 
-                    flash('Error adding user to database.', 'danger')
+            if not existing_user and not existing_email:
+                hashed_pass = bcrypt.generate_password_hash(signup_form.password.data).decode('utf-8')
+                new_user = Users(username=signup_form.username.data, email=signup_form.email.data, password=hashed_pass)
+                db.session.add(new_user)
+                # Try commit new user to database.
+                try:
+                    db.session.commit()
+                    login_user(new_user,remember=False) # Assuming dont remember them
+                    flash('Account created successfully!', 'success')
+                    return redirect(url_for('home'))
+                # If failed, rollback database and warn user.
+                except Exception as e:
+                    db.session.rollback()
+                    if debug:
+                        flash('Error adding user to database. {}'.format(e), 'danger')
+                    else: 
+                        flash('Error adding user to database.', 'danger')
+        
+        # If login form submitted
+        elif login_form.validate_on_submit():
+            user_input = login_form.login.data
+            # Determine if the input is an email or username
+            if "@" in user_input:
+                user = Users.query.filter_by(email=user_input).first()
+            else:
+                user = Users.query.filter_by(username=user_input).first()
 
-    # If signup form submission fails with errors, return to signup form
-    elif not signup_form.validate_on_submit() and request.method == 'POST':
-        return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=True)
-    
-    # If login form submitted
-    if login_form.validate_on_submit():
-        user_input = login_form.login.data
-        # Determine if the input is an email or username
-        if "@" in user_input:
-            user = Users.query.filter_by(email=user_input).first()
-        else:
-            user = Users.query.filter_by(username=user_input).first()
+            # Check password hash and login
+            if user and bcrypt.check_password_hash(user.password, login_form.password.data):
+                login_user(user, remember=login_form.remember_me.data)
+                flash('Logged in successfully!', 'success')
+                return redirect(url_for('dashboard'))
+            else:
+                login_form.login.errors.append('Incorrect account details.')
 
-        # Check password hash and login
-        if user and bcrypt.check_password_hash(user.password, login_form.password.data):
-            login_user(user, remember=login_form.remember_me.data)
-            flash('Logged in successfully!', 'success')
-            return redirect(url_for('dashboard'))
-        else:
-            login_form.login.errors.append('Incorrect account details.')
-
-    # If login fails with errors, return to login form
-    elif not login_form.validate_on_submit() and request.method == 'POST':
-        return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=False)
+        # # If login fails with errors, return to login form
+        # elif not login_form.validate_on_submit() and request.method == 'POST':
+        #     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=False)
 
     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup)
 

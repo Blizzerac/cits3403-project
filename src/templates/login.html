@@ -6,7 +6,7 @@
 <div class="col-md-5 rounded form-container {{ 'hidden' if is_signup }}" id="login-form-container">
   <fieldset>
     <legend class="text-center" id="legend"><span class="toggle-login">Sign-up</span> | <b>Login</b></legend>
-    <form method='POST' id='login-form' action=''>
+    <form method='POST' id='login-form' action='/login'>
       {{ login_form.hidden_tag() }}
       <div>
         {{ login_form.login.label }} <br>
@@ -20,11 +20,13 @@
         {{ login_form.remember_me() }} {{ login_form.remember_me.label }}
       </div>
       <div class="d-flex justify-content-center">
-        {{ login_form.submit() }}
+        {{ login_form.submit(id='login-submit-button') }}
       </div>
+      {% if not is_signup %}
       {% for error in login_form.login.errors %}
-          <div class="form-error alert alert-danger">{{ error }}</div>
-        {% endfor %}
+      <div class="form-error alert alert-danger">{{ error }}</div>
+      {% endfor %}
+      {% endif %}
     </form>
   </fieldset>
 </div>
@@ -32,29 +34,35 @@
 <div class="col-md-5 rounded form-container {{ 'hidden' if not is_signup }}" id="signup-form-container">
   <fieldset>
     <legend class="text-center" id="legend"><b>Sign-up</b> | <span class="toggle-login">Login</span></legend>
-    <form method='POST' id='signup-form' action=''>
+    <form method='POST' id='signup-form' action='/signup'>
       {{ signup_form.hidden_tag() }}
       <div>
         {{ signup_form.username.label }} <br>
         {{ signup_form.username() }}
+        {% if is_signup %}
         {% for error in signup_form.username.errors %}
           <div class="form-error alert alert-danger">{{ error }}</div>
         {% endfor %}
+        {% endif %}
       </div>
       <div>
         {{ signup_form.email.label }} <br>
         {{ signup_form.email() }}
+        {% if is_signup %}
         {% for error in signup_form.email.errors %}
           <div class="form-error alert alert-danger">{{ error }}</div>
         {% endfor %}
+        {% endif %}
       </div>
       <div>
         {{ signup_form.password.label }} <br>
         {{ signup_form.password(id='signup-password-input') }}
         <!-- <div id="password-errors" class="form-error"></div> -->
+        {% if is_signup %}
         {% for error in signup_form.password.errors %}
           <div class="form-error alert alert-danger">{{ error }}</div>
         {% endfor %}
+        {% endif %}
       </div>
       <div class="d-flex justify-content-center">
         {{ signup_form.submit(id='signup-submit-button') }}
