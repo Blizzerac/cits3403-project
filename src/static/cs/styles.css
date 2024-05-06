@@ -162,6 +162,12 @@ a.link-mute {
     font-weight: bold;
 }
 
+#list-of-posts {
+    position: absolute;
+    top: 40%;
+    background-color: brown;
+}
+
 /* CAROUSEL CUSTOMISATION
 -------------------------------------------------- */
 /* Carousel base class */

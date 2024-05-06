@@ -81,7 +81,18 @@ def leaderboard():
 @app.route("/search")
 def search():
     searching_form = forms.SearchForm()
-    return render_template("search.html", searching_form=searching_form)
+
+    # example post data, hardcoded for now
+    posts = [
+        {"title": "Post 1", "description": "Description of post 1"},
+        {"title": "Post 2", "description": "Description of post 2"},
+        {"title": "Post 3", "description": "Description of post 3"},
+        {"title": "Post 4", "description": "Description of post 4"},
+        {"title": "Post 5", "description": "Description of post 5"},
+        {"title": "Post 6", "description": "Description of post 6"}
+    ]
+
+    return render_template("search.html", searching_form=searching_form, posts=posts)
 
 @app.route("/posting", methods=["POST", "GET"])
 def posting():
