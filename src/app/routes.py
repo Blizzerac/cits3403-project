@@ -89,7 +89,7 @@ def search():
         {"title": "Post 3", "description": "Description of post 3"},
         {"title": "Post 4", "description": "Description of post 4"},
         {"title": "Post 5", "description": "Description of post 5"},
-        {"title": "Post 6", "description": "Description of post 6"}
+        {"title": "Post 6", "description": "Description of post 6. Further description of post 6 to illustrate the dynamic nature of this div"}
     ]
 
     return render_template("search.html", searching_form=searching_form, posts=posts)

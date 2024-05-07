@@ -25,10 +25,10 @@
   <h1 class="text-center">All Posts</h1>
   <h2>
       {% for post in posts %}
-          <p>
-              <h3>{{ post.title }}</h3>
+          <div class ="border p-4 rounded bg-success">
+              <h3 class="underline">{{ post.title }}</h3>
               <p>{{ post.description }}</p>
-          </p>
+          </div>
       {% endfor %}
   </h2>
 </div>

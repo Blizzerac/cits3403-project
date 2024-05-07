@@ -133,6 +133,8 @@ a.link-mute {
     left: 50%;
     transform: translate(-50%, -50%);
     background-image: url("../img/post-board.jpg");
+    background-size: cover;
+    background-position: center;
 }
 
 #search-form {
@@ -141,7 +143,9 @@ a.link-mute {
     top: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-image: url("../img/post-board.jpg");     /*change eventually*/
+    background-image: url("../img/plank.jpg");
+    background-size: cover;
+    background-position: center;
 }
 
 #search-form input {
@@ -165,7 +169,17 @@ a.link-mute {
 #list-of-posts {
     position: absolute;
     top: 40%;
-    background-color: brown;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    background-image: url("../img/plank.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+#list-of-posts div {
+    margin-top: 20px;
 }
 
 /* CAROUSEL CUSTOMISATION
