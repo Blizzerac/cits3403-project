@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block uniqueStyles %}{% endblock %}
-{% block title %}Quester's Cache || New ReQuest{% endblock %}
+{% block title %}Quester's Cache || Search ReQuests{% endblock %}
 {% block content %}
 
 <div class="col-sm-6 border p-4 rounded" id="search-form">
@@ -23,7 +23,6 @@
 
 <div class="offset-sm-2 col-sm-8" id="list-of-posts">
   <h1 class="text-center">All Posts</h1>
-  <h2>
       {% for post in posts %}
           <div class ="border p-4 rounded bg-success">
               <h2 class="underline">{{ post.title }}</h2>
@@ -32,7 +31,6 @@
               <button class="btn btn-primary">Complete ReQuest!</button>
           </div>
       {% endfor %}
-  </h2>
 </div>
 
 {% endblock %}  
