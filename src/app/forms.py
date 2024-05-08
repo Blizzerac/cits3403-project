@@ -1,6 +1,6 @@
 from app.models import Users # The user table in the database
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import InputRequired, Length, ValidationError, Email
 import re
 
@@ -31,14 +31,14 @@ def pass_uppercase(form, field):
 
 
 class SignupForm(FlaskForm):
-  username = StringField('Username', validators=[InputRequired(), noSpaces, Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-  email = StringField('Email', validators=[InputRequired(), Length(max=320), Email(message='Invalid email address.')], render_kw={"placeholder": "Email"})
-  password = PasswordField('Password', validators=[InputRequired(), pass_characters, pass_digit, pass_uppercase, Length(min=5, max=25)], render_kw={"placeholder": "Password"})
+  username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+  email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email address.')], render_kw={"placeholder": "Email"})
+  password = PasswordField('Password', validators=[InputRequired(), Length(min=5, max=25)], render_kw={"placeholder": "Password"})
   submit = SubmitField("Register")
 
   def validate_username(self, username):
-    existing_user = Users.query.filter_by(username=username.data).first()
-    if existing_user:
+   existing_user = Users.query.filter_by(username=username.data).first()
+   if existing_user:
       raise ValidationError("That username already exists. Please choose a different one.")
 
   def validate_email(self, email):
@@ -47,7 +47,25 @@ class SignupForm(FlaskForm):
       raise ValidationError("An account with this email already exists. Please use a different email.")
 
 class LoginForm(FlaskForm):
-  login = StringField('Username or Email', validators=[InputRequired(), username_or_email], render_kw={"placeholder": "Username/Email"})
-  password = PasswordField('Password', validators=[InputRequired(), Length(min=5, max=25)], render_kw={"placeholder": "Password"})
-  remember_me = BooleanField('Remember me')
-  submit = SubmitField("Login")
+    login = StringField('Username or Email', validators=[InputRequired(), username_or_email], render_kw={"placeholder": "Username/Email"})
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=5, max=25)], render_kw={"placeholder": "Password"})
+    remember_me = BooleanField('Remember me')
+    submit = SubmitField("Login")
+
+
+class PostForm(FlaskForm):
+    post_name = TextAreaField(
+        'Name of ReQuest', 
+        validators=[InputRequired(), Length(min=5, max=48)], 
+        render_kw={"placeholder": "Track down gold atop Mount Dragon", "class": "form-control form-control-lg"},
+        id="first-post-input")
+
+    post_description = TextAreaField(
+        'Description', 
+        validators=[InputRequired(), Length(min=5, max=1000)], 
+        render_kw={"placeholder": "I have left my gold atop Mount Dragon and need it back!", "class": "form-control form-control-lg", "rows": 10},
+        id="second-post-input")
+
+    submit = SubmitField("Submit", 
+    render_kw={"class": "btn btn-success rounded disabled"},
+    id="submit-post")

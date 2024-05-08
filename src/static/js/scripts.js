@@ -1,6 +1,7 @@
 // Set verbosity
 const verbose = true;
 
+// When page is loaded
 $(document).ready(function() {
   // Change signup to login form
   $('.toggle-login').click(swapLoginForm)
@@ -13,6 +14,9 @@ $(document).ready(function() {
   // Initialise Bootstrap dropdowns and other events
   handle_dropdownMenu()
 
+  // Handle quest post form
+  handle_questPost()
+
   // Check for valid password on signup form
   //$('#signup-password-input').keyup(checkPass)
 });
@@ -22,6 +26,7 @@ function swapLoginForm() {
   $('#login-form-container').toggleClass('hidden');
   $('#signup-form-container').toggleClass('hidden');
 }
+
 
 // Handle dropdown menu
 function handle_dropdownMenu() {
@@ -43,6 +48,36 @@ function handle_dropdownMenu() {
       $('.dropdown-menu').hide();
     }
   });
+}
+
+
+// Handle quest post form
+function handle_questPost() {
+  // Disable initially
+  $('#submit-post').prop('disabled', true);
+
+  // If refreshing page and keeping inputs, checks inputs
+  questPost_checkFields();
+
+  // Call checkFields() when  input fields change
+  $('#first-post-input, #second-post-input').on('input', checkFields);
+}
+
+// Function to check if inputs for posting are filled
+function questPost_checkFields() {
+  let field1 = $('#first-post-input').val();
+  let field2 = $('#second-post-input').val();
+
+  // Minimum length of 5 for each
+  if ((field1.length >=5) && (field2.length >=5)) {
+      $('#submit-post').prop('disabled', false);
+      $('#submit-post').removeClass('disabled');
+      $('#disabled-info').addClass('hidden');
+  } else {
+      $('#submit-post').prop('disabled', true);
+      $('#submit-post').addClass('disabled');
+      $('#disabled-info').removeClass('hidden');
+  }
 }
 
 
