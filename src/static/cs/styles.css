@@ -42,8 +42,8 @@ body {
     display: none;
 }
 
-#login-form input {
-    margin-bottom: 20px;
+.underline {
+    text-decoration: underline;
 }
 
 a.link-mute {
@@ -83,13 +83,19 @@ a.link-mute {
     fill: white;
 }
 
-#log-in-form {
-    background-image: url("../img/bg-woodplank.png");
+.form-container {
+    background-image: url("../img/bg-woodplank-scaled.png");
     color: white;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    border-image-slice: 60 60 60 60;
+    border-image-width: 10px 10px 10px 10px;
+    border-image-outset: 0px 0px 0px 0px;
+    border-image-repeat: stretch stretch;
+    border-image-source: url("../img/border-image.png");
+    border-style: solid;
 }
 
 #leaderboard {
@@ -118,14 +124,93 @@ a.link-mute {
 }
 /* custom buttons for the leaderboard pagination to match style */
 
-	
+
 .account-link {
     display: block;
 }
 
-.underline {
+/* Toast */
+#toast-container {
+    /* Position the toast container bottom right of page */
+    position: fixed;
+    min-height: 200px;
+    bottom: 0;
+    right: 0;
+    z-index: 1050;
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.toast {
+    min-width: 200px;
+    align-items: center;
+    text-align: center;
+}
+
+.alert-warning {
+    background-color: lightcoral;
+    color:black;
+}
+
+.alert-success {
+    background-color: lightgreen;
+    color:black;
+}
+
+
+/* Login/Signup Form */
+#login-form input,
+#signup-form input {
+    margin-bottom: 20px;
+}
+
+.toggle-login {
+    cursor: pointer;
     text-decoration: underline;
 }
+
+.form-error {
+    margin-top: -10px; /* Pull form error up to the field input */
+}
+
+/* DEPRICATED STYLING
+#signup-password-errors ul {
+    padding-left: 20px;  /* Add padding to the list for better alignment *\/
+    list-style-type: disc;  /* Optional: style list bullets *\/
+}
+
+#signup-password-errors li {
+    margin-bottom: 5px;  /* Space out the list items *\/
+} */
+
+
+/* Dropdown menu styling */
+button.btn.dropdown-toggle {
+    padding: 0 0 0 0.5rem; /* Remove padding around dropdown button */
+}
+
+.dropdown-menu {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem; /* Rounded corners */
+    padding: 0; /* No padding inside the menu */
+    position: absolute;
+    top: 105%; /* Position below the button */
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+.dropdown-menu > a.dropdown-item {
+    padding: 0.5rem 1rem; /* Padding for menu items */
+    display: block; /* Display as block for full width */
+    color: #333;
+}
+
+.dropdown-menu > a.dropdown-item:hover {
+    background-color: #f0f0f0; /* Hover background color */
+    color: #555; /* Hover text color */
+}
+
 
 .tutorial-images {
     width: 500px;
@@ -239,7 +324,7 @@ letter-spacing: -.05rem;
   }
 
 @media (min-width: 62em) {
-.featurette-heading {
-    margin-top: 7rem;
-}
+    .featurette-heading {
+        margin-top: 7rem;
+    }
 }

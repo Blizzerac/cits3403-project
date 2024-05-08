@@ -3,31 +3,10 @@
 {% block title %}Questers Cache || Login{% endblock %}
 {% block content %}
 
-<!-- <div class="col-md-5 border p-4 rounded" id="log-in-form">
+<div class="col-md-5 rounded form-container {{ 'hidden' if is_signup }}" id="login-form-container">
   <fieldset>
-    <legend class="text-center" id="legend">Login</legend>
-    <form method='POST' id='login-form' action="/submit_login">
-      <label for="email" class="hidden account-creation" id="email-label">Email:</label>
-      <input name="email" class="form-control form-control-lg hidden account-creation" id="email-input" placeholder="email@domain.com"  type="email" required>
-      <label for="username">Username:</label>
-      <input name="username" class="form-control form-control-lg" placeholder="(re)Quester123" required>
-      <label for="password">Password:</label>
-      <input name="password" class="form-control form-control-lg" placeholder="supersecretpassword" type="password" required>
-      <label for="password-confirm" class="hidden account-creation">Confirm Password:</label>
-      <input name="password-confirm" class="form-control form-control-lg hidden account-creation" placeholder="supersecretpassword" type="password" required>
-      <a href="password.html" class="account-link">Forgot password?</a>
-      <div class="d-flex justify-content-center">
-        <button type="submit" class="btn btn-dark">Submit</button>
-        <button type="button" class="btn btn-primary" id="create-account-button">Create New Account</button>
-      </div>
-    </form>
-  </fieldset>
-</div> -->
-
-<div class="col-md-5 border p-4 rounded hidden" id="log-in-form">
-  <fieldset>
-    <legend class="text-center" id="legend">Login</legend>
-    <form method='POST' id='login-form' action=''>
+    <legend class="text-center" id="legend"><span class="toggle-login">Sign-up</span> | <b>Login</b></legend>
+    <form method='POST' id='login-form' action='/login'>
       {{ login_form.hidden_tag() }}
       <div>
         {{ login_form.login.label }} <br>
@@ -41,31 +20,52 @@
         {{ login_form.remember_me() }} {{ login_form.remember_me.label }}
       </div>
       <div class="d-flex justify-content-center">
-        {{ login_form.submit() }}
+        {{ login_form.submit(id='login-submit-button') }}
       </div>
+      {% if not is_signup %}
+      {% for error in login_form.login.errors %}
+      <div class="form-error alert alert-danger">{{ error }}</div>
+      {% endfor %}
+      {% endif %}
     </form>
   </fieldset>
 </div>
 
-<div class="col-md-5 border p-4 rounded" id="log-in-form">
+<div class="col-md-5 rounded form-container {{ 'hidden' if not is_signup }}" id="signup-form-container">
   <fieldset>
-    <legend class="text-center" id="legend">Signup</legend>
-    <form method='POST' id='login-form' action="">
+    <legend class="text-center" id="legend"><b>Sign-up</b> | <span class="toggle-login">Login</span></legend>
+    <form method='POST' id='signup-form' action='/signup'>
       {{ signup_form.hidden_tag() }}
       <div>
         {{ signup_form.username.label }} <br>
         {{ signup_form.username() }}
+        {% if is_signup %}
+        {% for error in signup_form.username.errors %}
+          <div class="form-error alert alert-danger">{{ error }}</div>
+        {% endfor %}
+        {% endif %}
       </div>
       <div>
         {{ signup_form.email.label }} <br>
         {{ signup_form.email() }}
+        {% if is_signup %}
+        {% for error in signup_form.email.errors %}
+          <div class="form-error alert alert-danger">{{ error }}</div>
+        {% endfor %}
+        {% endif %}
       </div>
       <div>
         {{ signup_form.password.label }} <br>
-        {{ signup_form.password() }}
+        {{ signup_form.password(id='signup-password-input') }}
+        <!-- <div id="password-errors" class="form-error"></div> -->
+        {% if is_signup %}
+        {% for error in signup_form.password.errors %}
+          <div class="form-error alert alert-danger">{{ error }}</div>
+        {% endfor %}
+        {% endif %}
       </div>
       <div class="d-flex justify-content-center">
-        {{ signup_form.submit() }}
+        {{ signup_form.submit(id='signup-submit-button') }}
       </div>
     </form>
   </fieldset>

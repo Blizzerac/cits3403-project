@@ -1,46 +1,70 @@
 // Set verbosity
 const verbose = true;
 
-// Password requirements (global so only gotten once)
-let passRequirements = null;
-
-// Form change login/account creation
+// When page is loaded
 $(document).ready(function() {
-  $("#create-account-button").click(function() {
-      const creatingAccount = ($(this).text() === "Create New Account");
-      const loginForm = $("#login-form");
-      const legend = $("#legend");
-      const creationElements = $(".account-creation");
+  // Change signup to login form
+  $('.toggle-login').click(swapLoginForm)
 
-      if (creatingAccount) {
-          loginForm.attr("action", "/submit_new_account");
-          creationElements.removeClass("hidden");
-          legend.text("Account Creation");
-          $(this).text("Back to Login").attr("id", "login-button");
-      } else {
-          loginForm.attr("action", "/submit_login");
-          creationElements.addClass("hidden");
-          legend.text("Login");
-          $(this).text("Create New Account").attr("id", "create-account-button");
-      }
-  });
+  // Show the toast if any exist
+  $('.toast').toast({
+    delay: 1500  // Delay in milliseconds
+  }).toast('show');
+
+  // Initialise Bootstrap dropdowns and other events
+  handle_dropdownMenu()
+
+  // Handle quest post form
+  handle_questPost()
+
+  // Check for valid password on signup form
+  //$('#signup-password-input').keyup(checkPass)
 });
 
-// Submit button disabling and enabling for posting
-$(document).ready(function(){
+// Swap between account login and account creation
+function swapLoginForm() {
+  $('#login-form-container').toggleClass('hidden');
+  $('#signup-form-container').toggleClass('hidden');
+}
 
+
+// Handle dropdown menu
+function handle_dropdownMenu() {
+  // Toggle dropdown visibility when clicking button
+  $('.dropdown-toggle').click(function(event) {
+    event.stopPropagation(); // Prevent click event from bubbling up (and triggering event to close menu)
+
+    // Hide any other dropdown menus (only have one open at a time)
+    let $dropdownMenu = $(this).next('.dropdown-menu');
+    $('.dropdown-menu').not($dropdownMenu).hide();
+
+    $dropdownMenu.toggle();
+  });
+
+  // Close dropdown when clicking anywhere on the page
+  $(document).click(function(event) {
+    let $target = $(event.target);
+    if (!$target.closest('.dropdown').length) {
+      $('.dropdown-menu').hide();
+    }
+  });
+}
+
+
+// Handle quest post form
+function handle_questPost() {
   // Disable initially
   $('#submit-post').prop('disabled', true);
 
   // If refreshing page and keeping inputs, checks inputs
-  checkFields();
+  questPost_checkFields();
 
   // Call checkFields() when  input fields change
   $('#first-post-input, #second-post-input').on('input', checkFields);
-});
+}
 
 // Function to check if inputs for posting are filled
-function checkFields() {
+function questPost_checkFields() {
   let field1 = $('#first-post-input').val();
   let field2 = $('#second-post-input').val();
 
@@ -57,77 +81,48 @@ function checkFields() {
 }
 
 
-// Wait for page load and add listener event for form submission:
-document.addEventListener('DOMContentLoaded', () => {
-  if (verbose) { console.log("Page loaded!"); }
+// Redudent for now, may be used in future
+function checkPass() {
+  let password = $(this).val();
+  let errors = [];
 
-  // Get password requirements from server (TO DO LATER)
-  try {
-    passRequirements = get_passRequirements();
-  } catch (error) {
-    // Handle failure of the request
-    console.log('ERROR:', error.message);
+  // Check for length requirements (min=5, max=25)
+  if (password.length < 5 && password.length > 2) {
+    errors.push("Password must be between 5-25 characters long.");
   }
 
-  // Add event listener for login submission
-  document.getElementById('loginForm').addEventListener('submit',handle_login)
-});
-
-// Handle login submission
-function handle_login(event) {
-  event.preventDefault(); // Prevent default form submission
-
-  const form      = document.getElementById('loginForm');
-  const formData  = new FormData(form);
-
-  const username  = formData.get('username');
-  const pass      = formData.get('password');
-
-  // If the password matches requirements, submit the account for validation from server.
-  if (check_passRequirements(pass)) {
-    // Server stuff
-    console.log("Validate user login request...")
+  // Check for allowed characters: letters, numbers, and specific special characters
+  if (!/^[a-zA-Z0-9!?+_\-]+$/.test(password)) {
+    errors.push("Password can only include letters, numbers, and the following special characters: !, ?, -, +, _.");
   }
 
-  else {
-    alert("Password Failed Requirements!");
-  }
-}
-
-
-// Obtain current password requirements from server
-function get_passRequirements() {
-  // Throw new error on failure (example)
-  if (false) {
-    throw new Error("Failed to get password requirements from sever.");
+  // Check for numbers
+  if (!/[0-9]/.test(password)) {
+    errors.push("Password must include at least one number.");
   }
 
-  const req = {
-    'maxLength': 10,
-    'minLength': 5,
-    'regex': '^[a-zA-Z0-9?_!-]*$'
-  };
-
-  return req;
-}
-
-// Ensure password submitted has the correct requirements
-function check_passRequirements(pass) {
-  // Ensure password requirements are obtained correctly.
-  if (passRequirements === null || Object.keys(passRequirements).length <= 1) {
-    console.log("Password requirements incorrectly set!");
-    if (verbose) { console.log("Password requirements:", passRequirements); }
-    return false; 
+  // Check for uppercase letters
+  if (!/[A-Z]/.test(password)) {
+    errors.push("Password must include at least one uppercase letter.");
   }
 
-  // Ensure correct password length
-  if (pass.length > passRequirements['minLength'] && pass.length < passRequirements['maxLength']) {
-    // Check against current password regex requirements
-    const regex = new RegExp(passRequirements['regex']);
-    if (regex.test(pass)) {
-      return true;
-    }
-  }
+  // Display errors
+  let errorContainer = $('#password-errors');
+  errorContainer.html(''); // Clear previous errors
+  if (errors.length > 0) {
+    var errorList = $('<ul>'); // Create an unordered list
+    
+    $.each(errors, function(i, error) {
+      errorList.append($('<li>').text(error)); // Append each error as a list item
+    });
+    errorContainer.append(errorList);
+    errorContainer.removeClass('alert-success').addClass('alert-danger');
 
-  return false;
+    // Disable register button
+    $('#signup-submit-button').prop('disabled', true)
+
+  } else {
+    // Enable register button
+    $('#signup-submit-button').prop('disabled', false)
+  }
 }
