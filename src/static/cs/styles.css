@@ -66,13 +66,6 @@ a.link-mute {
     height: 64px;
 }
 
-/* .bg-village {
-    background-image: url("../img/bg-village.jpeg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: top;
-} */
-
 .navbar-svg-icon {
     width: 42px;
     margin-left: 6px;
@@ -134,12 +127,21 @@ a.link-mute {
 
 /*general post-form styling*/
 #post-form {
-    color: white;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     background-image: url("../img/post-board.jpg");
+    background-size: cover;
+    background-position: center;
+    margin-top: 30px;
+}
+
+#search-form {
+    background-image: url("../img/plank.jpg");
+    background-size: cover;
+    background-position: center;
+    margin-top: 30px;
+}
+
+#search-form input {
+    margin-top: 10px;
 }
 
 /*styling of input areas for post-form*/
@@ -154,6 +156,15 @@ a.link-mute {
     color: red;
     margin-top: 20px;
     font-weight: bold;
+}
+
+#list-of-posts {
+    padding: 20px;
+    border-radius: 8px;
+    background-image: url("../img/plank.jpg");
+    background-size: cover;
+    background-position: center;
+    margin-top: 30px;
 }
 
 /* CAROUSEL CUSTOMISATION
