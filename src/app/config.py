@@ -11,3 +11,5 @@ class Config(object):
   # Set local secret key with
   # BASH: echo 'export FLASK_SECRET_KEY="your_secret_key_here"' >> ~/.bashrc && source ~/.bashrc
   # WINDOWS CMD: set FLASK_SECRET_KEY=your_secret_key_here
+  
+  # with dotenv, you can instead create a .env file and set a local secret key in the same style as Windows
