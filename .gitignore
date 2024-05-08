@@ -1,5 +1,6 @@
 env
-src/__pycache__
-app/__pycache__
+.env
+**/__pycache__
 *.pyc
 *.db
+src/logs
