@@ -1,4 +1,4 @@
 # Imports
-from app import app
+from app import models
 
 # Main application code

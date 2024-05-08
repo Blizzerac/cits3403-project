@@ -1,7 +1,36 @@
 {% extends "base.html" %}
 {% block title %}Questers Cache{% endblock %}
 {% block content %}
-
-
-
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div id="leaderboard" class="mt-4">
+        <h2 class="text-center">Leaderboard</h2>
+        <table class="table text-center">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>User</th>
+              <th>Quests Complete</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ (current_page - 1) * page_size + loop.index }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.quests_complete }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="pagination mt-4 d-flex justify-content-center align-items-center">
+          <a href="{% if start_index > 0 %}?page={{ prev_page }}{% endif %}" class="btn btn-success{% if start_index == 0 %} disabled{% endif %}">Previous</a>
+          <div class="col-md-auto text-center mx-md-3">Page {{ current_page }} of {{ total_pages }}</div>
+          <a href="{% if end_index < total_users %}?page={{ next_page }}{% endif %}" class="btn btn-success{% if end_index == total_users %} disabled{% endif %}">Next</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

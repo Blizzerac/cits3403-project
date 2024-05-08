@@ -4,7 +4,7 @@ const verbose = true;
 // Password requirements (global so only gotten once)
 let passRequirements = null;
 
-// Form change
+// Form change login/account creation
 $(document).ready(function() {
   $("#create-account-button").click(function() {
       const creatingAccount = ($(this).text() === "Create New Account");
@@ -25,6 +25,36 @@ $(document).ready(function() {
       }
   });
 });
+
+// Submit button disabling and enabling for posting
+$(document).ready(function(){
+
+  // Disable initially
+  $('#submit-post').prop('disabled', true);
+
+  // If refreshing page and keeping inputs, checks inputs
+  checkFields();
+
+  // Call checkFields() when  input fields change
+  $('#first-post-input, #second-post-input').on('input', checkFields);
+});
+
+// Function to check if inputs for posting are filled
+function checkFields() {
+  let field1 = $('#first-post-input').val();
+  let field2 = $('#second-post-input').val();
+
+  // Minimum length of 5 for each
+  if ((field1.length >=5) && (field2.length >=5)) {
+      $('#submit-post').prop('disabled', false);
+      $('#submit-post').removeClass('disabled');
+      $('#disabled-info').addClass('hidden');
+  } else {
+      $('#submit-post').prop('disabled', true);
+      $('#submit-post').addClass('disabled');
+      $('#disabled-info').removeClass('hidden');
+  }
+}
 
 
 // Wait for page load and add listener event for form submission:

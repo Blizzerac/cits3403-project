@@ -61,7 +61,9 @@ a.link-mute {
 }
 
 .bg-wood-nav {
-    background-color: #2e1e0b;
+    background-image: url("../img/navbar-scaled.png");
+    background-repeat: repeat-x;
+    height: 64px;
 }
 
 .quest-card, a.quest-card, a.quest-card:hover, a.quest-card:active, a.quest-card:visited {
@@ -74,13 +76,6 @@ a.link-mute {
     border-style: solid;
     background-clip: padding-box;
 }
-
-/* .bg-village {
-    background-image: url("../img/bg-village.jpeg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: top;
-} */
 
 .navbar-svg-icon {
     width: 42px;
@@ -97,6 +92,33 @@ a.link-mute {
     transform: translate(-50%, -50%);
 }
 
+#leaderboard {
+  background-image: url("../img/bg-woodplank-scaled.png");
+  background-repeat: repeat; 
+  background-size: 5%; /* background is scaled down to improve readability while still displaying wood texture */
+  padding: 20px;
+  border: 2px solid #999; 
+  border-radius: 5px; /* Set border radius to 5px for rounded corners */ 
+}
+
+#leaderboard table {
+  color: #ddd;
+}
+
+/* custom buttons for the leaderboard pagination to match style */
+.btn-custom-gray {
+    background-color: #999; 
+    color: #fff; 
+    border-color: #999; 
+}
+
+.btn-custom-gray:hover {
+    background-color: #777; 
+    border-color: #777; 
+}
+/* custom buttons for the leaderboard pagination to match style */
+
+	
 .account-link {
     display: block;
 }
@@ -114,6 +136,47 @@ a.link-mute {
     margin-top: 3rem;
 }
 
+/*general post-form styling*/
+#post-form {
+    background-image: url("../img/post-board.jpg");
+    background-size: cover;
+    background-position: center;
+    margin-top: 30px;
+}
+
+#search-form {
+    background-image: url("../img/plank.jpg");
+    background-size: cover;
+    background-position: center;
+    margin-top: 30px;
+}
+
+#search-form input {
+    margin-top: 10px;
+}
+
+/*styling of input areas for post-form*/
+#post-form input:not([type="submit"]),
+#post-form textarea {
+    margin-bottom: 15px;
+    opacity: 0.8;
+    color: black;
+}
+
+#disabled-info {
+    color: red;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+#list-of-posts {
+    padding: 20px;
+    border-radius: 8px;
+    background-image: url("../img/plank.jpg");
+    background-size: cover;
+    background-position: center;
+    margin-top: 30px;
+}
 
 /* CAROUSEL CUSTOMISATION
 -------------------------------------------------- */
