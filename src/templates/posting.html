@@ -3,26 +3,28 @@
 {% block title %}Quester's Cache || New ReQuest{% endblock %}
 {% block content %}
 
-<div class="col-md-8 col-sm-12 border p-4 rounded" id="post-form">
-  <fieldset>
-    <legend class="text-center">Post a ReQuest</legend>
-    <form method="POST" action="">
-      <div class="col-md-7 col-sm-12">
-          {{ posting_form.post_name.label(class="form-label") }}
-          {{ posting_form.post_name() }}
-      </div>
-      <div class="col-sm-12">
-          {{ posting_form.post_description.label(class="form-label") }}
-          {{ posting_form.post_description() }}
-      </div>
-      <div class="d-flex justify-content-center flex-column offset-sm-5 col-sm-2">
-        {{ posting_form.submit() }}
-      </div>
-      <div class="d-flex justify-content-center">
-        <p id="disabled-info">The ReQuest name and description must each be at least 5 characters long.</p>
-      </div>
-    </form>
-  </fieldset>
+<div class="container">
+  <div class="col-sm-12 border p-4 rounded" id="post-form">
+    <fieldset>
+      <legend class="text-center">Post a ReQuest</legend>
+      <form method="POST" action="">
+        <div class="col-md-7 col-sm-12">
+            {{ posting_form.post_name.label(class="form-label") }}
+            {{ posting_form.post_name() }}
+        </div>
+        <div class="col-sm-12">
+            {{ posting_form.post_description.label(class="form-label") }}
+            {{ posting_form.post_description() }}
+        </div>
+        <div class="d-flex justify-content-center flex-column offset-sm-5 col-sm-2">
+          {{ posting_form.submit() }}
+        </div>
+        <div class="d-flex justify-content-center">
+          <p id="disabled-info">The ReQuest name and description must each be at least 5 characters long.</p>
+        </div>
+      </form>
+    </fieldset>
+  </div>
 </div>
 
 {% endblock %}  

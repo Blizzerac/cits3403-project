@@ -143,7 +143,19 @@ def leaderboard():
 
 @flaskApp.route("/search")
 def search():
-    return render_template("search.html")
+    searching_form = forms.SearchForm()
+
+    # example post data, hardcoded for now
+    posts = [
+        {"title": "Post 1", "description": "Description of post 1", "reward": "20 gold"},
+        {"title": "Post 2", "description": "Description of post 2", "reward": "30 gold"},
+        {"title": "Post 3", "description": "Description of post 3", "reward": "250 gold"},
+        {"title": "Post 4", "description": "Description of post 4", "reward": "210 gold"},
+        {"title": "Post 5", "description": "Description of post 5", "reward": "220 gold"},
+        {"title": "Post 6", "description": "Description of post 6. Further description of post 6 to illustrate the dynamic nature of this div", "reward": "200 gold"}
+    ]
+
+    return render_template("search.html", searching_form=searching_form, posts=posts)
 
 @flaskApp.route("/posting", methods=["POST", "GET"])
 def posting():

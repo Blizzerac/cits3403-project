@@ -66,12 +66,16 @@ a.link-mute {
     height: 64px;
 }
 
-/* .bg-village {
-    background-image: url("../img/bg-village.jpeg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: top;
-} */
+.quest-card, a.quest-card, a.quest-card:hover, a.quest-card:active, a.quest-card:visited {
+    background-color: #FFF2D5;
+    border-image-slice: 10 10 10 10;
+    border-image-width: 10px 10px 10px 10px;
+    border-image-outset: 3px 3px 3px 3px;
+    border-image-repeat: stretch stretch;
+    border-image-source: url("../img/quest-border.png");
+    border-style: solid;
+    background-clip: padding-box;
+}
 
 .navbar-svg-icon {
     width: 42px;
@@ -219,12 +223,21 @@ button.btn.dropdown-toggle {
 
 /*general post-form styling*/
 #post-form {
-    color: white;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     background-image: url("../img/post-board.jpg");
+    background-size: cover;
+    background-position: center;
+    margin-top: 30px;
+}
+
+#search-form {
+    background-image: url("../img/plank.jpg");
+    background-size: cover;
+    background-position: center;
+    margin-top: 30px;
+}
+
+#search-form input {
+    margin-top: 10px;
 }
 
 /*styling of input areas for post-form*/
@@ -239,6 +252,15 @@ button.btn.dropdown-toggle {
     color: red;
     margin-top: 20px;
     font-weight: bold;
+}
+
+#list-of-posts {
+    padding: 20px;
+    border-radius: 8px;
+    background-image: url("../img/plank.jpg");
+    background-size: cover;
+    background-position: center;
+    margin-top: 30px;
 }
 
 /* CAROUSEL CUSTOMISATION
