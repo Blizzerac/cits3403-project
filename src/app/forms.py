@@ -17,24 +17,23 @@ def noSpaces(form, field):
       raise ValidationError("The username must not contain spaces.")
 
 # Password validation
-def newPassword(form, field):
-  if len(field.data) < 5 or len(field.data) > 25:
-    raise ValidationError("Password must be between 5-25 characters long.")
+def pass_characters(form, field):
+    if not re.match(r'^[a-zA-Z0-9!?+_\-]+$', field.data):
+        raise ValidationError("Password can only include letters, numbers, and the following special characters: !, ?, +, -, _.")
 
-  elif not re.match(r'^[a-zA-Z0-9!?+_\-]+$', field.data):
-    raise ValidationError("Password can only include letters, numbers, and the following special characters: !, ?, -, +, _.")
+def pass_digit(form, field):
+    if not re.search(r'[0-9]', field.data):
+        raise ValidationError("Password must include at least one number.")
 
-  elif not re.search(r'[0-9]', field.data):
-    raise ValidationError("Password must include at least one number.")
-
-  elif not re.search(r'[A-Z]', field.data):
-    raise ValidationError("Password must include at least one uppercase letter.")
+def pass_uppercase(form, field):
+    if not re.search(r'[A-Z]', field.data):
+        raise ValidationError("Password must include at least one uppercase letter.")
 
 
 class SignupForm(FlaskForm):
   username = StringField('Username', validators=[InputRequired(), noSpaces, Length(min=4, max=20)], render_kw={"placeholder": "Username"})
   email = StringField('Email', validators=[InputRequired(), Length(max=320), Email(message='Invalid email address.')], render_kw={"placeholder": "Email"})
-  password = PasswordField('Password', validators=[InputRequired(), newPassword, Length(min=5, max=25)], render_kw={"placeholder": "Password"})
+  password = PasswordField('Password', validators=[InputRequired(), pass_characters, pass_digit, pass_uppercase, Length(min=5, max=25)], render_kw={"placeholder": "Password"})
   submit = SubmitField("Register")
 
   def validate_username(self, username):
