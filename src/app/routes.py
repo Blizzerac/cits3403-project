@@ -1,10 +1,9 @@
 # Imports
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, login_user, logout_user, current_user
-from flask_bcrypt import bcrypt
 from app.models import Users # The user table in the database
 from app import models, forms
-from app import flaskApp, bcrypt, db
+from app import flaskApp, db
 from datetime import datetime
 
 # Settings
@@ -48,8 +47,8 @@ def login():
                 signup_form.email.errors.append('An account with this email already exists.')
 
             if not existing_user and not existing_email:
-                hashed_pass = bcrypt.generate_password_hash(signup_form.password.data).decode('utf-8')
-                new_user = Users(username=signup_form.username.data, email=signup_form.email.data, password=hashed_pass)
+                new_user = Users(username=signup_form.username.data, email=signup_form.email.data)
+                new_user.set_password(signup_form.password.data)
                 db.session.add(new_user)
                 # Try commit new user to database.
                 try:
@@ -63,7 +62,7 @@ def login():
                     if debug:
                         flash('Error adding user to database. {}'.format(e), 'danger')
                     else: 
-                        flash('Error adding user to database.', 'danger')
+                        flash('Failed creating an account. Please try again later or contact staff.', 'danger')
         
         # If login form submitted
         elif login_form.validate_on_submit():
@@ -75,11 +74,12 @@ def login():
                 user = Users.query.filter_by(username=user_input).first()
 
             # Check password hash and login
-            if user and bcrypt.check_password_hash(user.password, login_form.password.data):
+            if user and user.check_password(login_form.password.data):
                 login_user(user, remember=login_form.remember_me.data)
                 flash('Logged in successfully!', 'success')
                 return redirect(url_for('dashboard'))
             else:
+                # Dont inform the user if the account or password is incorrect (security flaw) - only general error
                 login_form.login.errors.append('Incorrect account details.')
 
         # # If login fails with errors, return to login form

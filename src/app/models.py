@@ -3,6 +3,7 @@ from flask_login import UserMixin
 from datetime import datetime
 from sqlalchemy import func, select
 from sqlalchemy.ext.hybrid import hybrid_property
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 # Users table to handle logins
@@ -37,6 +38,13 @@ class Users(db.Model, UserMixin):
   # Override flask's expected 'id' naming scheme
   def get_id(self):
     return str(self.userID)
+  
+  # Password handling
+  def set_password(self, password):
+    self.password = generate_password_hash(password)
+
+  def check_password(self, password):
+    return check_password_hash(self.password, password)
   
   # Console printing representation
   def __repr__(self) -> str:

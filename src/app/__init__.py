@@ -2,7 +2,6 @@
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from app.config import Config
 
@@ -15,7 +14,6 @@ flaskApp.debug = True
 
 # Initialise extensions
 db = SQLAlchemy(flaskApp)
-bcrypt = Bcrypt(flaskApp)
 migrate = Migrate(flaskApp, db)
 
 # Import routes and models at the end to avoid circular imports
