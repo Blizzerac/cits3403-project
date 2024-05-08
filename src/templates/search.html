@@ -11,8 +11,8 @@
         <form method="POST" action="">
           {{ searching_form.hidden_tag() }}
           <div class="form-group">
-              {{ searching_form.post_search_name.label() }}
-              {{ searching_form.post_search_name() }}
+              {{ searching_form.post_search_name.label }}
+              {{ searching_form.post_search_name }}
           </div>
           <div class="d-flex justify-content-center">
             {{ searching_form.submit() }}
@@ -27,7 +27,7 @@
       <div class="border p-4 rounded text-center" id="list-of-posts">
         <h1>All Posts</h1>
         {% for post in posts %}
-          <div class="border p-4 rounded bg-success my-4"> <!-- Added margin for spacing between posts -->
+          <div class="border p-4 rounded bg-success my-4">
             <h2>{{ post.title }}</h2>
             <p>{{ post.description }}</p>
             <p>Reward: {{ post.reward }}</p>
