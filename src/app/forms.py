@@ -1,4 +1,3 @@
-from app import app
 from app.models import Users # The user table in the database
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
