@@ -127,29 +127,21 @@ a.link-mute {
 
 /*general post-form styling*/
 #post-form {
-    color: white;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     background-image: url("../img/post-board.jpg");
     background-size: cover;
     background-position: center;
+    margin-top: 30px;
 }
 
 #search-form {
-    color: white;
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     background-image: url("../img/plank.jpg");
     background-size: cover;
     background-position: center;
+    margin-top: 30px;
 }
 
 #search-form input {
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 /*styling of input areas for post-form*/
@@ -167,19 +159,12 @@ a.link-mute {
 }
 
 #list-of-posts {
-    position: absolute;
-    top: 40%;
-    color: #ffffff;
     padding: 20px;
     border-radius: 8px;
-    text-align: center;
     background-image: url("../img/plank.jpg");
     background-size: cover;
     background-position: center;
-}
-
-#list-of-posts div {
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 /* CAROUSEL CUSTOMISATION
