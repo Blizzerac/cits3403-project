@@ -1,4 +1,4 @@
-from app import app, db
+from app import flaskApp, db
 from flask_login import UserMixin
 from datetime import datetime
 from sqlalchemy import func, select
@@ -70,5 +70,5 @@ class Responses(db.Model):
 
 # Data base initialisation
 def init_db():
-  with app.app_context():
+  with flaskApp.app_context():
       db.create_all()

@@ -4,7 +4,7 @@ from flask_login import login_required, login_user, logout_user, current_user
 from flask_bcrypt import bcrypt
 from app.models import Users # The user table in the database
 from app import models, forms
-from app import app, bcrypt, db
+from app import flaskApp, bcrypt, db
 from datetime import datetime
 
 # Settings
@@ -17,15 +17,15 @@ debug = True
 # Please rememeber that the last app.route tag is what the page will be displayed as.
 
 # Home page
-@app.route("/index")
-@app.route("/home")
-@app.route("/")
+@flaskApp.route("/index")
+@flaskApp.route("/home")
+@flaskApp.route("/")
 def home():
     return render_template("home.html")
 
 # Login
-@app.route("/signup", methods=["POST", "GET"])
-@app.route("/login", methods=["POST", "GET"])
+@flaskApp.route("/signup", methods=["POST", "GET"])
+@flaskApp.route("/login", methods=["POST", "GET"])
 def login():
     # Check if user is already logged in
     if current_user.is_authenticated:
@@ -89,25 +89,25 @@ def login():
     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup)
 
 # User logout
-@app.route('/logout', methods=["POST", "GET"])
+@flaskApp.route('/logout', methods=["POST", "GET"])
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
 
 # User dashboard
-@app.route('/dashboard', methods=["POST", "GET"])
+@flaskApp.route('/dashboard', methods=["POST", "GET"])
 @login_required
 def dashboard():
     return render_template('home.html') #TEMP UNTIL DASH FINISHED
 
 # Post request
-@app.route('/post', methods=["POST", "GET"])
+@flaskApp.route('/post', methods=["POST", "GET"])
 @login_required
 def post_quest():
     return render_template('home.html') # TEMP UNTIL COMPLETED
 
 # Leaderboard
-@app.route("/leaderboard")
+@flaskApp.route("/leaderboard")
 def leaderboard():
     return render_template("leaderboard.html")

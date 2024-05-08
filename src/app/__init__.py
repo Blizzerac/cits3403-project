@@ -7,16 +7,16 @@ from flask_migrate import Migrate
 from app.config import Config
 
 # Main application name
-app = Flask(__name__, template_folder='../templates', static_folder='../static')
+flaskApp = Flask(__name__, template_folder='../templates', static_folder='../static')
 
 # Configuration
-app.config.from_object(Config)
-app.debug = True
+flaskApp.config.from_object(Config)
+flaskApp.debug = True
 
 # Initialise extensions
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
-migrate = Migrate(app, db)
+db = SQLAlchemy(flaskApp)
+bcrypt = Bcrypt(flaskApp)
+migrate = Migrate(flaskApp, db)
 
 # Import routes and models at the end to avoid circular imports
 from app import routes, models
@@ -26,7 +26,7 @@ models.init_db()
 
 # Login manager
 login_manager = LoginManager()
-login_manager.init_app(app)
+login_manager.init_app(flaskApp)
 login_manager.login_view = "login"
 
 @login_manager.user_loader
