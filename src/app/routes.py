@@ -63,7 +63,7 @@ def login():
                     if debug:
                         flash('Error adding user to database. {}'.format(e), 'danger')
                     else: 
-                        flash('Error adding user to database.', 'danger')
+                        flash('Failed creating an account. Please try again later or contact staff.', 'danger')
         
         # If login form submitted
         elif login_form.validate_on_submit():
