@@ -31,9 +31,9 @@ def pass_uppercase(form, field):
 
 
 class SignupForm(FlaskForm):
-  username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+  username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20), noSpaces], render_kw={"placeholder": "Username"})
   email = EmailField('Email', validators=[InputRequired(), Email(message='Invalid email address.')], render_kw={"placeholder": "Email"})
-  password = PasswordField('Password', validators=[InputRequired(), Length(min=5, max=25)], render_kw={"placeholder": "Password"})
+  password = PasswordField('Password', validators=[InputRequired(), Length(min=5, max=25), pass_characters, pass_digit, pass_uppercase], render_kw={"placeholder": "Password"})
   submit = SubmitField("Register")
 
   def validate_username(self, username):
