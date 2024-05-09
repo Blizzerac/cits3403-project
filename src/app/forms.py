@@ -46,7 +46,7 @@ class SignupForm(FlaskForm):
         validators=[InputRequired(), Length(min=5, max=25)],
         render_kw={"placeholder": "Password"})
     
-    submit = SubmitField("Register")
+    submit = SubmitField("Register", id='signup-submit-button')
 
     def validate_username(self, username):
         existing_user = Users.query.filter_by(username=username.data).first()
@@ -71,7 +71,7 @@ class LoginForm(FlaskForm):
 
     remember_me = BooleanField('Remember me')
 
-    submit = SubmitField("Login")
+    submit = SubmitField("Login", id='login-submit-button')
 
 
 class PostForm(FlaskForm):
