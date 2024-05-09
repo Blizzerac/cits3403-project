@@ -1,6 +1,6 @@
 from app.models import Users # The user table in the database
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, EmailField
 from wtforms.validators import InputRequired, Length, ValidationError, Email
 import re
 
@@ -33,17 +33,17 @@ def pass_uppercase(form, field):
 class SignupForm(FlaskForm):
     username = StringField(
         'Username',
-        validators=[InputRequired(), Length(min=4, max=20)],
+        validators=[InputRequired(), Length(min=4, max=20), noSpaces],
         render_kw={"placeholder": "Username"})
 
-    email = StringField(
-        'Email', validators=[InputRequired(),
-        Email(message='Invalid email address.')],
+    email = EmailField(
+        'Email',
+        validators=[InputRequired(), Email(message='Invalid email address.')],
         render_kw={"placeholder": "Email"})
 
     password = PasswordField(
         'Password', 
-        validators=[InputRequired(), Length(min=5, max=25)],
+        validators=[InputRequired(), Length(min=5, max=25), pass_characters, pass_digit, pass_uppercase],
         render_kw={"placeholder": "Password"})
     
     submit = SubmitField("Register", id='signup-submit-button')
@@ -57,6 +57,7 @@ class SignupForm(FlaskForm):
         existing_email = Users.query.filter_by(email=email.data).first()
         if existing_email:
             raise ValidationError("An account with this email already exists. Please use a different email.")
+
 
 class LoginForm(FlaskForm):
     login = StringField(
@@ -92,6 +93,7 @@ class PostForm(FlaskForm):
         render_kw={"class": "btn btn-success rounded disabled"},
         id="submit-post")
 
+    
 class SearchForm(FlaskForm):
     post_search_name = StringField(
         'Search for ReQuest', 
