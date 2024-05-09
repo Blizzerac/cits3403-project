@@ -1,6 +1,6 @@
 from app.models import Users # The user table in the database
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, EmailField
 from wtforms.validators import InputRequired, Length, ValidationError, Email
 import re
 
@@ -32,7 +32,7 @@ def pass_uppercase(form, field):
 
 class SignupForm(FlaskForm):
   username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-  email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email address.')], render_kw={"placeholder": "Email"})
+  email = EmailField('Email', validators=[InputRequired(), Email(message='Invalid email address.')], render_kw={"placeholder": "Email"})
   password = PasswordField('Password', validators=[InputRequired(), Length(min=5, max=25)], render_kw={"placeholder": "Password"})
   submit = SubmitField("Register")
 
