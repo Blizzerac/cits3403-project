@@ -155,8 +155,8 @@ a.link-mute {
 }
 
 /* Login/Signup Form */
-#login-form div,
-#signup-form div {
+#login-form input,
+#signup-form input {
     margin-bottom: 20px;
 }
 
