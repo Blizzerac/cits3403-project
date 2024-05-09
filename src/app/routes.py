@@ -1,7 +1,7 @@
 # Imports
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, login_user, logout_user, current_user
-from app.models import Users # The user table in the database
+from app.models import Users, Posts # The user table in the database
 from app import models, forms
 from app import flaskApp, db
 from datetime import datetime
@@ -21,7 +21,12 @@ debug = True
 @flaskApp.route("/home")
 @flaskApp.route("/")
 def home():
-    return render_template("home.html")
+    if Posts.query.count() > 10:
+        questCount = True
+    else:
+        questCount = False
+    quests = Posts.query.limit(10).all()
+    return render_template("home.html", quests=quests, questCount=questCount)
 
 # Login
 @flaskApp.route("/signup", methods=["POST", "GET"])

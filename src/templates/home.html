@@ -57,14 +57,21 @@
 <div class="container bg-wood">
     <h1>Available Quests</h1>
     <div class="list-group">
+      {% for quest in quests %}
+      <!-- put an if statement before this to check if 10 quests, need more quests button? for quest in quests list details--> 
       <a href ="#" class="quest-card list-group-item list-group-item-action">
         <div class="d-flex justify-content-between">
-          <h5 class="mb-1">Quest Title</h5>
-          <small>Quest Reward</small>
+          <h5 class="mb-1">{{quest.title}}</h5>
+          <small>{{quest.reward}}</small>
         </div>
-        <p>lorem ipsum</p>
+        <p>{{quest.description}}</p>
       </a>
+      {% endfor %}
   </div>
+  <br>
+  {% if questCount %}
+    <a href="{{url_for('quests')}}" class="btn btn-primary">View More Quests</a>
+  {% endif %}
   <br>
 </div>
 
