@@ -54,9 +54,8 @@
 
 
 <!-- Quest List and Leaderboard -->
-<div class="container bg-wood">
-    <h1 class="d-flex justify-content-center">Available Quests</h1>
-    <br>
+<div class="container bg-wood mb-3 mb-md-5 pb-2 pb-md-4" id="quest-list">
+    <h1 class="text-center pb-1 pb-md-3">Available Quests</h1>
     <div class="list-group">
       {% for quest in quests %}
       <!-- put an if statement before this to check if 10 quests, need more quests button? for quest in quests list details--> 
@@ -67,16 +66,13 @@
         </div>
         <p>{{quest.description}}</p>
       </a>
-      <br>
       {% endfor %}
-  </div>
+    </div>
   {% if questCount %}
     <a href="{{url_for('search')}}" class="btn btn-primary d-flex justify-content-center">View More Quests</a>
-    </br>
   {% endif %}
 </div>
 
-<br>
 
 <!--   Featurettes
 ================================================== -->

@@ -66,17 +66,6 @@ a.link-mute {
     height: 64px;
 }
 
-.quest-card, a.quest-card, a.quest-card:hover, a.quest-card:active, a.quest-card:visited {
-    background-color: #FFF2D5;
-    border-image-slice: 10 10 10 10;
-    border-image-width: 10px 10px 10px 10px;
-    border-image-outset: 3px 3px 3px 3px;
-    border-image-repeat: stretch stretch;
-    border-image-source: url("../img/quest-border.png");
-    border-style: solid;
-    background-clip: padding-box;
-}
-
 .navbar-svg-icon {
     width: 42px;
     margin-left: 6px;
@@ -244,7 +233,30 @@ button.btn.dropdown-toggle {
     resize: none; /* Don't allow the user to change the size of the input field */
 }
 
-/*styling of input areas for post-form*/
+/* Available Quests on home page */
+.quest-card, a.quest-card, a.quest-card:hover, a.quest-card:active, a.quest-card:visited {
+    background-color: #FFF2D5;
+    border-image-slice: 10 10 10 10;
+    border-image-width: 10px 10px 10px 10px;
+    border-image-outset: 3px 3px 3px 3px;
+    border-image-repeat: stretch stretch;
+    border-image-source: url("../img/quest-border.png");
+    border-style: solid;
+    background-clip: padding-box;
+}
+
+/* Apply margin-bottom to all quest items except the first and last */
+.quest-card:not(:last-child) {
+    margin-bottom: 0.85rem; /* for smaller devices */
+}
+
+@media (min-width: 768px) { /* Adjust the breakpoint to match Bootstrap's MD breakpoint */
+    .quest-card:not(:last-child) {
+        margin-bottom: 1.25rem; /* for medium devices and up */
+    }
+}
+
+/* Dtyling of input areas for post-form */
 #post-form input:not([type="submit"]),
 #post-form textarea {
     margin-bottom: 15px;
