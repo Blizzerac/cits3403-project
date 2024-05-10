@@ -54,8 +54,8 @@ class Users(db.Model, UserMixin):
 # Posts tables to handle each ReQuest
 class Posts(db.Model):
   postID = db.Column(db.Integer, primary_key=True)
-  posterID = db.Column(db.Integer, db.ForeignKey('users.userID'), nullable=False) # Quest submitter ID
-  claimerID = db.Column(db.Integer, db.ForeignKey('users.userID')) # Quest accepter ID(s)?
+  posterID = db.Column(db.Integer, db.ForeignKey('users.userID'), nullable=False) # Quest submitter's ID
+  claimerID = db.Column(db.Integer, db.ForeignKey('users.userID'), nullable=True) # Quest accepter's ID (can be null if not claimed)
   claimed = db.Column(db.Boolean, nullable=False, default=False) # If a quest is claimed currently
   waitingApproval = db.Column(db.Boolean, nullable=False, default=False) # If the user who claimed quest is waiting on approval from requester
   private = db.Column(db.Boolean, nullable=False, default=False) # If a quest can be viewed after claiming it
@@ -70,8 +70,8 @@ class Posts(db.Model):
 
 # Each reponse to a certain ReQuest
 class Responses(db.Model):
-  postID = db.Column(db.Integer, db.ForeignKey('posts.postID'), nullable=False) # Quest ID
-  responseID = db.Column(db.Integer, primary_key=True, nullable=False) # Unique ID of the response
+  responseID = db.Column(db.Integer, primary_key=True) # Unique ID of the response
+  postID = db.Column(db.Integer, db.ForeignKey('posts.postID'), nullable=False) # Quest ID that this response is linked to
   responderID = db.Column(db.Integer, db.ForeignKey('users.userID'), nullable=False) # Responder ID
   msg = db.Column(db.Text, nullable=False) # Response to the quest
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # Response creation date
