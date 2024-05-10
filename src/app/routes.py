@@ -21,13 +21,17 @@ debug = True
 @flaskApp.route("/home")
 @flaskApp.route("/")
 def home():
+    # Set display limit on quests
+    DISPLAY_LIMIT = 3
+
     # Fetch only unclaimed quests
-    quests = db.session.query(Posts).filter(Posts.claimed == False).limit(10).all()
+    quests = db.session.query(Posts).filter(Posts.claimed == False).limit(DISPLAY_LIMIT).all()
 
     # Check if there are any unclaimed quests to display
-    questCount = len(quests) > 0  # This will be True if there are quests, False otherwise
-    
-    return render_template("home.html", quests=quests, questCount=questCount)
+    moreQuests = len(quests) > DISPLAY_LIMIT-1 # True if more quests than can possibly display, False otherwise
+    unclaimedQuests = len(quests) > 0  # True if there exists unclaimed quests, False otherwise
+
+    return render_template("home.html", quests=quests, moreQuests=moreQuests, unclaimedQuests=unclaimedQuests)
 
 # Login
 @flaskApp.route("/signup", methods=["POST", "GET"])

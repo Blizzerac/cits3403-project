@@ -52,11 +52,11 @@
   </a>
 </div>
 
-
-<!-- Quest List and Leaderboard -->
+<!-- Quest List -->
 <div class="container bg-wood mb-3 mb-md-5 pb-2 pb-md-4" id="quest-list">
     <h1 class="text-center pb-1 pb-md-3">Available Quests</h1>
     <div class="list-group">
+      {% if unclaimedQuests %}
       {% for quest in quests %}
       <!-- put an if statement before this to check if 10 quests, need more quests button? for quest in quests list details--> 
       <a href ="#" class="quest-card list-group-item list-group-item-action">
@@ -67,9 +67,12 @@
         <p>{{quest.description}}</p>
       </a>
       {% endfor %}
+      {% else %}
+      <p class="text-center"> No unclaimed quests available at this time. </p>
+      {% endif %}
     </div>
-  {% if questCount %}
-    <a href="{{url_for('search')}}" class="btn btn-primary d-flex justify-content-center">View More Quests</a>
+  {% if moreQuests %}
+  <a href="{{url_for('search')}}" class="btn btn-primary d-flex justify-content-center mt-2 mt-md-3">View More Quests</a>
   {% endif %}
 </div>
 
