@@ -21,11 +21,11 @@ debug = True
 @flaskApp.route("/home")
 @flaskApp.route("/")
 def home():
-    if Posts.query.count() > 10:
+    if db.session.query(Posts).count() > 10:
         questCount = True
     else:
         questCount = False
-    quests = Posts.query.limit(10).all()
+    quests = db.session.query(Posts).limit(10).all()
     return render_template("home.html", quests=quests, questCount=questCount)
 
 # Login
@@ -111,7 +111,29 @@ def dashboard():
 @flaskApp.route('/post', methods=["POST", "GET"])
 @login_required
 def post_quest():
-    return render_template('home.html') # TEMP UNTIL COMPLETED
+    posting_form = forms.PostForm()
+    
+    if request.method == 'POST':
+        print("quest posted")
+        if posting_form.validate_on_submit():
+            print("quest validated")
+            new_post = Posts(posterID=current_user.userID, title=posting_form.post_name.data, description=posting_form.post_description.data)
+            db.session.add(new_post)
+            try:
+                print("quest added")
+                db.session.commit()
+                flash('Quest posted successfully!', 'success')
+                return redirect(url_for('home'))
+            except Exception as e:
+                db.session.rollback()
+                if debug:
+                    flash('Error adding quest to database. {}'.format(e), 'danger')
+                else: 
+                    flash('Failed posting quest. Please try again later or contact staff.', 'danger')
+        print("quest not validated")
+
+    return render_template("posting.html", posting_form=posting_form)
+
 
 # Leaderboard
 @flaskApp.route("/leaderboard")

@@ -55,16 +55,16 @@ class Users(db.Model, UserMixin):
 class Posts(db.Model):
   postID = db.Column(db.Integer, primary_key=True)
   posterID = db.Column(db.Integer, db.ForeignKey('users.userID'), nullable=False) # Quest submitter ID
-  claimerID = db.Column(db.Integer, db.ForeignKey('users.userID'), nullable=False) # Quest accepter ID(s)?
+  claimerID = db.Column(db.Integer, db.ForeignKey('users.userID')) # Quest accepter ID(s)?
   claimed = db.Column(db.Boolean, nullable=False, default=False) # If a quest is claimed currently
   waitingApproval = db.Column(db.Boolean, nullable=False, default=False) # If the user who claimed quest is waiting on approval from requester
   private = db.Column(db.Boolean, nullable=False, default=False) # If a quest can be viewed after claiming it
   completed = db.Column(db.Boolean, nullable=False, default=False) # If a quest is completed
   title = db.Column(db.Text, nullable=False) # Title of the quest
   description = db.Column(db.Text, nullable=False) # Description of the quest
-  reward = db.Column(db.BigInteger, nullable=False)
+  reward = db.Column(db.BigInteger, nullable=False, default=0) # Reward for completing the quest
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # Post creation date
-  claimDate = db.Column(db.DateTime, nullable=True) # Current claim's start date
+  claimDate = db.Column(db.DateTime) # Current claim's start date
 
   responses = db.relationship('Responses', backref='post', lazy=True) # Link posts to their responses
 

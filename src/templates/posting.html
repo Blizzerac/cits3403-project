@@ -7,7 +7,8 @@
   <div class="col-sm-12 border p-4 rounded" id="post-form">
     <fieldset>
       <legend class="text-center">Post a ReQuest</legend>
-      <form method="POST" action="">
+      <form method="POST" action="/post">
+        {{ posting_form.hidden_tag() }}
         <div class="col-md-7 col-sm-12">
             {{ posting_form.post_name.label(class="form-label") }}
             {{ posting_form.post_name() }}
