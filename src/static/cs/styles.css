@@ -212,10 +212,9 @@ button.btn.dropdown-toggle {
 
 /* General post-form styling */
 #post-form {
-    background-image: url("../img/post-board.jpg");
-    background-size: cover;
-    background-position: center;
     margin-top: 30px;
+    padding-top: 10px;
+    padding-bottom: 25px;
 }
 
 #search-form {

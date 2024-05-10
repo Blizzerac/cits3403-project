@@ -1,6 +1,6 @@
 from app.models import Users # The user table in the database
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, IntegerField
 from wtforms.validators import InputRequired, Length, ValidationError, Email
 import re
 
@@ -65,6 +65,12 @@ class PostForm(FlaskForm):
         validators=[InputRequired(), Length(min=5, max=1000)], 
         render_kw={"placeholder": "I have left my gold atop Mount Dragon and need it back!", "class": "no-resize form-control form-control-lg", "rows": 10},
         id="second-post-input")
+    
+    post_reward = IntegerField(
+        'Reward (gold)',
+        validators=[InputRequired(), Length(min=0)],
+        render_kw={"placeholder": "100", "class": "form-control form-control-lg"},
+        id="third-post-input")
 
     submit = SubmitField("Submit", 
     render_kw={"class": "btn btn-success rounded disabled"},
