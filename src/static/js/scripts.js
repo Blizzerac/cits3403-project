@@ -7,9 +7,7 @@ $(document).ready(function() {
   $('.toggle-login').click(swapLoginForm)
 
   // Show the toast if any exist
-  $('.toast').toast({
-    delay: 1500  // Delay in milliseconds
-  }).toast('show');
+  $('.toast').toast('show');
 
   // Initialise Bootstrap dropdowns and other events
   handle_dropdownMenu()
