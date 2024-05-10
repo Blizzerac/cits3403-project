@@ -54,13 +54,13 @@ function handle_dropdownMenu() {
 // Handle quest post form
 function handle_questPost() {
   // Disable initially
-  $('#submit-post').prop('disabled', true);
+  // $('#submit-post').prop('disabled', true);
 
   // If refreshing page and keeping inputs, checks inputs
   questPost_checkFields();
 
   // Call checkFields() when  input fields change
-  $('#first-post-input, #second-post-input').on('input', checkFields);
+  $('#first-post-input, #second-post-input').on('input', questPost_checkFields);
 }
 
 // Function to check if inputs for posting are filled
