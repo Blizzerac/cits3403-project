@@ -23,7 +23,7 @@ debug = True
 @flaskApp.route("/")
 def home():
     # Set display limit on quests
-    DISPLAY_LIMIT = 5
+    DISPLAY_LIMIT = 3
 
     # Fetch only unclaimed quests in random order
     quests = db.session.query(Posts) \
