@@ -194,8 +194,3 @@ def search():
     ]
 
     return render_template("search.html", searching_form=searching_form, posts=posts)
-
-@flaskApp.route("/posting", methods=["POST", "GET"])
-def posting():
-    posting_form = forms.PostForm()
-    return render_template("posting.html", posting_form=posting_form)
