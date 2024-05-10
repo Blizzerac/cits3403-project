@@ -5,6 +5,7 @@ from app.models import Users, Posts # The user table in the database
 from app import models, forms
 from app import flaskApp, db
 from datetime import datetime
+from sqlalchemy.sql.expression import func
 
 # Settings
 debug = True
@@ -22,10 +23,14 @@ debug = True
 @flaskApp.route("/")
 def home():
     # Set display limit on quests
-    DISPLAY_LIMIT = 3
+    DISPLAY_LIMIT = 5
 
-    # Fetch only unclaimed quests
-    quests = db.session.query(Posts).filter(Posts.claimed == False).limit(DISPLAY_LIMIT).all()
+    # Fetch only unclaimed quests in random order
+    quests = db.session.query(Posts) \
+        .filter(Posts.claimed == False) \
+        .order_by(func.random()) \
+        .limit(DISPLAY_LIMIT) \
+        .all()
 
     # Check if there are any unclaimed quests to display
     moreQuests = len(quests) > DISPLAY_LIMIT-1 # True if more quests than can possibly display, False otherwise

@@ -61,10 +61,10 @@
       <!-- put an if statement before this to check if 10 quests, need more quests button? for quest in quests list details--> 
       <a href ="#" class="quest-card list-group-item list-group-item-action">
         <div class="d-flex justify-content-between">
-          <h5 class="mb-1">{{quest.title}}</h5>
-          <small>Reward: {{quest.reward}}g</small>
+          <h5 class="mb-1 text-wrap">{{ quest.title }}</h5>
+          <small>Reward: {{ quest.reward }}g</small>
         </div>
-        <p>{{quest.description}}</p>
+        <p class="text-wrap">{{ quest.description | truncate(250, true, '.....') }}</p>
       </a>
       {% endfor %}
       {% else %}

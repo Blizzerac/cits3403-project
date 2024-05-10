@@ -234,6 +234,12 @@ button.btn.dropdown-toggle {
 }
 
 /* Available Quests on home page */
+/* If a quest's description is one long word, it goes outside the div, so it must be broken up */
+.text-wrap {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
 .quest-card, a.quest-card, a.quest-card:hover, a.quest-card:active, a.quest-card:visited {
     background-color: #FFF2D5;
     border-image-slice: 10 10 10 10;
