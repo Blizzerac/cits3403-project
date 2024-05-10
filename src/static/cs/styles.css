@@ -221,7 +221,7 @@ button.btn.dropdown-toggle {
     margin-top: 3rem;
 }
 
-/*general post-form styling*/
+/* General post-form styling */
 #post-form {
     background-image: url("../img/post-board.jpg");
     background-size: cover;
@@ -238,6 +238,10 @@ button.btn.dropdown-toggle {
 
 #search-form input {
     margin-top: 10px;
+}
+
+.no-resize {
+    resize: none; /* Don't allow the user to change the size of the input field */
 }
 
 /*styling of input areas for post-form*/
