@@ -21,11 +21,12 @@ debug = True
 @flaskApp.route("/home")
 @flaskApp.route("/")
 def home():
-    if db.session.query(Posts).count() > 10:
-        questCount = True
-    else:
-        questCount = False
-    quests = db.session.query(Posts).limit(10).all()
+    # Fetch only unclaimed quests
+    quests = db.session.query(Posts).filter(Posts.claimed == False).limit(10).all()
+
+    # Check if there are any unclaimed quests to display
+    questCount = len(quests) > 0  # This will be True if there are quests, False otherwise
+    
     return render_template("home.html", quests=quests, questCount=questCount)
 
 # Login
