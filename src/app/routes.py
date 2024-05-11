@@ -139,8 +139,9 @@ def post_quest():
                         flash('Error adding ReQuest to database. {}'.format(e), 'danger')
                     else: 
                         flash('Failed posting ReQuest. Please try again later or contact staff.', 'danger')
-    
-    return render_template("posting.html", posting_form=posting_form)
+
+    gold = current_user.gold_available # Get user's available gold
+    return render_template("posting.html", posting_form=posting_form, gold_available=gold)
 
 
 # Leaderboard

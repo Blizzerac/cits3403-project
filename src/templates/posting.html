@@ -19,6 +19,7 @@
         <div class="col-md-5 col-sm-12">
             {{ posting_form.post_reward.label(class="form-label") }}
             {{ posting_form.post_reward() }}
+            <div style="margin-top: -0.75rem"><em>Available Gold: {{ gold_available }}</em></div>
         </div>
         <div class="d-flex justify-content-center flex-column offset-sm-5 col-sm-2">
           {{ posting_form.submit() }}
