@@ -40,6 +40,23 @@ class Users(db.Model, UserMixin):
   def get_id(self):
     return str(self.userID)
   
+  # Gold handling
+  def quest_create(self, gold_cost):
+    if self.gold_available >= gold_cost:
+        self.gold_available -= gold_cost
+        return True
+    return False
+  
+  def quest_refund(self, gold_cost):
+    self.gold_available += gold_cost
+  
+  def quest_payout(self, gold_reward):
+    self.gold -= gold_reward # No need to check if negative, as this is handled when creating a quest.
+
+  def add_gold(self, gold):
+    self.gold += gold
+    self.gold_available += gold
+
   # Password handling
   def set_password(self, password):
     self.password = generate_password_hash(password)

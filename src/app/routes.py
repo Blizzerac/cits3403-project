@@ -4,12 +4,7 @@ from flask_login import login_required, login_user, logout_user, current_user
 from app.models import Users, Posts # The user table in the database
 from app import models, forms
 from app import flaskApp, db
-from datetime import datetime
 from sqlalchemy.sql.expression import func
-
-# Settings
-debug = True
-
 
 ###########
 # Routes  #
@@ -75,7 +70,7 @@ def login():
                 # If failed, rollback database and warn user.
                 except Exception as e:
                     db.session.rollback()
-                    if debug:
+                    if flaskApp.debug:
                         flash('Error adding user to database. {}'.format(e), 'danger')
                     else: 
                         flash('Failed creating an account. Please try again later or contact staff.', 'danger')
@@ -125,24 +120,26 @@ def post_quest():
     posting_form = forms.PostForm()
     
     if request.method == 'POST':
-        print("quest posted")
         if posting_form.validate_on_submit():
-            print("quest validated")
-            new_post = Posts(posterID=current_user.userID, title=posting_form.post_name.data, description=posting_form.post_description.data)
-            db.session.add(new_post)
-            try:
-                print("quest added")
-                db.session.commit()
-                flash('Quest posted successfully!', 'success')
-                return redirect(url_for('home'))
-            except Exception as e:
-                db.session.rollback()
-                if debug:
-                    flash('Error adding quest to database. {}'.format(e), 'danger')
-                else: 
-                    flash('Failed posting quest. Please try again later or contact staff.', 'danger')
-        print("quest not validated")
-
+            # Check if a user has enough gold & user's available gold
+            if not current_user.quest_create(posting_form.post_reward.data):
+                flash('Not enough gold to uphold the reward!', 'danger')
+            
+            else:
+                try:
+                    new_post = Posts(posterID=current_user.userID, title=posting_form.post_name.data, description=posting_form.post_description.data, reward=posting_form.post_reward.data)
+                    db.session.add(new_post)
+                    db.session.commit()
+                    flash('ReQuest posted successfully!', 'success')
+                    return redirect(url_for('home'))
+            
+                except Exception as e:
+                    db.session.rollback()
+                    if flaskApp.debug:
+                        flash('Error adding ReQuest to database. {}'.format(e), 'danger')
+                    else: 
+                        flash('Failed posting ReQuest. Please try again later or contact staff.', 'danger')
+    
     return render_template("posting.html", posting_form=posting_form)
 
 
