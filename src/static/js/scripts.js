@@ -55,10 +55,10 @@ function handle_questPost() {
   $('#submit-post').prop('disabled', true);
 
   // If refreshing page and keeping inputs, checks inputs
-  // questPost_checkFields();
+  questPost_checkFields();
 
   // Call checkFields() when  input fields change
-  $('#first-post-input, #second-post-input').on('input', questPost_checkFields);
+  $('#first-post-input, #second-post-input, #third-post-input').on('input', questPost_checkFields);
 }
 
 // Function to check if inputs for posting are filled
