@@ -13,6 +13,7 @@ class Users(db.Model, UserMixin):
   email = db.Column(db.String(320), unique=True, nullable=False) # Emails are also unique (maximum determined from physical maximum researched)
   password = db.Column(db.String(128), nullable=False)
   gold = db.Column(db.BigInteger, default=0, nullable=False) # User's currency
+  gold_available = db.Column(db.BigInteger, default=0, nullable=False) # User's available currency to make a quest with
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # User account creation date
 
   posts = db.relationship('Posts', backref='poster', lazy='dynamic', foreign_keys='Posts.posterID') # Link user to posts they made
