@@ -1,7 +1,7 @@
 from app.models import Users # The user table in the database
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, IntegerField
-from wtforms.validators import InputRequired, Length, ValidationError, Email
+from wtforms.validators import InputRequired, Length, ValidationError, Email, NumberRange
 import re
 
 # Custom validator - apply validator to email or username depending on login type
@@ -67,8 +67,8 @@ class PostForm(FlaskForm):
         id="second-post-input")
     
     post_reward = IntegerField(
-        'Reward (gold)',
-        validators=[InputRequired(), Length(min=0)],
+        'Reward (Gold)',
+        validators=[InputRequired(), NumberRange(min=0, message="Please enter a non-negative number.")],
         render_kw={"placeholder": "100", "class": "form-control form-control-lg"},
         id="third-post-input")
 
