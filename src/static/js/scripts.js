@@ -67,7 +67,7 @@ function questPost_checkFields() {
   let field2 = $('#second-post-input').val();
 
   // Minimum length of 5 for each
-  if ((field1.length >=5) && (field2.length >=5)) {
+  if ((field1.length >= 5) && (field2.length >= 5)) {
       $('#submit-post').prop('disabled', false);
       $('#submit-post').removeClass('disabled');
       $('#disabled-info').addClass('hidden');

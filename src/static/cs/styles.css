@@ -8,7 +8,6 @@ body {
     background-image: url("../img/town.jpeg");
     background-repeat: no-repeat;
     background-size: cover;
-    /* background-position: top; -- OLD CODE */
     background-attachment: fixed;       /* So that you cant scroll past the background image */
     background-position: center center; /* Centre the background image */
 }
@@ -19,7 +18,6 @@ body {
     background: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
     padding: 2rem 1rem 1rem 1rem;
     border-radius: 0.5rem
-
 }
 
 .content-container {
@@ -35,7 +33,6 @@ body {
     margin-top: 2rem;
     color: white; /* Ensure text visability */
     border-radius: 0.5rem;
-
 }
 
 .hidden {
@@ -113,7 +110,6 @@ a.link-mute {
 }
 /* custom buttons for the leaderboard pagination to match style */
 
-
 .account-link {
     display: block;
 }
@@ -147,11 +143,20 @@ a.link-mute {
     color:black;
 }
 
-
 /* Login/Signup Form */
 #login-form input,
 #signup-form input {
     margin-bottom: 20px;
+}
+
+/* Separates labels and inputs */
+#login-form div label,
+#signup-form div label {
+    display: block;
+}
+
+.other-toggle {
+    font-weight: bold;
 }
 
 .toggle-login {
@@ -162,17 +167,6 @@ a.link-mute {
 .form-error {
     margin-top: -10px; /* Pull form error up to the field input */
 }
-
-/* DEPRICATED STYLING
-#signup-password-errors ul {
-    padding-left: 20px;  /* Add padding to the list for better alignment *\/
-    list-style-type: disc;  /* Optional: style list bullets *\/
-}
-
-#signup-password-errors li {
-    margin-bottom: 5px;  /* Space out the list items *\/
-} */
-
 
 /* Dropdown menu styling */
 button.btn.dropdown-toggle {
@@ -199,7 +193,6 @@ button.btn.dropdown-toggle {
     background-color: #f0f0f0; /* Hover background color */
     color: #555; /* Hover text color */
 }
-
 
 .tutorial-images {
     width: 500px;

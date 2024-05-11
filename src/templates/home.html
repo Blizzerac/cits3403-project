@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block uniqueStyles %}{% endblock %}
-{% block title %}Quester's Cache{% endblock %}
+{% block title %}Quester's Cache || Home{% endblock %}
 {% block content %}
 
+<!-- Carousel -->
 <div id="myCarousel" class="carousel slide" data-ride="carousel">
   <ol class="carousel-indicators">
     <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -11,28 +11,24 @@
   </ol>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <!-- These can be images for background of carousel item, however comment out for regular background -->
-      <!-- <img class="first-slide" src="" alt="First slide"> -->
       <div class="container">
         <div class="carousel-caption text-left">
           <h1>Join our Community</h1>
-          <p>Join the (re)questing community and meet new friends on Quester's Cache!</p>
+          <p>Join the ReQuesting community and meet new friends on Quester's Cache!</p>
           <p><a class="btn btn-lg btn-primary" href="{{url_for('login')}}" role="button">Sign up today</a></p>
         </div>
       </div>
     </div>
     <div class="carousel-item">
-      <!-- <img class="second-slide" src="" alt="Second slide"> -->
       <div class="container">
         <div class="carousel-caption">
           <h1>Earn Rewards</h1>
-          <p>With monthly prizes for the best (re)questers, at the very top of the leaderboard!</p>
-          <p><a class="btn btn-lg btn-primary" href="{{url_for('leaderboard')}}" role="button">Check out the top (re)questers</a></p>
+          <p>With monthly prizes for the best ReQuesters, at the very top of the leaderboard!</p>
+          <p><a class="btn btn-lg btn-primary" href="{{url_for('leaderboard')}}" role="button">Check out the top ReQuesters</a></p>
         </div>
       </div>
     </div>
     <div class="carousel-item">
-      <!-- <img class="third-slide" src="" alt="Third slide"> -->
       <div class="container">
         <div class="carousel-caption text-right">
           <h1>Want more information?</h1>
@@ -89,11 +85,11 @@
 
   <div class="row featurette">
     <div class="col-md-7">
-      <h2 class="featurette-heading">Posting (re)Quests</h2>
-      <p class="lead">Post (re)quests, calling for aid from your fellow adventurers in many different contexts. Whether it's seeking guidance on a challenging foe, requesting assistance in gathering resources, or rallying support for a noble cause, our application provides a platform for users to connect, collaborate, and embark on shared adventures together. </p>
+      <h2 class="featurette-heading">Posting ReQuests</h2>
+      <p class="lead">Post ReQuests, calling for aid from your fellow adventurers in many different contexts. Whether it's seeking guidance on a challenging foe, requesting assistance in gathering resources, or rallying support for a noble cause, our application provides a platform for users to connect, collaborate, and embark on shared adventures together. </p>
     </div>
     <div class="col-md-5">
-      <img class="featurette-image img-fluid mx-auto tutorial-images rounded" data-src="holder.js/500x500/auto" alt="Adventurer posting a (re)quest" src="../static/img/post_request.jpg" data-holder-rendered="true">
+      <img class="featurette-image img-fluid mx-auto tutorial-images rounded" data-src="holder.js/500x500/auto" alt="Adventurer posting a ReQuest" src="../static/img/post_request.jpg" data-holder-rendered="true">
     </div>
   </div>
 
@@ -101,11 +97,11 @@
 
   <div class="row featurette">
     <div class="col-md-7 order-md-2">
-      <h2 class="featurette-heading">Searching for (re)Quests</h2>
-      <p class="lead">Search for (re)quests to answer, delving into a diverse array of tasks spanning various realms and challenges. From uncovering hidden treasures to unraveling ancient mysteries, the search feature serves as a gateway to endless opportunities, guiding adventurers towards their next epic undertaking. With intuitive search filters and dynamic exploration tools, users can embark on a (re)quest-finding journey tailored to their interests and aspirations.</p>
+      <h2 class="featurette-heading">Searching for ReQuests</h2>
+      <p class="lead">Search for ReQuests to answer, delving into a diverse array of tasks spanning various realms and challenges. From uncovering hidden treasures to unraveling ancient mysteries, the search feature serves as a gateway to endless opportunities, guiding adventurers towards their next epic undertaking. With intuitive search filters and dynamic exploration tools, users can embark on a ReQuest-finding journey tailored to their interests and aspirations.</p>
     </div>
     <div class="col-md-5 order-md-1">
-      <img class="featurette-image img-fluid mx-auto tutorial-images rounded" data-src="holder.js/500x500/auto" alt="Adventurer searching for a (re)quest" src="../static/img/search_request.jpg" data-holder-rendered="true">
+      <img class="featurette-image img-fluid mx-auto tutorial-images rounded" data-src="holder.js/500x500/auto" alt="Adventurer searching for a ReQuest" src="../static/img/search_request.jpg" data-holder-rendered="true">
     </div>
   </div>
 
@@ -113,8 +109,8 @@
 
   <div class="row featurette">
     <div class="col-md-7">
-      <h2 class="featurette-heading">Answering (re)Quests:<span class="d-block">The FUN part</span></h2>
-      <p class="lead">Answer (re)quests, earn gold, and rise to the top of the monthly leaderboard. Endeavour to be the best to earn a monthly prize! Proof must be submitted when responding, to ensure the legitimacy and fairness of the competition. As you embark on your questing journey, not only do you have the chance to earn rewards and recognition, but you also contribute to a vibrant community of adventurers. Share your expertise, forge new connections, and make lasting memories along the way. </p>
+      <h2 class="featurette-heading">Answering ReQuests:<span class="d-block">The FUN part</span></h2>
+      <p class="lead">Answer ReQuests, earn gold, and rise to the top of the monthly leaderboard. Endeavour to be the best to earn a monthly prize! Proof must be submitted when responding, to ensure the legitimacy and fairness of the competition. As you embark on your ReQuesting journey, not only do you have the chance to earn rewards and recognition, but you also contribute to a vibrant community of adventurers. Share your expertise, forge new connections, and make lasting memories along the way. </p>
     </div>
     <div class="col-md-5">
       <img class="featurette-image img-fluid mx-auto tutorial-images rounded" data-src="holder.js/500x500/auto" alt="Adventurer at the top of the leaderboard" src="../static/img/answer_request.jpg" data-holder-rendered="true">

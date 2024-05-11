@@ -49,7 +49,7 @@ def login():
         # If signup form submitted
         if signup_form.validate_on_submit():
             existing_user = Users.query.filter_by(username=signup_form.username.data).first()
-            existing_email = Users.query.filter_by(email=signup_form.email.data).first()
+            existing_email = Users.query.filter_by(email=signup_form.email.data.lower()).first() # MUST lower email (case insensitive)
 
             # Check for existing users
             if existing_user:
@@ -58,13 +58,13 @@ def login():
                 signup_form.email.errors.append('An account with this email already exists.')
 
             if not existing_user and not existing_email:
-                new_user = Users(username=signup_form.username.data, email=signup_form.email.data)
+                new_user = Users(username=signup_form.username.data, email=signup_form.email.data.lower())
                 new_user.set_password(signup_form.password.data)
                 db.session.add(new_user)
                 # Try commit new user to database.
                 try:
                     db.session.commit()
-                    login_user(new_user,remember=False) # Assuming dont remember them
+                    login_user(new_user, remember=False) # Assuming dont remember them
                     flash('Account created successfully!', 'success')
                     return redirect(url_for('home'))
                 # If failed, rollback database and warn user.
@@ -80,7 +80,7 @@ def login():
             user_input = login_form.login.data
             # Determine if the input is an email or username
             if "@" in user_input:
-                user = Users.query.filter_by(email=user_input).first()
+                user = Users.query.filter_by(email=user_input.lower()).first() # MUST lower email to remain case insensitive
             else:
                 user = Users.query.filter_by(username=user_input).first()
 
@@ -177,9 +177,11 @@ def leaderboard():
     return render_template("leaderboard.html", users=leaderboard_users[start_index:end_index], start_index=start_index, end_index=end_index, prev_page=prev_page, next_page=next_page, total_users=total_users, total_pages=total_pages, current_page=current_page, page_size=page_size)
 
 
-@flaskApp.route("/search")
+@flaskApp.route("/search", methods=["POST", "GET"])
 def search():
     searching_form = forms.SearchForm()
+
+    #need to add post and get conditions here
 
     # example post data, hardcoded for now
     posts = [
@@ -192,6 +194,7 @@ def search():
     ]
 
     return render_template("search.html", searching_form=searching_form, posts=posts)
+
 
 
 
