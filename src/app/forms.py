@@ -73,8 +73,8 @@ class PostForm(FlaskForm):
         id="third-post-input")
 
     submit = SubmitField("Submit", 
-    render_kw={"class": "btn btn-lg btn-success rounded disabled"},
-    id="submit-post")
+        render_kw={"class": "btn btn-lg btn-success rounded disabled"},
+        id="submit-post")
 
 class SearchForm(FlaskForm):
     post_search_name = StringField(
