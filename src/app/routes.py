@@ -192,3 +192,23 @@ def search():
     ]
 
     return render_template("search.html", searching_form=searching_form, posts=posts)
+
+
+
+# THIS ROUTE MUST BE REMOVED -- ONLY FOR DEVELOPMENT PURPOSES
+@flaskApp.route("/givegold")
+@login_required
+def giveGold():
+    try:
+        current_user.add_gold(500)
+        db.session.commit()
+        flash('Given user 500 gold.', 'success')
+    
+    except Exception as e:
+        db.session.rollback()
+        if flaskApp.debug:
+            flash('Error giving gold. {}'.format(e), 'danger')
+        else: 
+            flash('ERROR.', 'danger')
+    
+    return redirect(url_for('home'))
