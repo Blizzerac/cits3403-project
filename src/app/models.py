@@ -16,25 +16,25 @@ class Users(db.Model, UserMixin):
   gold_available = db.Column(db.BigInteger, default=0, nullable=False) # User's available currency to make a quest with
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # User account creation date
 
-	posts = db.relationship('Posts', backref='poster', lazy='dynamic', foreign_keys='Posts.posterID') # Link user to posts they made
-	claims = db.relationship('Posts', backref='claimer', lazy='dynamic', foreign_keys='Posts.claimerID') # Link user to posts they've claimed
-	responses = db.relationship('Responses', backref='responder', lazy='dynamic', foreign_keys='Responses.responderID') # Link user to responses theyve made
+  posts = db.relationship('Posts', backref='poster', lazy='dynamic', foreign_keys='Posts.posterID') # Link user to posts they made
+  claims = db.relationship('Posts', backref='claimer', lazy='dynamic', foreign_keys='Posts.claimerID') # Link user to posts they've claimed
+  responses = db.relationship('Responses', backref='responder', lazy='dynamic', foreign_keys='Responses.responderID') # Link user to responses theyve made
 
-	# Number of quests a user has posted
-	@hybrid_property
-	def questCount(self):
-		return len(self.posts)
+  # Number of quests a user has posted
+  @hybrid_property
+  def questCount(self):
+    return len(self.posts)
   
-	# Number of quests a user has completed
-	@hybrid_property
-	def questsCompleted(self):
-		return sum(1 for post in self.posts if (post.claimed) and (post.completed) and (post.claimerID == self.userID))
-	
-	@questsCompleted.expression
-	def questsCompleted(cls): # For use at the class level
-		return (select([func.count(Posts.postID)])
-				.where((Posts.claimerID == cls.userID) & (Posts.claimed == True) & (Posts.completed == True))
-				.label("quests_completed"))
+  # Number of quests a user has completed
+  @hybrid_property
+  def questsCompleted(self):
+    return sum(1 for post in self.posts if (post.claimed) and (post.completed) and (post.claimerID == self.userID))
+     
+  @questsCompleted.expression
+  def questsCompleted(cls): # For use at the class level
+    return (select([func.count(Posts.postID)])
+      .where((Posts.claimerID == cls.userID) & (Posts.claimed == True) & (Posts.completed == True))
+      .label("quests_completed"))
 
   # Override flask's expected 'id' naming scheme
   def get_id(self):
@@ -61,13 +61,13 @@ class Users(db.Model, UserMixin):
   def set_password(self, password):
     self.password = generate_password_hash(password)
 
-	def check_password(self, password):
-		return check_password_hash(self.password, password)
-	
-	# Console printing representation
-	def __repr__(self) -> str:
-		# Assume to keep email and hashed password hidden for security
-		return f'<USER {self.username} ({self.userID}) - Created: {self.creationDate}>'
+  def check_password(self, password):
+    return check_password_hash(self.password, password)
+   
+  # Console printing representation
+  def __repr__(self) -> str:
+    # Assume to keep email and hashed password hidden for security
+    return f'<USER {self.username} ({self.userID}) - Created: {self.creationDate}>'
 
 # Posts tables to handle each ReQuest
 class Posts(db.Model):
@@ -84,7 +84,7 @@ class Posts(db.Model):
   creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # Post creation date
   claimDate = db.Column(db.DateTime) # Current claim's start date
 
-	responses = db.relationship('Responses', backref='post', lazy=True) # Link posts to their responses
+  responses = db.relationship('Responses', backref='post', lazy=True) # Link posts to their responses
 
 # Each reponse to a certain ReQuest
 class Responses(db.Model):
