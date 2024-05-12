@@ -145,25 +145,35 @@ def leaderboard():
 @flaskApp.route("/search", methods=["POST", "GET"])
 def search():
     searching_form = forms.SearchForm()
+    quest_type = request.args.get('type')
+
+    # Determine the base query based on user and quest type
+    if quest_type == 'active':
+        base_query = Posts.query.filter_by(posterID=current_user.userID, completed=False)  # Active quests posted by the user
+    elif quest_type == 'claimed':
+        base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True)  # Claimed and completed quests by the user
+    else:
+        base_query = Posts.query
 
     if request.method == 'POST' and searching_form.validate_on_submit():
-        # If the show all button is pressed
+        search_query = searching_form.post_search_name.data
+
         if searching_form.show_all.data:
-            posts = Posts.query.all()
-        # If we are searching for a post, filter
+            posts = base_query.all()
         else:
-            search_query = searching_form.post_search_name.data
-            posts = Posts.query.filter(
+            posts = base_query.filter(
                 or_(
                     Posts.title.contains(search_query),
                     Posts.description.contains(search_query)
                 )
             ).all()
-    # Otherwise get every post for a get request
     else:
-        posts = Posts.query.all()
+        posts = base_query.all()
 
-    return render_template("search.html", searching_form=searching_form, posts=posts)
+    username = current_user.username if quest_type else ""
+    title = f"{quest_type.capitalize() if quest_type else 'All'} ReQuests of {username}" if username else "ReQuests"
+
+    return render_template("search.html", searching_form=searching_form, posts=posts, title=title)
 
 
 @flaskApp.route("/posting", methods=["POST", "GET"])
