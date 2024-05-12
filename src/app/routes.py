@@ -119,10 +119,11 @@ def post_quest():
         flash('ReQuest does not exist.', 'danger')
         return redirect(url_for('home'))
     
+    creation_date = post.creationDate.strftime('%Y-%m-%d')
     response_form = forms.ResponseForm()
 
 
-    return render_template('post-view.html', post=post, response_form=response_form)
+    return render_template('post-view.html', post=post, response_form=response_form, date=creation_date)
 
 # Leaderboard
 @flaskApp.route("/leaderboard")

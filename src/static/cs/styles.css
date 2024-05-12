@@ -271,12 +271,11 @@ button.btn.dropdown-toggle {
     color: black;
 }
 
-.control-panel {
+/* .control-panel {
     position: absolute;
     right: 0;
     top: 0;
-    width: 300px; /* Adjust width as needed */
-    z-index: 1000; /* Ensures it floats over other content */
+    z-index: 1000;
   }
   
   .sticky-controls {
@@ -284,7 +283,7 @@ button.btn.dropdown-toggle {
     width: 100%;
   }
   
-  @media (max-width: 991px) { /* Adjust breakpoint as needed */
+  @media (max-width: 991px) {
     .control-panel {
       position: static;
       width: 100%;
@@ -293,7 +292,7 @@ button.btn.dropdown-toggle {
     .sticky-controls {
       position: relative;
     }
-  }
+  } */
 
 /* CAROUSEL CUSTOMISATION
 -------------------------------------------------- */
