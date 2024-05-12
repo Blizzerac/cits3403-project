@@ -5,6 +5,7 @@ from app.models import Users, Posts # Particular tables to be used
 from app import models, forms
 from app import flaskApp, db
 from datetime import datetime
+from sqlalchemy import or_  # To search for titles or descriptions when searching
 
 # Settings
 debug = True
@@ -148,7 +149,12 @@ def search():
     # If we search for something, we filter
     if request.method == 'POST' and searching_form.validate_on_submit():
         search_query = searching_form.post_search_name.data
-        posts = Posts.query.filter(Posts.title.contains(search_query)).all()
+        posts = Posts.query.filter(
+            or_(
+                Posts.title.contains(search_query),
+                Posts.description.contains(search_query)
+            )
+        ).all()
     # Otherwise get every post
     else:
         posts = Posts.query.all()
