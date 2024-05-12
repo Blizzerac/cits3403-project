@@ -104,10 +104,25 @@ def dashboard():
     return render_template('home.html') #TEMP UNTIL DASH FINISHED
 
 # Post request
-@flaskApp.route('/post', methods=["POST", "GET"])
+@flaskApp.route('/view', methods=["POST", "GET"])
 @login_required
 def post_quest():
-    return render_template('home.html') # TEMP UNTIL COMPLETED
+    # If no postID given, return user to the home screen
+    post_id = request.args.get('postID') # Get the post ID to show
+    if not post_id:
+        flash('Incorrect usage.', 'danger')
+        return redirect(url_for('home'))
+    
+    # If no post exists, return user to home screen
+    post = Posts.query.filter_by(postID=post_id).first()
+    if not post:
+        flash('ReQuest does not exist.', 'danger')
+        return redirect(url_for('home'))
+    
+    response_form = forms.ResponseForm()
+
+
+    return render_template('post-view.html', post=post, response_form=response_form)
 
 # Leaderboard
 @flaskApp.route("/leaderboard")

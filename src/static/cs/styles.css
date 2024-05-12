@@ -233,7 +233,7 @@ button.btn.dropdown-toggle {
     margin-top: 10px;
 }
 
-/*styling of input areas for post-form*/
+/* styling of input areas for post-form */
 #post-form input:not([type="submit"]),
 #post-form textarea {
     margin-bottom: 15px;
@@ -255,6 +255,45 @@ button.btn.dropdown-toggle {
     background-position: center;
     margin-top: 30px;
 }
+
+/* Post View */
+.text-wrap {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+#post-header {
+    background: white;
+}
+
+.post-item {
+    padding: 1.5rem;
+    color: black;
+}
+
+.control-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 300px; /* Adjust width as needed */
+    z-index: 1000; /* Ensures it floats over other content */
+  }
+  
+  .sticky-controls {
+    position: fixed;
+    width: 100%;
+  }
+  
+  @media (max-width: 991px) { /* Adjust breakpoint as needed */
+    .control-panel {
+      position: static;
+      width: 100%;
+    }
+  
+    .sticky-controls {
+      position: relative;
+    }
+  }
 
 /* CAROUSEL CUSTOMISATION
 -------------------------------------------------- */

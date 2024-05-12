@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Quester's Cache || Home{% endblock %}
+{% block content %}
+
+<div class="container-fluid mt-5">
+  <div class="row">
+    <!-- Floating Sidebar Controls -->
+    <div class="control-panel container container background-overlay">
+      <div class="sticky-controls">
+        <h4>Post created on: {{ post.creationDate }}</h4>
+        {% if post.claimed%}
+        <h4>Post claimed by: <br>{{ post.claimer.username }}</h4>
+        <h4>Post claimed on: <br>{{ post.claimDate }}</h4>
+        {% else %}
+        <h4>Post claimed by: <br>No-one<h4>
+        {% endif %}
+        <!-- Assortment of buttons according to user type -->
+        {% if not post.completed %}
+          {% if not post.claimed and current_user.userID != post.posterID %}
+          <button class="btn btn-primary mb-2">Claim ReQuest</button>
+          {% elif post.claimed and current_user.userID == post.claimerID %}
+            {% if not post.waitingApproval %}
+            <button class="btn btn-primary mb-2">Finalise ReQuest</button>
+            {% endif %}
+            <button class="btn btn-primary mb-2">Relinquish Claim</button>
+          {% elif current_user.userID == post.posterID %}
+            {% if post.waitingApproval %}
+            <button class="btn btn-primary mb-2">Approve Submission</button>
+            <button class="btn btn-danger mb-2">Deny Submission</button>
+            {% endif %}
+          <button class="btn btn-danger mb-2">Cancel ReQuest</button>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col">
+      <div class="container background-overlay">
+        <div class="container rounded post-item" id="post-header">
+          <div class="d-flex justify-content-between">
+            <h3 class="text-wrap">{{ post.title }}</h3>
+            <span class="align-self-center badge bg-secondary p-3">{{ post.reward }} Gold</span>
+          </div>
+          <p class="text-wrap">{{ post.description }}</p>
+        </div>
+        
+        <!-- Additional content and featurettes here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="container background-overlay">
+
+</div>
+
+<div class="container background-overlay mt-5">
+  
+  <div class="container rounded post-item" id="post-header">
+    <div class="row">
+      <h3 class="text-wrap">{{ post.title }}</h3>
+      <h4>{{ post.reward }}</h4>
+    </div>
+    <p class="container">
+      {{ post.description }}
+    </p>
+  </div>
+
+  <hr class="featurette-divider">
+
+  <div class="row featurette">
+    <div class="col-md-7">
+      <h2 class="featurette-heading">Posting ReQuests</h2>
+      <p class="lead">Post ReQuests, calling for aid from your fellow adventurers in many different contexts. Whether it's seeking guidance on a challenging foe, requesting assistance in gathering resources, or rallying support for a noble cause, our application provides a platform for users to connect, collaborate, and embark on shared adventures together. </p>
+    </div>
+    <div class="col-md-5">
+      <img class="featurette-image img-fluid mx-auto tutorial-images rounded" data-src="holder.js/500x500/auto" alt="Adventurer posting a ReQuest" src="../static/img/post_request.jpg" data-holder-rendered="true">
+    </div>
+  </div>
+
+  <hr class="featurette-divider">
+
+  <div class="row featurette">
+    <div class="col-md-7 order-md-2">
+      <h2 class="featurette-heading">Searching for ReQuests</h2>
+      <p class="lead">Search for ReQuests to answer, delving into a diverse array of tasks spanning various realms and challenges. From uncovering hidden treasures to unraveling ancient mysteries, the search feature serves as a gateway to endless opportunities, guiding adventurers towards their next epic undertaking. With intuitive search filters and dynamic exploration tools, users can embark on a ReQuest-finding journey tailored to their interests and aspirations.</p>
+    </div>
+    <div class="col-md-5 order-md-1">
+      <img class="featurette-image img-fluid mx-auto tutorial-images rounded" data-src="holder.js/500x500/auto" alt="Adventurer searching for a ReQuest" src="../static/img/search_request.jpg" data-holder-rendered="true">
+    </div>
+  </div>
+
+  <hr class="featurette-divider">
+
+  <div class="row featurette">
+    <div class="col-md-7">
+      <h2 class="featurette-heading">Answering ReQuests:<span class="d-block">The FUN part</span></h2>
+      <p class="lead">Answer ReQuests, earn gold, and rise to the top of the monthly leaderboard. Endeavour to be the best to earn a monthly prize! Proof must be submitted when responding, to ensure the legitimacy and fairness of the competition. As you embark on your ReQuesting journey, not only do you have the chance to earn rewards and recognition, but you also contribute to a vibrant community of adventurers. Share your expertise, forge new connections, and make lasting memories along the way. </p>
+    </div>
+    <div class="col-md-5">
+      <img class="featurette-image img-fluid mx-auto tutorial-images rounded" data-src="holder.js/500x500/auto" alt="Adventurer at the top of the leaderboard" src="../static/img/answer_request.jpg" data-holder-rendered="true">
+    </div>
+  </div>
+</div> -->
+
+
+{% endblock %}
