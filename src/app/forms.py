@@ -105,3 +105,8 @@ class SearchForm(FlaskForm):
         "Submit", 
         render_kw={"class": "btn btn-success rounded"},
         id="submit-search")
+
+    show_all = SubmitField(
+        "Show All", 
+        render_kw={"class": "btn btn-primary rounded"},
+        id="show-all-search")

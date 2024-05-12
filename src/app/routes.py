@@ -146,16 +146,20 @@ def leaderboard():
 def search():
     searching_form = forms.SearchForm()
 
-    # If we search for something, we filter
     if request.method == 'POST' and searching_form.validate_on_submit():
-        search_query = searching_form.post_search_name.data
-        posts = Posts.query.filter(
-            or_(
-                Posts.title.contains(search_query),
-                Posts.description.contains(search_query)
-            )
-        ).all()
-    # Otherwise get every post
+        # If the show all button is pressed
+        if searching_form.show_all.data:
+            posts = Posts.query.all()
+        # If we are searching for a post, filter
+        else:
+            search_query = searching_form.post_search_name.data
+            posts = Posts.query.filter(
+                or_(
+                    Posts.title.contains(search_query),
+                    Posts.description.contains(search_query)
+                )
+            ).all()
+    # Otherwise get every post for a get request
     else:
         posts = Posts.query.all()
 
