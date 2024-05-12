@@ -1,7 +1,7 @@
 # Imports
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, login_user, logout_user, current_user
-from app.models import Users # The user table in the database
+from app.models import Users, Posts # Particular tables to be used
 from app import models, forms
 from app import flaskApp, db
 from datetime import datetime
@@ -145,19 +145,16 @@ def leaderboard():
 def search():
     searching_form = forms.SearchForm()
 
-    #need to add post and get conditions here
-
-    # example post data, hardcoded for now
-    posts = [
-        {"title": "Post 1", "description": "Description of post 1", "reward": "20 gold"},
-        {"title": "Post 2", "description": "Description of post 2", "reward": "30 gold"},
-        {"title": "Post 3", "description": "Description of post 3", "reward": "250 gold"},
-        {"title": "Post 4", "description": "Description of post 4", "reward": "210 gold"},
-        {"title": "Post 5", "description": "Description of post 5", "reward": "220 gold"},
-        {"title": "Post 6", "description": "Description of post 6. Further description of post 6 to illustrate the dynamic nature of this div", "reward": "200 gold"}
-    ]
+    # If we search for something, we filter
+    if request.method == 'POST' and searching_form.validate_on_submit():
+        search_query = searching_form.post_search_name.data
+        posts = Posts.query.filter(Posts.title.contains(search_query)).all()
+    # Otherwise get every post
+    else:
+        posts = Posts.query.all()
 
     return render_template("search.html", searching_form=searching_form, posts=posts)
+
 
 @flaskApp.route("/posting", methods=["POST", "GET"])
 def posting():
