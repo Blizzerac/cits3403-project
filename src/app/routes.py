@@ -155,18 +155,19 @@ def search():
     else:
         base_query = Posts.query
 
+    # Searching or showing all
     if request.method == 'POST' and searching_form.validate_on_submit():
-        search_query = searching_form.post_search_name.data
-
-        if searching_form.show_all.data:
+        if 'show_all' in request.form:
             posts = base_query.all()
         else:
+            search_query = searching_form.post_search_name.data
             posts = base_query.filter(
                 or_(
                     Posts.title.contains(search_query),
                     Posts.description.contains(search_query)
                 )
             ).all()
+    # GET request for page
     else:
         posts = base_query.all()
 
