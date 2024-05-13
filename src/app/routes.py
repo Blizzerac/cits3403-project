@@ -153,7 +153,7 @@ def search():
     elif quest_type == 'claimed':
         base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True)  # Claimed and completed quests by the user
     else:
-        base_query = Posts.query
+        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False) # Complex inequality query
 
     # Searching or showing all
     if request.method == 'POST' and searching_form.validate_on_submit():
@@ -172,9 +172,9 @@ def search():
         posts = base_query.all()
 
     username = current_user.username if quest_type else ""
-    title = f"{quest_type.capitalize() if quest_type else 'All'} ReQuests of {username}" if username else "ReQuests"
+    title = f"{quest_type.capitalize() if quest_type else 'All'} ReQuests of {username}" if username else "Available ReQuests"
 
-    return render_template("search.html", searching_form=searching_form, posts=posts, title=title)
+    return render_template("search.html", searching_form=searching_form, posts=posts, title=title, quest_type=quest_type)
 
 
 @flaskApp.route("/posting", methods=["POST", "GET"])

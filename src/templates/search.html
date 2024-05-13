@@ -31,7 +31,9 @@
             <h2>{{ post.title }}</h2>
             <p>{{ post.description }}</p>
             <p>Reward: {{ post.reward }}</p>
-            <button class="btn btn-primary">Complete ReQuest!</button>
+            {% if not quest_type %}
+              <button class="btn btn-primary">Complete ReQuest!</button>
+            {% endif %}
           </div>
         {% endfor %}
       </div>
