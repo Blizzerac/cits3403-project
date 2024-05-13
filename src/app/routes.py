@@ -151,9 +151,13 @@ def search():
     if quest_type == 'active':
         base_query = Posts.query.filter_by(posterID=current_user.userID, completed=False)  # Active quests posted by the user
     elif quest_type == 'claimed':
-        base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True)  # Claimed and completed quests by the user
+        base_query = Posts.query.filter_by(claimerID=current_user.userID, claimed=True, completed=False)  # Claimed quests by the user, not yet completeds
+    elif quest_type == 'completed':
+        base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True)  # Completed quests by the user
+    elif quest_type == 'inactive':
+        base_query = Posts.query.filter(Posts.posterID == current_user.userID, Posts.completed==True, Posts.claimerID != current_user.userID) # Complex inequality query, completed quests by others posted by user
     else:
-        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False) # Complex inequality query
+        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False) # Complex inequality query, default
 
     # Searching or showing all
     if request.method == 'POST' and searching_form.validate_on_submit():

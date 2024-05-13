@@ -44,7 +44,9 @@
           <div class="dropdown-menu dropdown-menu-right">
             <a class="dropdown-item link-mute" href="{{ url_for('dashboard') }}">Dashboard</a>
             <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='active') }}">Active Quests</a>
-            <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='claimed') }}">Claimed Quests</a>
+            <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='inactive') }}">Inactive Quests</a>
+            <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='claimed') }}">Claimed Quests</a>
+            <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='completed') }}">Completed Quests</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{{url_for('logout')}}">Logout</a>
           </div>
