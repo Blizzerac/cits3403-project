@@ -33,7 +33,7 @@
         <a role="button" class="btn btn-success text-light link-mute me-2" href="{{ url_for('search') }}">
           Search For ReQuests
         </a>
-        <a role="button" class="btn btn-primary text-light link-mute {{ 'disabled' if not current_user.is_authenticated }}" href="{{ url_for('posting') if current_user.is_authenticated else '#' }}">
+        <a role="button" class="btn btn-primary text-light link-mute {{ 'disabled' if not current_user.is_authenticated }}" href="{{ url_for('post_quest') if current_user.is_authenticated else '#' }}">
           Post New ReQuest
         </a>
         {% if current_user.is_authenticated %}
