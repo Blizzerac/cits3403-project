@@ -19,11 +19,13 @@
         {% if not post.completed %}
         {% if not post.claimed and current_user.userID != post.posterID %}
         <button class="btn btn-primary mb-2">Claim ReQuest</button>
+
         {% elif post.claimed and current_user.userID == post.claimerID %}
           {% if not post.waitingApproval %}
           <button class="btn btn-primary mb-2">Finalise ReQuest</button>
           {% endif %}
           <button class="btn btn-primary mb-2">Relinquish Claim</button>
+
         {% elif current_user.userID == post.posterID %}
           {% if post.waitingApproval %}
           <button class="btn btn-primary mb-2">Approve Submission</button>
@@ -37,18 +39,30 @@
 
     <!-- Main Content -->
     <div class="mt-3 row bg-wood-large">
-      <div class="container">
-        <div class="container rounded post-item quest-card" id="post-header">
-          <div class="d-flex justify-content-between">
-            <h3 class="text-wrap">{{ post.title }}</h3>
-            <span class="align-self-center badge bg-secondary">{{ post.reward }} Gold</span>
-          </div>
-          <p class="text-wrap">{{ post.description }}</p>
+      <div class="containerrounded post-item quest-card" id="post-header">
+        <h2 class="text-center p-0 m-0 fw-bold">{{ post.poster.username }}'s ReQuest</h2>
+        <div class="d-flex justify-content-between">
+          <h3 class="text-wrap">{{ post.title }}</h3>
+          <span class="align-self-center badge bg-secondary">{{ post.reward }} Gold</span>
         </div>
+        <p class="text-wrap">{{ post.description }}</p>
       </div>
 
       {% for response in post.responses %}
+      <div class="container rounded post-item quest-card">
+        {% if response.responderID == post.posterID %}
+        <h2 class="text-left p-0 m-0 fw-bold">{{ response.responder.username }}</h2>
+        {% else %}
+        <h2 class="text-right p-0 m-0 fw-bold">{{ response.responder.username }}</h2>
+        {% endif %}
+        <p class="text-wrap">{{ response.msg }}</p>
+      </div>
       {% endfor %}
+
+      <!-- Form to add response -->
+      <div class="container rounded">
+
+      </div>
     </div>
   </div>
 </div>

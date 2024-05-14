@@ -15,9 +15,9 @@ class Users(db.Model, UserMixin):
     gold = db.Column(db.BigInteger, default=0, nullable=False) # User's currency
     creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # User account creation date
 
-    posts = db.relationship('Posts', backref='poster', lazy='dynamic', foreign_keys='Posts.posterID') # Link user to posts they made
-    claims = db.relationship('Posts', backref='claimer', lazy='dynamic', foreign_keys='Posts.claimerID') # Link user to posts they've claimed
-    responses = db.relationship('Responses', backref='responder', lazy='dynamic', foreign_keys='Responses.responderID') # Link user to responses theyve made
+    posts = db.relationship('Posts', backref='poster', lazy='dynamic', foreign_keys='Posts.posterID') # Link user to posts they made - backpopulates Posts as well
+    claims = db.relationship('Posts', backref='claimer', lazy='dynamic', foreign_keys='Posts.claimerID') # Link user to posts they've claimed - backpopulates Posts as well
+    responses = db.relationship('Responses', backref='responder', lazy='dynamic', foreign_keys='Responses.responderID') # Link user to responses theyve made - backpopulates Responses as well
 
     # Number of quests a user has posted
     @hybrid_property

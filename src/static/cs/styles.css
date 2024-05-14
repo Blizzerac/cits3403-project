@@ -272,8 +272,8 @@ button.btn.dropdown-toggle {
     overflow-wrap: break-word;
 }
 
-#post-header span.badge {
-    margin-top: -0.75rem; /* Reward badge */
+#post-header span.badge { /* Reward badge */
+    margin-top: -1rem;
     padding: 1.15rem;
     color: gold;
     font-weight: bolder;
