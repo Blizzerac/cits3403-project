@@ -7,9 +7,7 @@ $(document).ready(function() {
   $('.toggle-login').click(swapLoginForm)
 
   // Show the toast if any exist
-  $('.toast').toast({
-    delay: 1500  // Delay in milliseconds
-  }).toast('show');
+  $('.toast').toast('show');
 
   // Initialise Bootstrap dropdowns and other events
   handle_dropdownMenu()
@@ -60,7 +58,7 @@ function handle_questPost() {
   questPost_checkFields();
 
   // Call checkFields() when  input fields change
-  $('#first-post-input, #second-post-input').on('input', questPost_checkFields);
+  $('#first-post-input, #second-post-input, #third-post-input').on('input', questPost_checkFields);
 }
 
 // Function to check if inputs for posting are filled

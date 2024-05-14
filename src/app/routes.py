@@ -4,12 +4,7 @@ from flask_login import login_required, login_user, logout_user, current_user
 from app.models import Users, Posts # Particular tables to be used
 from app import models, forms
 from app import flaskApp, db
-from datetime import datetime
-from sqlalchemy import or_  # To search for titles or descriptions when searching
-
-# Settings
-debug = True
-
+from sqlalchemy.sql.expression import func, or_ # Methods to use when querying database
 
 ###########
 # Routes  #
@@ -22,7 +17,21 @@ debug = True
 @flaskApp.route("/home")
 @flaskApp.route("/")
 def home():
-    return render_template("home.html")
+    # Set display limit on quests
+    DISPLAY_LIMIT = 3
+
+    # Fetch only unclaimed quests in random order
+    quests = db.session.query(Posts) \
+        .filter(Posts.claimed == False) \
+        .order_by(func.random()) \
+        .limit(DISPLAY_LIMIT) \
+        .all()
+
+    # Check if there are any unclaimed quests to display
+    moreQuests = len(quests) > DISPLAY_LIMIT-1 # True if more quests than can possibly display, False otherwise
+    unclaimedQuests = len(quests) > 0  # True if there exists unclaimed quests, False otherwise
+
+    return render_template("home.html", quests=quests, moreQuests=moreQuests, unclaimedQuests=unclaimedQuests)
 
 # Login
 @flaskApp.route("/signup", methods=["POST", "GET"])
@@ -61,7 +70,7 @@ def login():
                 # If failed, rollback database and warn user.
                 except Exception as e:
                     db.session.rollback()
-                    if debug:
+                    if flaskApp.debug:
                         flash('Error adding user to database. {}'.format(e), 'danger')
                     else: 
                         flash('Failed creating an account. Please try again later or contact staff.', 'danger')
@@ -95,6 +104,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash('Logged out successfully!', 'success')
     return redirect(url_for('home'))
 
 # User dashboard
@@ -107,7 +117,32 @@ def dashboard():
 @flaskApp.route('/post', methods=["POST", "GET"])
 @login_required
 def post_quest():
-    return render_template('home.html') # TEMP UNTIL COMPLETED
+    posting_form = forms.PostForm()
+    
+    if request.method == 'POST':
+        if posting_form.validate_on_submit():
+            # Check if a user has enough gold & user's available gold
+            if not current_user.quest_create(posting_form.post_reward.data):
+                flash('Not enough gold to uphold the reward!', 'danger')
+            
+            else:
+                try:
+                    new_post = Posts(posterID=current_user.userID, title=posting_form.post_name.data, description=posting_form.post_description.data, reward=posting_form.post_reward.data)
+                    db.session.add(new_post)
+                    db.session.commit()
+                    flash('ReQuest posted successfully!', 'success')
+                    return redirect(url_for('home'))
+            
+                except Exception as e:
+                    db.session.rollback()
+                    if flaskApp.debug:
+                        flash('Error adding ReQuest to database. {}'.format(e), 'danger')
+                    else: 
+                        flash('Failed posting ReQuest. Please try again later or contact staff.', 'danger')
+
+    gold = current_user.gold_available # Get user's available gold
+    return render_template("posting.html", posting_form=posting_form, gold_available=gold)
+
 
 # Leaderboard
 @flaskApp.route("/leaderboard")
@@ -181,10 +216,22 @@ def search():
     return render_template("search.html", searching_form=searching_form, posts=posts, title=title, quest_type=quest_type)
 
 
-@flaskApp.route("/posting", methods=["POST", "GET"])
-def posting():
 
-    #need to add post and get conditions here
 
-    posting_form = forms.PostForm()
-    return render_template("posting.html", posting_form=posting_form)
+# THIS ROUTE MUST BE REMOVED -- ONLY FOR DEVELOPMENT PURPOSES
+@flaskApp.route("/givegold")
+@login_required
+def giveGold():
+    try:
+        current_user.add_gold(500)
+        db.session.commit()
+        flash('Given user 500 gold.', 'success')
+    
+    except Exception as e:
+        db.session.rollback()
+        if flaskApp.debug:
+            flash('Error giving gold. {}'.format(e), 'danger')
+        else: 
+            flash('ERROR.', 'danger')
+    
+    return redirect(url_for('home'))
