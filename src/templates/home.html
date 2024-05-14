@@ -48,23 +48,29 @@
   </a>
 </div>
 
-
-<!-- Quest List and Leaderboard -->
-<div class="container bg-wood">
-    <h1>Available ReQuests</h1>
+<!-- Quest List -->
+<div class="container bg-wood mb-3 mb-md-5 pb-2 pb-md-4" id="quest-list">
+    <h1 class="text-center pb-1 pb-md-3">Available Quests</h1>
     <div class="list-group">
+      {% if unclaimedQuests %}
+      {% for quest in quests %}
       <a href ="#" class="quest-card list-group-item list-group-item-action">
         <div class="d-flex justify-content-between">
-          <h5 class="mb-1">ReQuest Title</h5>
-          <small>ReQuest Reward</small>
+          <h5 class="mb-1 text-wrap">{{ quest.title }}</h5>
+          <small>Reward: {{ quest.reward }}g</small>
         </div>
-        <p>lorem ipsum</p>
+        <p class="text-wrap">{{ quest.description | truncate(250, true, '.....') }}</p>
       </a>
-  </div>
-  <br>
+      {% endfor %}
+      {% else %}
+      <h4 class="text-center"> No unclaimed quests available at this time. </p>
+      {% endif %}
+    </div>
+  {% if moreQuests %}
+  <a href="{{url_for('search')}}" class="btn btn-primary d-flex justify-content-center mt-2 mt-md-3">View More Quests</a>
+  {% endif %}
 </div>
 
-<br>
 
 <!--   Featurettes
 ================================================== -->
