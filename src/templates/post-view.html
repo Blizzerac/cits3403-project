@@ -54,9 +54,9 @@
       {% for response in post.responses %}
       <div class="container rounded post-item quest-card mt-3">
         {% if response.responderID == post.posterID %}
-        <h2 class="text-left p-0 m-0 fw-bold">{{ response.responder.username }}</h2>
+        <h2 class="text-left p-0 m-0">{{ response.responder.username }}</h2>
         {% else %}
-        <h2 class="text-right p-0 m-0 fw-bold">{{ response.responder.username }}</h2>
+        <h2 class="text-right p-0 m-0">{{ response.responder.username }}</h2>
         {% endif %}
         <p class="text-wrap">{{ response.msg }}</p>
       </div>
