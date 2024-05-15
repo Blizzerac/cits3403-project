@@ -270,6 +270,7 @@ button.btn.dropdown-toggle {
 .text-wrap {
     word-wrap: break-word;
     overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 #post-header span.badge { /* Reward badge */
@@ -282,32 +283,9 @@ button.btn.dropdown-toggle {
 .post-item {
     padding: 1.5rem;
     color: black;
+    width: 100%; /* Ensure even a small quest takes up all the room given to it */
 }
 
-
-
-/* .control-panel {
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 1000;
-  }
-  
-  .sticky-controls {
-    position: fixed;
-    width: 100%;
-  }
-  
-  @media (max-width: 991px) {
-    .control-panel {
-      position: static;
-      width: 100%;
-    }
-  
-    .sticky-controls {
-      position: relative;
-    }
-  } */
 
 /* CAROUSEL CUSTOMISATION
 -------------------------------------------------- */
