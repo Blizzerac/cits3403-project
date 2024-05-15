@@ -69,9 +69,20 @@ a.link-mute {
     min-height: 64px;
 }
 
+button.btn.dropdown-toggle {
+    padding: 0 0 0 0 !important;  /* Remove padding around dropdown button */
+}
+
 .navbar-svg-icon {
     width: 40px;
 }
+
+@media (max-width: 991px) {
+    div.dropdown {
+        padding-top: 5px;
+    }
+}
+
 
 .form-container {
     background-image: url("../img/bg-woodplank-scaled.png");
