@@ -31,8 +31,7 @@
             <h2>{{ post.title }}</h2>
             <p>{{ post.description }}</p>
             <p>Reward: {{ post.reward }}</p>
-            <!-- <a href=" url_for('post-view', post_id=post.postID) " class="btn btn-primary">Check Out ReQuest!</a> -->
-            <a href="#" class="btn btn-primary">Check Out ReQuest!</a> <!-- SINGLE QUEST VIEW NOT COMPLETED YET -->
+            <a href="{{ url_for('quest_view', postID=post.postID) }}" class="btn btn-primary">Check Out ReQuest!</a>
           </div>
         {% endfor %}
       </div>

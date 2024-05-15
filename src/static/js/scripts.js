@@ -12,23 +12,15 @@ $(document).ready(function() {
   // Initialise Bootstrap dropdowns and other events
   handle_dropdownMenu();
 
-
   // Handle quest search form
-  handleSearchInput();
+  check_searchInput();
+
+  // Handle quest modification buttons
+  handle_questView();
 
   // Handle gold farming
-  const coin_stack = document.getElementById("coin-stack");
-  const cash_in_button = document.getElementById("cash-in-button");
-
-  try {
-    coin_stack.addEventListener("click", addGold);
-    cash_in_button.addEventListener("click", cashIn);
-  }
-  catch (error) {
-    if (verbose) {
-      console.error("Error adding event listeners to gold farming buttons: " + error);
-    }
-  }
+  $('#coin-stack').click(addGold);
+  $('#cash-in-button').click(cashIn);
 });
 
 // Swap between account login and account creation
@@ -104,7 +96,7 @@ function handleSearchInput() {
 }
 
 // Function to check if the search input has enough characters
-function checkSearchInput() {
+function check_searchInput() {
   let searchInput = $('#search-input').val();
 
   // Minimum length of 1 for enabling the search

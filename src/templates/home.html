@@ -54,7 +54,7 @@
     <div class="list-group">
       {% if unclaimedQuests %}
       {% for quest in quests %}
-      <a href ="#" class="quest-card list-group-item list-group-item-action">
+      <a href ="{{ url_for('quest_view', postID=quest.postID) }}" class="quest-card list-group-item list-group-item-action">
         <div class="d-flex justify-content-between">
           <h5 class="mb-1 text-wrap">{{ quest.title }}</h5>
           <small>Reward: {{ quest.reward }}g</small>

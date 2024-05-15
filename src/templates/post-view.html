@@ -65,7 +65,7 @@
       <!-- Form to add response -->
       {% if not post.completed and ((current_user.userID == post.claimerID) or (current_user.userID == post.posterID)) %}
       <div class="container rounded post-item quest-card mt-5">
-        <form method="POST" action="{{ url_for('post_quest', postID=post.postID) }}">
+        <form method="POST" action="{{ url_for('quest_view', postID=post.postID) }}">
           {{ response_form.hidden_tag() }}
           <div class="form-group">
             {{ response_form.response.label }}
