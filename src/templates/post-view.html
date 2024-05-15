@@ -52,7 +52,7 @@
       </div>
 
       {% for response in post.responses %}
-      <div class="container rounded post-item quest-card">
+      <div class="container rounded post-item quest-card mt-3">
         {% if response.responderID == post.posterID %}
         <h2 class="text-left p-0 m-0 fw-bold">{{ response.responder.username }}</h2>
         {% else %}
@@ -63,8 +63,17 @@
       {% endfor %}
 
       <!-- Form to add response -->
-      <div class="container rounded">
-
+      <div class="container rounded post-item quest-card mt-5">
+        <form method="POST" action="{{ url_for('post_quest', postID=post.postID) }}">
+          {{ response_form.hidden_tag() }}
+          <div class="form-group">
+            {{ response_form.response.label }}
+            {{ response_form.response }}
+          </div>
+          <div class="form-group d-flex justify-content-center">
+            {{ response_form.submit }}
+          </div>
+        </form>
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 # Imports
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, login_user, logout_user, current_user
-from app.models import Users, Posts # Particular tables to be used
+from app.models import Users, Posts, Responses # Particular tables to be used
 from app import models, forms
 from app import flaskApp, db
 from datetime import datetime
@@ -23,6 +23,7 @@ debug = True
 @flaskApp.route("/")
 def home():
     return render_template("home.html")
+
 
 # Login
 @flaskApp.route("/signup", methods=["POST", "GET"])
@@ -90,6 +91,7 @@ def login():
 
     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup)
 
+
 # User logout
 @flaskApp.route('/logout', methods=["POST", "GET"])
 @login_required
@@ -97,11 +99,13 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+
 # User dashboard
 @flaskApp.route('/dashboard', methods=["POST", "GET"])
 @login_required
 def dashboard():
     return render_template('home.html') #TEMP UNTIL DASH FINISHED
+
 
 # Post request
 @flaskApp.route('/view', methods=["POST", "GET"])
@@ -122,8 +126,32 @@ def post_quest():
     creation_date = post.creationDate.strftime('%Y-%m-%d')
     response_form = forms.ResponseForm()
 
+    if response_form.validate_on_submit():
+        # Add the response to the database
+        new_response = Responses(
+            responderID=current_user.userID,
+            postID=post.postID,
+            msg=response_form.response.data
+        )
+        db.session.add(new_response)
+        try:
+            db.session.commit()
+        # If failed, rollback database and warn user.
+        except Exception as e:
+            db.session.rollback()
+            if debug:
+                flash('Error adding response to database. {}'.format(e), 'danger')
+            else: 
+                flash('Failed adding response. Please try again later or contact staff.', 'danger')
+
+        # Update posts
+        post = Posts.query.filter_by(postID=post_id).first()
+        flash('Response added successfully!', 'success')
+        return redirect(url_for('post_quest', postID=post.postID)) # Ensure form cant be resubmitted by redirecting user to same page (deletes current form)
+
 
     return render_template('post-view.html', post=post, response_form=response_form, date=creation_date)
+
 
 # Leaderboard
 @flaskApp.route("/leaderboard")
