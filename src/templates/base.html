@@ -33,7 +33,7 @@
         <a role="button" class="btn btn-success text-light link-mute mr-2" href="{{ url_for('search') }}">
           Search For ReQuests
         </a>
-        <a role="button" class="btn btn-primary text-light link-mute {{ 'disabled' if not current_user.is_authenticated }}" href="{{ url_for('post_quest') if current_user.is_authenticated else '#' }}">
+        <a role="button" class="btn btn-primary text-light link-mute mr-2 {{ 'disabled' if not current_user.is_authenticated }}" href="{{ url_for('post_quest') if current_user.is_authenticated else '#' }}">
           Post New ReQuest
         </a>
         {% if current_user.is_authenticated %}
@@ -41,7 +41,7 @@
           <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <img src="{{ url_for('static', filename='img/icons/user.svg') }}" alt="User" class="navbar-svg-icon" title="Account">
           </button>
-          <div class="dropdown-menu dropdown-menu-right">
+          <div class="dropdown-menu dropdown-menu-lg-right">
             <a class="dropdown-item link-mute" href="{{ url_for('dashboard') }}">Dashboard</a>
             <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='active') }}">Active Quests</a>
             <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='inactive') }}">Inactive Quests</a>
