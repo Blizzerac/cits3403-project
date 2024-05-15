@@ -279,6 +279,13 @@ button.btn.dropdown-toggle {
 
 /* MODAL CUSTOMISATION
 -------------------------------------------------- */
+
+.modal-text ul li{
+    list-style-type: none;
+    padding-left: 0; /* Removes padding from the left side where bullets usually are */
+    margin: 0; /* Removes default margin from the list */
+}
+
 .modal-dialog {
     display: flex;
     justify-content: center;
@@ -310,6 +317,8 @@ button.btn.dropdown-toggle {
     text-align: center;
     padding: 20px; /* Adds some padding around the text */
     /* pointer-events: none; Makes text non-interactive */
+    font-size: 0.9rem; /* Base font size for modal text */
+
 }
 
 /* CAROUSEL CUSTOMISATION

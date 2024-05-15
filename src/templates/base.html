@@ -86,21 +86,24 @@
   </div>
 
   <!-- Contributions modal -->
-  <div class="modal fade" id="contributionsModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal fade" id="contributions-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
-        <img src="{{ url_for('static', filename='img/scroll.png') }}" alt="How It Works"/>
+        <img src="{{ url_for('static', filename='img/scroll.png') }}" alt="Contributions"/>
         <div class="modal-text">
           <h1 class="font-bold size-3em">Contributions</h1>
           <ul>
-            <li>GPT: <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer nofollow">https://chatgpt.com</a></li>
-            <li>Bootstrap examples</li>
+            <li>AI Art:
+              <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer nofollow">ChatGPT</a>,
+              <a href="https://deepai.org/" target="_blank" rel="noopener noreferrer nofollow">DeepAI</a>
+          </li>
+            <li>Bootstrap Examples: <a href="https://getbootstrap.com/docs/4.0/getting-started/introduction/" target="_blank" rel="noopener noreferrer nofollow">Bootstrap Tutorial</a> </li>
             <li>Icon Website: <a href="https://iconscout.com" target="_blank" rel="noopener noreferrer nofollow">https://iconscout.com</a></li>
-            <li></li>
-            <li>DEV1</li>
-            <li>DEV2</li>
-            <li>DEV3</li>
-            <li>DEV4</li>
+            <li class="underline">Developers:</li>
+            <li>Stefan Andonov</li>
+            <li>Cameron O'Neill</li>
+            <li>Brendan Tan</li>
+            <li>Kyle Dunstall</li>
           </ul>
         </div>
       </div>
@@ -112,7 +115,7 @@
     <div class="row justify-content-center">
       <div class="col-12 col-md-10 footer-content">
         <p class="float-right"><a href="#">Back to top</a></p>
-        <p>© 2024 Quester's Cache · <a href='#contributionsModal' data-toggle="modal" data-target="#contributionsModal">Contributions</a></p>
+        <p>© 2024 Quester's Cache · <a href='#contributions-modal' data-toggle="modal" data-target="#contributions-modal">Contributions</a></p>
       </div>
     </div>
   </footer>
