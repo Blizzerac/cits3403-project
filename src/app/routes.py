@@ -218,7 +218,9 @@ def posting():
     return render_template("posting.html", posting_form=posting_form)
 
 
+
 # Handle Post Control Panel Buttons
+
 @flaskApp.route('/claim_request/<int:post_id>', methods=['POST'])
 @login_required
 def claim_request(post_id):
@@ -226,10 +228,15 @@ def claim_request(post_id):
     if post and not post.claimed and current_user.userID != post.posterID:
         post.claimed = True
         post.claimerID = current_user.userID
-        #claim date
-        db.session.commit()
-        return jsonify({"message": "ReQuest claimed successfully!"}), 200
+        post.claimDate = datetime.now()
+        try:
+            db.session.commit()
+            return jsonify({"message": "ReQuest claimed successfully!"}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"message": f"Unable to claim ReQuest - Database error."}), 400
     return jsonify({"message": "Unable to claim ReQuest."}), 400
+
 
 @flaskApp.route('/finalise_request/<int:post_id>', methods=['POST'])
 @login_required
@@ -237,20 +244,31 @@ def finalise_request(post_id):
     post = Posts.query.get(post_id)
     if post and post.claimed and current_user.userID == post.claimerID and not post.waitingApproval:
         post.waitingApproval = True
-        db.session.commit()
-        return jsonify({"message": "ReQuest finalised successfully!"}), 200
+        try:
+            db.session.commit()
+            return jsonify({"message": "ReQuest finalised successfully!"}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"message": f"Unable to finalise ReQuest - Database error."}), 400
     return jsonify({"message": "Unable to finalise ReQuest."}), 400
+
 
 @flaskApp.route('/relinquish_claim/<int:post_id>', methods=['POST'])
 @login_required
 def relinquish_claim(post_id):
     post = Posts.query.get(post_id)
     if post and post.claimed and current_user.userID == post.claimerID:
-        post.claimed = False
+        post.claimed = False # Reset claim
         post.claimerID = None
-        db.session.commit()
-        return jsonify({"message": "Claim relinquished successfully!"}), 200
-    return jsonify({"message": "Unable to relinquish claim."}), 400
+        post.claimDate = None
+        try:
+            db.session.commit()
+            return jsonify({"message": "ReQuest claim relinquished successfully!"}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"message": f"Unable to relinquish ReQuest claim - Database error."}), 400
+    return jsonify({"message": "Unable to relinquish ReQuest claim."}), 400
+
 
 @flaskApp.route('/approve_submission/<int:post_id>', methods=['POST'])
 @login_required
@@ -259,9 +277,15 @@ def approve_submission(post_id):
     if post and post.waitingApproval and current_user.userID == post.posterID:
         post.completed = True
         post.waitingApproval = False
-        db.session.commit()
-        return jsonify({"message": "Submission approved successfully!"}), 200
-    return jsonify({"message": "Unable to approve submission."}), 400
+        try:
+            # UPDATE USER'S GOLD
+            db.session.commit()
+            return jsonify({"message": "ReQuest submission approved successfully!"}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"message": f"Unable to approve ReQuest submission - Database error."}), 400
+    return jsonify({"message": "Unable to approve ReQuest submission."}), 400
+
 
 @flaskApp.route('/deny_submission/<int:post_id>', methods=['POST'])
 @login_required
@@ -269,16 +293,27 @@ def deny_submission(post_id):
     post = Posts.query.get(post_id)
     if post and post.waitingApproval and current_user.userID == post.posterID:
         post.waitingApproval = False
-        db.session.commit()
-        return jsonify({"message": "Submission denied."}), 200
+        try:
+            db.session.commit()
+            return jsonify({"message": "ReQuest submission denied."}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"message": f"Unable to deny ReQuest submission - Database error."}), 400
     return jsonify({"message": "Unable to deny submission."}), 400
+
 
 @flaskApp.route('/cancel_request/<int:post_id>', methods=['POST'])
 @login_required
 def cancel_request(post_id):
     post = Posts.query.get(post_id)
-    if post and current_user.userID == post.posterID:
-        db.session.delete(post)
-        db.session.commit()
-        return jsonify({"message": "ReQuest cancelled successfully."}), 200
+    if post and not post.completed and current_user.userID == post.posterID:
+        try:
+            # UPDATE USER'S GOLD
+            db.session.delete(post)
+            db.session.commit()
+            return jsonify({"message": "ReQuest cancelled successfully."}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"message": f"Unable to cancel ReQuest - Database error."}), 400
     return jsonify({"message": "Unable to cancel ReQuest."}), 400
+
