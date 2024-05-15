@@ -5,8 +5,10 @@
 <!-- Gold Farm -->
 <div class="container d-flex flex-column justify-content-center align-items-center bg-wood" id="gold-farm">
     <img src="../static/img/coins-scaled.png" alt="coins" onclick="addGold()">
-    <p>Click the coins to earn gold!</p>
-    <p>Coins earned: <span id="gold">0</span>g</p>
-    <button class="btn btn-primary" onclick="cashIn()">Cash In!</button>
+    <div class="col-md-7 col-sm-5 d-flex flex-column justify-content-center align-items-center quest-card">
+        <p>Click the coins to earn gold!</p>
+        <p>Coins earned: <span id="gold">0</span>g</p>
+        <button class="btn btn-primary" onclick="cashIn()">Cash In!</button>
+    </div>
 </div>
 {% endblock %}

@@ -261,6 +261,11 @@ button.btn.dropdown-toggle {
     margin-top: 30px;
     padding-bottom: 40px;
 }
+#gold-farm div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color:black;
+}
 
 /* Dtyling of input areas for post-form */
 #post-form input:not([type="submit"]),
