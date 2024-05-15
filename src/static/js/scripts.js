@@ -104,3 +104,29 @@ function checkSearchInput() {
       $('#submit-search').prop('disabled', true);
   }
 }
+
+let coins = 0;
+function addGold() {
+  coins += 10;
+  console.log("Added 10 gold! Coins now at: " + coins + "g");
+  document.getElementById("gold").innerHTML = coins;
+}
+
+function cashIn() {
+  const coinsValue = coins;
+  fetch('/gold-farm', {
+    method: 'POST',
+    body: JSON.stringify({coins: coinsValue}),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(data => {
+    console.log(data);
+    coins = 0;
+    document.getElementById("gold").innerHTML = coins;
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+}
