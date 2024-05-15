@@ -66,7 +66,7 @@ class Posts(db.Model):
     creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # Post creation date
     claimDate = db.Column(db.DateTime, nullable=True) # Current claim's start date
 
-    responses = db.relationship('Responses', backref='post', lazy=True, order_by='Responses.creationDate.asc()') # Link posts to their responses, sorted by creation date
+    responses = db.relationship('Responses', backref='post', lazy=True, cascade='all, delete-orphan', order_by='Responses.creationDate.asc()') # Link posts to their responses, sorted by creation date (ensure post deletion deletes responses)
 
 # Each reponse to a certain ReQuest
 class Responses(db.Model):
