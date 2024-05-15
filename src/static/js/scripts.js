@@ -17,6 +17,20 @@ $(document).ready(function() {
 
   // Handle quest search form
   handleSearchInput();
+
+  // Handle gold farming
+  const coin_stack = document.getElementById("coin-stack");
+  const cash_in_button = document.getElementById("cash-in-button");
+
+  try {
+    coin_stack.addEventListener("click", addGold);
+    cash_in_button.addEventListener("click", cashIn);
+  }
+  catch (error) {
+    if (verbose) {
+      console.error("Error adding event listeners to gold farming buttons: " + error);
+    }
+  }
 });
 
 // Swap between account login and account creation
@@ -103,4 +117,30 @@ function checkSearchInput() {
       $('#submit-search').addClass('disabled');
       $('#submit-search').prop('disabled', true);
   }
+}
+
+let coins = 0;
+function addGold() {
+  coins += 10;
+  console.log("Added 10 gold! Coins now at: " + coins + "g");
+  document.getElementById("gold").innerHTML = coins;
+}
+
+function cashIn() {
+  const coinsValue = coins;
+  fetch('/gold-farm', {
+    method: 'POST',
+    body: JSON.stringify({coins: coinsValue}),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(data => {
+    console.log(data);
+    coins = 0;
+    document.getElementById("gold").innerHTML = coins;
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
 }
