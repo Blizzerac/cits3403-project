@@ -63,6 +63,7 @@
       {% endfor %}
 
       <!-- Form to add response -->
+      {% if (current_user.userID == post.claimerID) or (current_user.userID == post.posterID) %}
       <div class="container rounded post-item quest-card mt-5">
         <form method="POST" action="{{ url_for('post_quest', postID=post.postID) }}">
           {{ response_form.hidden_tag() }}
@@ -70,11 +71,12 @@
             {{ response_form.response.label }}
             {{ response_form.response }}
           </div>
-          <div class="form-group d-flex justify-content-center">
+          <div class="form-group d-flex justify-content-center mb-0">
             {{ response_form.submit }}
           </div>
         </form>
       </div>
+      {% endif %}
     </div>
   </div>
 </div>
