@@ -3,9 +3,10 @@ from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 from app.models import Users, Posts, Responses # Particular tables to be used
 from app import models, forms
-from app import flaskApp, db
+from app import flaskApp, db, login_manager
 from datetime import datetime
 from sqlalchemy import or_  # To search for titles or descriptions when searching
+from urllib.parse import urlparse, urljoin # URL checking
 
 # Settings
 debug = True
@@ -25,6 +26,15 @@ def home():
     return render_template("home.html")
 
 
+# If a user tried to access a page they aren't authorised for (not logged in)
+@login_manager.unauthorized_handler
+def unauthorized():
+    # Store the URL the user wanted to access
+    next_url = request.url
+    flash('Please log in to access this page.', 'danger')
+    return redirect(url_for('login', next=next_url))
+
+
 # Login
 @flaskApp.route("/signup", methods=["POST", "GET"])
 @flaskApp.route("/login", methods=["POST", "GET"])
@@ -37,7 +47,12 @@ def login():
     login_form = forms.LoginForm()
     signup_form = forms.SignupForm()
 
+    next_page = request.args.get('next')  # Get the next parameter from the URL, if present
+
     if request.method == 'POST':
+        # If user is going somewhere after login/signup
+        next_page = request.form.get('next')  # Override with the next parameter from the form
+
         # If signup form submitted
         if signup_form.validate_on_submit():
             existing_user = Users.query.filter_by(username=signup_form.username.data).first()
@@ -58,6 +73,8 @@ def login():
                     db.session.commit()
                     login_user(new_user, remember=False) # Assuming dont remember them
                     flash('Account created successfully!', 'success')
+                    if next_page and is_safe_url(next_page):
+                        return redirect(next_page) # If user was trying to go somewhere earlier
                     return redirect(url_for('home'))
                 # If failed, rollback database and warn user.
                 except Exception as e:
@@ -80,6 +97,8 @@ def login():
             if user and user.check_password(login_form.password.data):
                 login_user(user, remember=login_form.remember_me.data)
                 flash('Logged in successfully!', 'success')
+                if next_page and is_safe_url(next_page):
+                    return redirect(next_page) # If user was trying to go somewhere earlier
                 return redirect(url_for('dashboard'))
             else:
                 # Dont inform the user if the account or password is incorrect (security flaw) - only general error
@@ -89,7 +108,7 @@ def login():
         # elif not login_form.validate_on_submit() and request.method == 'POST':
         #     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=False)
 
-    return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup)
+    return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup, next=next_page)
 
 
 # User logout
@@ -347,3 +366,9 @@ def flash_fail_ReQuestModify(error):
         flash('Error adjusting ReQuest in database. {}'.format(error), 'danger')
     else: 
         flash('Failed adjusting ReQuest. Please try again later or contact staff.', 'danger')
+
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
