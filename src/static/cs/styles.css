@@ -66,12 +66,11 @@ a.link-mute {
 .bg-wood-nav {
     background-image: url("../img/navbar-scaled.png");
     background-repeat: repeat;
-    padding-bottom: 5px;
-    /* height: 64px; */
+    min-height: 64px;
 }
 
 .navbar-svg-icon {
-    width: 42px;
+    width: 40px;
     margin-left: 6px;
     fill: white;
 }
