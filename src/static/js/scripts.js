@@ -4,7 +4,7 @@ const verbose = true;
 // When page is loaded
 $(document).ready(function() {
   // Change signup to login form
-  $('.toggle-login').click(swapLoginForm)
+  $('.toggle-login').click(swapLoginForm);
 
   // Show the toast if any exist
   $('.toast').toast({
@@ -12,13 +12,13 @@ $(document).ready(function() {
   }).toast('show');
 
   // Initialise Bootstrap dropdowns and other events
-  handle_dropdownMenu()
+  handle_dropdownMenu();
 
   // Handle quest post form
-  handle_questPost()
+  //handle_questPost();
 
   // Handle control pannel (buttons) on quest view
-  handle_questView()
+  handle_questView();
 
   // Check for valid password on signup form
   //$('#signup-password-input').keyup(checkPass)
@@ -130,39 +130,7 @@ function checkPass() {
   }
 }
 
-function handle_questView() {
-  $('#claim-request').click(function() {
-    ajaxPost("{{ url_for('claim_request', post_id=post.postID) }}", {}, 'ReQuest claimed successfully!');
-  });
-
-  $('#finalise-request').click(function() {
-    ajaxPost("{{ url_for('finalise_request', post_id=post.postID) }}", {}, 'ReQuest finalised successfully!');
-  });
-
-  $('#relinquish-claim').click(function() {
-    ajaxPost("{{ url_for('relinquish_claim', post_id=post.postID) }}", {}, 'Claim relinquished successfully!');
-  });
-
-  $('#approve-submission').click(function() {
-    ajaxPost("{{ url_for('approve_submission', post_id=post.postID) }}", {}, 'Submission approved successfully!');
-  });
-
-  $('#deny-submission').click(function() {
-    ajaxPost("{{ url_for('deny_submission', post_id=post.postID) }}", {}, 'Submission denied.');
-  });
-
-  $('#cancel-request').click(function() {
-    ajaxPost("{{ url_for('cancel_request', post_id=post.postID) }}", {}, 'ReQuest cancelled successfully.');
-  });
-
-  $('#response-form').submit(function(event) {
-    event.preventDefault();
-    const data = $(this).serialize();
-    ajaxPost($(this).attr('action'), data, 'Response added successfully!');
-  });
-}
-
-function ajaxPost(url, data, successMessage) {
+function ajaxPost(url, data) {
   $.ajax({
     type: "POST",
     url: url,
@@ -175,5 +143,32 @@ function ajaxPost(url, data, successMessage) {
       console.log(response)
       location.reload();
     }
+  });
+}
+
+function handle_questView() {
+  // Get the URL from the button before sending ajax
+  $('#claim-request').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#finalise-request').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#relinquish-claim').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#approve-submission').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#deny-submission').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#cancel-request').click(function() {
+    ajaxPost($(this).data('url'), {});
   });
 }
