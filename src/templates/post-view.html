@@ -22,16 +22,16 @@
 
         {% elif post.claimed and current_user.userID == post.claimerID %}
           {% if not post.waitingApproval %}
-          <button class="btn btn-primary mb-2" id="finalise-request" data-url="{{ url_for('finalise_request', post_id=post.postID) }}">Finalise ReQuest</button>
+          <button class="btn btn-success mb-2" id="finalise-request" data-url="{{ url_for('finalise_request', post_id=post.postID) }}">Finalise ReQuest</button>
           {% endif %}
-          <button class="btn btn-primary mb-2" id="relinquish-claim" data-url="{{ url_for('relinquish_claim', post_id=post.postID) }}">Relinquish Claim</button>
+          <button class="btn btn-danger mb-2" id="relinquish-claim" data-url="{{ url_for('relinquish_claim', post_id=post.postID) }}">Relinquish Claim</button>
 
         {% elif current_user.userID == post.posterID %}
           {% if post.waitingApproval %}
-          <button class="btn btn-primary mb-2" id="approve-submission" data-url="{{ url_for('approve_submission', post_id=post.postID) }}">Approve Submission</button>
+          <button class="btn btn-success mb-2" id="approve-submission" data-url="{{ url_for('approve_submission', post_id=post.postID) }}">Approve Submission</button>
           <button class="btn btn-danger mb-2" id="deny-submission" data-url="{{ url_for('deny_submission', post_id=post.postID) }}">Deny Submission</button>
           {% endif %}
-        <button class="btn btn-danger mb-2" id="cancel-request" data-url="{{ url_for('cancel_request', post_id=post.postID) }}">Cancel ReQuest</button>
+        <button class="btn btn-warning mb-2" id="cancel-request" data-url="{{ url_for('cancel_request', post_id=post.postID) }}">Cancel ReQuest</button>
         {% endif %}
 
         {% else %} <!-- If the ReQuest is completed -->
