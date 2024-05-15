@@ -22,8 +22,15 @@ $(document).ready(function() {
   const coin_stack = document.getElementById("coin-stack");
   const cash_in_button = document.getElementById("cash-in-button");
 
-  coin_stack.addEventListener("click", addGold);
-  cash_in_button.addEventListener("click", cashIn);
+  try {
+    coin_stack.addEventListener("click", addGold);
+    cash_in_button.addEventListener("click", cashIn);
+  }
+  catch (error) {
+    if (verbose) {
+      console.error("Error adding event listeners to gold farming buttons: " + error);
+    }
+  }
 });
 
 // Swap between account login and account creation
