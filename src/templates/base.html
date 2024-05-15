@@ -85,12 +85,34 @@
     {% endwith %}
   </div>
 
+  <!-- Contributions modal -->
+  <div class="modal fade" id="contributionsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <img src="{{ url_for('static', filename='img/scroll.png') }}" alt="How It Works"/>
+        <div class="modal-text">
+          <h1 class="font-bold size-3em">Contributions</h1>
+          <ul>
+            <li>GPT: <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer nofollow">https://chatgpt.com</a></li>
+            <li>Bootstrap examples</li>
+            <li>Icon Website: <a href="https://iconscout.com" target="_blank" rel="noopener noreferrer nofollow">https://iconscout.com</a></li>
+            <li></li>
+            <li>DEV1</li>
+            <li>DEV2</li>
+            <li>DEV3</li>
+            <li>DEV4</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-md-10 footer-content">
         <p class="float-right"><a href="#">Back to top</a></p>
-        <p>© 2024 Quester's Cache</p>
+        <p>© 2024 Quester's Cache · <a href='#contributionsModal' data-toggle="modal" data-target="#contributionsModal">Contributions</a></p>
       </div>
     </div>
   </footer>
