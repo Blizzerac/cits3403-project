@@ -48,6 +48,10 @@ a.link-mute {
     text-decoration: none;
 }
 
+.navbar-toggler-icon {
+    background-image: url("../img/icons/hamburger-menu.svg");
+}
+
 .bg-wood {
     background-image: url("../img/bg-woodplank-scaled.png");
     background-repeat: repeat;
@@ -61,8 +65,9 @@ a.link-mute {
 
 .bg-wood-nav {
     background-image: url("../img/navbar-scaled.png");
-    background-repeat: repeat-x;
-    height: 64px;
+    background-repeat: repeat;
+    padding-bottom: 5px;
+    /* height: 64px; */
 }
 
 .navbar-svg-icon {
