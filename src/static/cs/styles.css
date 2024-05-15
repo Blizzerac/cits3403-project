@@ -228,6 +228,10 @@ button.btn.dropdown-toggle {
 }
 
 /* Available Quests on home page */
+#quest-list {
+    padding-top: 30px;
+}
+
 /* If a quest's description is one long word, it goes outside the div, so it must be broken up */
 .text-wrap {
     word-wrap: break-word;
