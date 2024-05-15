@@ -231,10 +231,14 @@ def claim_request(post_id):
         post.claimDate = datetime.now()
         try:
             db.session.commit()
+            flash('ReQuest claimed successfully!', 'success')
             return jsonify({"message": "ReQuest claimed successfully!"}), 200
         except Exception as e:
             db.session.rollback()
+            flash_fail_ReQuestModify(e)
             return jsonify({"message": f"Unable to claim ReQuest - Database error."}), 400
+        
+    flash('Unable to claim ReQuest. Is it already claimed?', 'danger')
     return jsonify({"message": "Unable to claim ReQuest."}), 400
 
 
@@ -246,10 +250,14 @@ def finalise_request(post_id):
         post.waitingApproval = True
         try:
             db.session.commit()
+            flash('ReQuest submission sent successfully!', 'success')
             return jsonify({"message": "ReQuest finalised successfully!"}), 200
         except Exception as e:
             db.session.rollback()
+            flash_fail_ReQuestModify(e)
             return jsonify({"message": f"Unable to finalise ReQuest - Database error."}), 400
+    
+    flash('Unable to send ReQuest submission. Have you claimed it?', 'danger')
     return jsonify({"message": "Unable to finalise ReQuest."}), 400
 
 
@@ -263,10 +271,14 @@ def relinquish_claim(post_id):
         post.claimDate = None
         try:
             db.session.commit()
+            flash('Claim on ReQuest reliquished successfully!', 'success')
             return jsonify({"message": "ReQuest claim relinquished successfully!"}), 200
         except Exception as e:
             db.session.rollback()
+            flash_fail_ReQuestModify(e)
             return jsonify({"message": f"Unable to relinquish ReQuest claim - Database error."}), 400
+        
+    flash('Unable relinquish ReQuest claim. Have you claimed it?', 'danger')
     return jsonify({"message": "Unable to relinquish ReQuest claim."}), 400
 
 
@@ -280,10 +292,14 @@ def approve_submission(post_id):
         try:
             # UPDATE USER'S GOLD
             db.session.commit()
+            flash('ReQuest submission approved successfully!', 'success')
             return jsonify({"message": "ReQuest submission approved successfully!"}), 200
         except Exception as e:
             db.session.rollback()
+            flash_fail_ReQuestModify(e)
             return jsonify({"message": f"Unable to approve ReQuest submission - Database error."}), 400
+        
+    flash('Unable approve ReQuest submission claim. Has it been submitted for approval?', 'danger')
     return jsonify({"message": "Unable to approve ReQuest submission."}), 400
 
 
@@ -295,10 +311,14 @@ def deny_submission(post_id):
         post.waitingApproval = False
         try:
             db.session.commit()
+            flash('ReQuest submission denied successfully!', 'success')
             return jsonify({"message": "ReQuest submission denied."}), 200
         except Exception as e:
             db.session.rollback()
+            flash_fail_ReQuestModify(e)
             return jsonify({"message": f"Unable to deny ReQuest submission - Database error."}), 400
+        
+    flash('Unable deny ReQuest submission claim. Has it been submitted for approval?', 'danger')
     return jsonify({"message": "Unable to deny submission."}), 400
 
 
@@ -311,9 +331,19 @@ def cancel_request(post_id):
             # UPDATE USER'S GOLD
             db.session.delete(post)
             db.session.commit()
+            flash('ReQuest cancelled successfully!', 'success')
             return jsonify({"message": "ReQuest cancelled successfully."}), 200
         except Exception as e:
             db.session.rollback()
+            flash_fail_ReQuestModify(e)
             return jsonify({"message": f"Unable to cancel ReQuest - Database error."}), 400
+        
+    flash('Unable cancel ReQuest. Do you own it?', 'danger')
     return jsonify({"message": "Unable to cancel ReQuest."}), 400
 
+
+def flash_fail_ReQuestModify(error):
+    if debug:
+        flash('Error adjusting ReQuest in database. {}'.format(error), 'danger')
+    else: 
+        flash('Failed adjusting ReQuest. Please try again later or contact staff.', 'danger')
