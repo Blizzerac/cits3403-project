@@ -51,9 +51,11 @@ a.link-mute {
 .bg-wood {
     background-image: url("../img/bg-woodplank-scaled.png");
     background-repeat: repeat;
-    border-width: 10px;
-    border-radius: 5px;
-    border-color: #2e1e0b;
+    border-image-slice: 60 60 60 60;
+    border-image-width: 15px 15px 15px 15px;
+    border-image-outset: 0px 0px 0px 0px;
+    border-image-repeat: stretch stretch;
+    border-image-source: url("../img/border-image.png");
     border-style: solid;
 }
 
@@ -252,6 +254,12 @@ button.btn.dropdown-toggle {
     .quest-card:not(:last-child) {
         margin-bottom: 1.25rem; /* for medium devices and up */
     }
+}
+
+/* Minor styling add-ons for the gold-farm page */
+#gold-farm {
+    margin-top: 30px;
+    padding-bottom: 40px;
 }
 
 /* Dtyling of input areas for post-form */
