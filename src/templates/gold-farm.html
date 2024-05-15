@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Quester's Cache || Gold Farm{% endblock %}
+{% block content %}
+
+<!-- Gold Farm -->
+<div class="container d-flex flex-column justify-content-center align-items-center bg-wood">
+    <img src="../static/img/coins-scaled.png" alt="coins" onclick="addGold()">
+    <p>Click the coins to earn gold!</p>
+    <p>Coins earned: <span id="gold">0</span>g</p>
+    <button class="btn btn-primary" onclick="cashIn()">Cash In!</button>
+</div>
+<script>
+    let coins = 0;
+    function addGold() {
+        coins += 10;
+        console.log("Added 10 gold! Coins now at: " + coins + "g");
+        document.getElementById("gold").innerHTML = coins;
+    }
+
+    function cashIn() {
+        const coinsValue = coins;
+        fetch('/gold-farm', {
+            method: 'POST',
+            body: JSON.stringify({coins: coinsValue}),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(data => {
+            console.log(data);
+            coins = 0;
+            document.getElementById("gold").innerHTML = coins;
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+{% endblock %}

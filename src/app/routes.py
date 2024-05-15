@@ -215,7 +215,25 @@ def search():
 
     return render_template("search.html", searching_form=searching_form, posts=posts, title=title, quest_type=quest_type)
 
+@flaskApp.route("/gold-farm", methods=["POST", "GET"])
+@login_required
+def gold_farm():
+    if request.method == 'POST':
+        data = request.get_json()
+        coinsToAdd = data['coins']
+        try:
+            current_user.add_gold(coinsToAdd)
+            db.session.commit()
+            flash('You earned ' + str(coinsToAdd) + 'g!', 'success')
+        
+        except Exception as e:
+            db.session.rollback()
+            if flaskApp.debug:
+                flash('Error giving gold. {}'.format(e), 'danger')
+            else: 
+                flash('ERROR.', 'danger')
 
+    return render_template("gold-farm.html")
 
 
 # THIS ROUTE MUST BE REMOVED -- ONLY FOR DEVELOPMENT PURPOSES
