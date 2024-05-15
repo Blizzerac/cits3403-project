@@ -17,6 +17,13 @@ $(document).ready(function() {
 
   // Handle quest search form
   handleSearchInput();
+
+  // Handle gold farming
+  const coin_stack = document.getElementById("coin-stack");
+  const cash_in_button = document.getElementById("cash-in-button");
+
+  coin_stack.addEventListener("click", addGold);
+  cash_in_button.addEventListener("click", cashIn);
 });
 
 // Swap between account login and account creation
