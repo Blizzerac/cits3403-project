@@ -288,6 +288,7 @@ def relinquish_claim(post_id):
         post.claimed = False # Reset claim
         post.claimerID = None
         post.claimDate = None
+        post.waitingApproval = False # Ensure reset this value (can cause bug if left)
         try:
             db.session.commit()
             flash('Claim on ReQuest reliquished successfully!', 'success')
