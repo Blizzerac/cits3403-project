@@ -18,20 +18,20 @@
         <!-- Assortment of buttons according to user type -->
         {% if not post.completed %}
         {% if not post.claimed and current_user.userID != post.posterID %}
-        <button class="btn btn-primary mb-2">Claim ReQuest</button>
+        <button class="btn btn-primary mb-2" id="claim-request">Claim ReQuest</button>
 
         {% elif post.claimed and current_user.userID == post.claimerID %}
           {% if not post.waitingApproval %}
-          <button class="btn btn-primary mb-2">Finalise ReQuest</button>
+          <button class="btn btn-primary mb-2" id="finalise-request">Finalise ReQuest</button>
           {% endif %}
-          <button class="btn btn-primary mb-2">Relinquish Claim</button>
+          <button class="btn btn-primary mb-2" id="relinquish-claim">Relinquish Claim</button>
 
         {% elif current_user.userID == post.posterID %}
           {% if post.waitingApproval %}
-          <button class="btn btn-primary mb-2">Approve Submission</button>
-          <button class="btn btn-danger mb-2">Deny Submission</button>
+          <button class="btn btn-primary mb-2" id="approve-submission">Approve Submission</button>
+          <button class="btn btn-danger mb-2" id="deny-submission">Deny Submission</button>
           {% endif %}
-        <button class="btn btn-danger mb-2">Cancel ReQuest</button>
+        <button class="btn btn-danger mb-2" id="cancel-request">Cancel ReQuest</button>
         {% endif %}
 
         {% else %} <!-- If the ReQuest is completed -->

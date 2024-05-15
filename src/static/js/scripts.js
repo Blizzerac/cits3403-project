@@ -126,3 +126,50 @@ function checkPass() {
     $('#signup-submit-button').prop('disabled', false)
   }
 }
+
+function ajaxPost(url, data, successMessage) {
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: data,
+    success: function(response) {
+      alert(successMessage);
+      location.reload(); // Reload the page to update the content dynamically
+    },
+    error: function(response) {
+      alert('An error occurred. Please try again.');
+    }
+  });
+}
+
+$(document).ready(function() {
+  $('#claim-request').click(function() {
+    ajaxPost("{{ url_for('claim_request', post_id=post.postID) }}", {}, 'ReQuest claimed successfully!');
+  });
+
+  $('#finalise-request').click(function() {
+    ajaxPost("{{ url_for('finalise_request', post_id=post.postID) }}", {}, 'ReQuest finalised successfully!');
+  });
+
+  $('#relinquish-claim').click(function() {
+    ajaxPost("{{ url_for('relinquish_claim', post_id=post.postID) }}", {}, 'Claim relinquished successfully!');
+  });
+
+  $('#approve-submission').click(function() {
+    ajaxPost("{{ url_for('approve_submission', post_id=post.postID) }}", {}, 'Submission approved successfully!');
+  });
+
+  $('#deny-submission').click(function() {
+    ajaxPost("{{ url_for('deny_submission', post_id=post.postID) }}", {}, 'Submission denied.');
+  });
+
+  $('#cancel-request').click(function() {
+    ajaxPost("{{ url_for('cancel_request', post_id=post.postID) }}", {}, 'ReQuest cancelled successfully.');
+  });
+
+  $('#response-form').submit(function(event) {
+    event.preventDefault();
+    const data = $(this).serialize();
+    ajaxPost($(this).attr('action'), data, 'Response added successfully!');
+  });
+});

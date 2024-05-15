@@ -1,5 +1,5 @@
 # Imports
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 from app.models import Users, Posts, Responses # Particular tables to be used
 from app import models, forms
@@ -118,7 +118,7 @@ def post_quest():
         return redirect(url_for('home'))
     
     # If no post exists, return user to home screen
-    post = Posts.query.filter_by(postID=post_id).first()
+    post = Posts.query.get(post_id)
     if not post:
         flash('ReQuest does not exist.', 'danger')
         return redirect(url_for('home'))
@@ -145,7 +145,6 @@ def post_quest():
                 flash('Failed adding response. Please try again later or contact staff.', 'danger')
 
         # Update posts
-        post = Posts.query.filter_by(postID=post_id).first()
         flash('Response added successfully!', 'success')
         return redirect(url_for('post_quest', postID=post.postID)) # Ensure form cant be resubmitted by redirecting user to same page (deletes current form)
 
@@ -217,3 +216,69 @@ def posting():
 
     posting_form = forms.PostForm()
     return render_template("posting.html", posting_form=posting_form)
+
+
+# Handle Post Control Panel Buttons
+@flaskApp.route('/claim_request/<int:post_id>', methods=['POST'])
+@login_required
+def claim_request(post_id):
+    post = Posts.query.get(post_id)
+    if post and not post.claimed and current_user.userID != post.posterID:
+        post.claimed = True
+        post.claimerID = current_user.userID
+        #claim date
+        db.session.commit()
+        return jsonify({"message": "ReQuest claimed successfully!"}), 200
+    return jsonify({"message": "Unable to claim ReQuest."}), 400
+
+@flaskApp.route('/finalise_request/<int:post_id>', methods=['POST'])
+@login_required
+def finalise_request(post_id):
+    post = Posts.query.get(post_id)
+    if post and post.claimed and current_user.userID == post.claimerID and not post.waitingApproval:
+        post.waitingApproval = True
+        db.session.commit()
+        return jsonify({"message": "ReQuest finalised successfully!"}), 200
+    return jsonify({"message": "Unable to finalise ReQuest."}), 400
+
+@flaskApp.route('/relinquish_claim/<int:post_id>', methods=['POST'])
+@login_required
+def relinquish_claim(post_id):
+    post = Posts.query.get(post_id)
+    if post and post.claimed and current_user.userID == post.claimerID:
+        post.claimed = False
+        post.claimerID = None
+        db.session.commit()
+        return jsonify({"message": "Claim relinquished successfully!"}), 200
+    return jsonify({"message": "Unable to relinquish claim."}), 400
+
+@flaskApp.route('/approve_submission/<int:post_id>', methods=['POST'])
+@login_required
+def approve_submission(post_id):
+    post = Posts.query.get(post_id)
+    if post and post.waitingApproval and current_user.userID == post.posterID:
+        post.completed = True
+        post.waitingApproval = False
+        db.session.commit()
+        return jsonify({"message": "Submission approved successfully!"}), 200
+    return jsonify({"message": "Unable to approve submission."}), 400
+
+@flaskApp.route('/deny_submission/<int:post_id>', methods=['POST'])
+@login_required
+def deny_submission(post_id):
+    post = Posts.query.get(post_id)
+    if post and post.waitingApproval and current_user.userID == post.posterID:
+        post.waitingApproval = False
+        db.session.commit()
+        return jsonify({"message": "Submission denied."}), 200
+    return jsonify({"message": "Unable to deny submission."}), 400
+
+@flaskApp.route('/cancel_request/<int:post_id>', methods=['POST'])
+@login_required
+def cancel_request(post_id):
+    post = Posts.query.get(post_id)
+    if post and current_user.userID == post.posterID:
+        db.session.delete(post)
+        db.session.commit()
+        return jsonify({"message": "ReQuest cancelled successfully."}), 200
+    return jsonify({"message": "Unable to cancel ReQuest."}), 400
