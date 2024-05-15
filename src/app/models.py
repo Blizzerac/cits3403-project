@@ -86,6 +86,11 @@ class Posts(db.Model):
 
     responses = db.relationship('Responses', backref='post', lazy=True) # Link posts to their responses
 
+    def __repr__(self):
+        return f"<Posts(postID={self.postID}, title='{self.title}', claimed={self.claimed}, " \
+            f"completed={self.completed}, posterID={self.posterID}, claimerID={self.claimerID}, " \
+            f"creationDate={self.creationDate:%Y-%m-%d}, reward={self.reward})>"
+
 # Each reponse to a certain ReQuest
 class Responses(db.Model):
     responseID = db.Column(db.Integer, primary_key=True) # Unique ID of the response

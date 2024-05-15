@@ -1,10 +1,10 @@
 # Imports
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, login_user, logout_user, current_user
-from app.models import Users, Posts # The user table in the database
+from app.models import Users, Posts # Particular tables to be used
 from app import models, forms
 from app import flaskApp, db
-from sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func, or_ # Methods to use when querying database
 
 ###########
 # Routes  #
@@ -180,20 +180,40 @@ def leaderboard():
 @flaskApp.route("/search", methods=["POST", "GET"])
 def search():
     searching_form = forms.SearchForm()
+    quest_type = request.args.get('type')
 
-    #need to add post and get conditions here
+    # Determine the base query based on user and quest type
+    if quest_type == 'active':
+        base_query = Posts.query.filter_by(posterID=current_user.userID, completed=False)  # Active quests posted by the user
+    elif quest_type == 'claimed':
+        base_query = Posts.query.filter_by(claimerID=current_user.userID, claimed=True, completed=False)  # Claimed quests by the user, not yet completeds
+    elif quest_type == 'completed':
+        base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True)  # Completed quests by the user
+    elif quest_type == 'inactive':
+        base_query = Posts.query.filter(Posts.posterID == current_user.userID, Posts.completed==True, Posts.claimerID != current_user.userID) # Complex inequality query, completed quests by others posted by user
+    else:
+        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False) # Complex inequality query, default
 
-    # example post data, hardcoded for now
-    posts = [
-        {"title": "Post 1", "description": "Description of post 1", "reward": "20 gold"},
-        {"title": "Post 2", "description": "Description of post 2", "reward": "30 gold"},
-        {"title": "Post 3", "description": "Description of post 3", "reward": "250 gold"},
-        {"title": "Post 4", "description": "Description of post 4", "reward": "210 gold"},
-        {"title": "Post 5", "description": "Description of post 5", "reward": "220 gold"},
-        {"title": "Post 6", "description": "Description of post 6. Further description of post 6 to illustrate the dynamic nature of this div", "reward": "200 gold"}
-    ]
+    # Searching or showing all
+    if request.method == 'POST' and searching_form.validate_on_submit():
+        if 'show_all' in request.form:
+            posts = base_query.all()
+        else:
+            search_query = searching_form.post_search_name.data
+            posts = base_query.filter(
+                or_(
+                    Posts.title.contains(search_query),
+                    Posts.description.contains(search_query)
+                )
+            ).all()
+    # GET request for page
+    else:
+        posts = base_query.all()
 
-    return render_template("search.html", searching_form=searching_form, posts=posts)
+    username = current_user.username if quest_type else ""
+    title = f"{quest_type.capitalize() if quest_type else 'All'} ReQuests of {username}" if username else "Available ReQuests"
+
+    return render_template("search.html", searching_form=searching_form, posts=posts, title=title, quest_type=quest_type)
 
 
 
