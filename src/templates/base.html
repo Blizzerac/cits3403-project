@@ -16,8 +16,11 @@
   <header>
     <nav class="navbar navbar-expand-lg bg-wood-nav">
       <a class="navbar-brand text-light link-mute" href="{{url_for('home')}}">Quester's Cache</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
       <div class="collapse navbar-collapse" id="navbarContent">
-        <ul class="navbar-nav me-auto me-2">
+        <ul class="navbar-nav mr-auto">
           <li class="nav-item">
             <a class="nav-link active text-light link-mute" aria-current="page" href="{{url_for('home')}}">Home</a>
           </li>
@@ -27,36 +30,33 @@
           <li class="nav-item">
             <a class="nav-link text-light link-mute" href="{{url_for('gold_farm')}}">Earn Gold</a>
         </ul>
-      </div>
-      <a role="button" class="btn btn-success text-light link-mute me-2" href="{{ url_for('search') }}">
-        Search For ReQuests
-      </a>
-      <a role="button" class="btn btn-primary text-light link-mute {{ 'disabled' if not current_user.is_authenticated }}" href="{{ url_for('post_quest') if current_user.is_authenticated else '#' }}">
-        Post New ReQuest
-      </a>
-      {% if current_user.is_authenticated %}
-      <div class="dropdown">
-        <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img src="{{ url_for('static', filename='img/icons/user.svg') }}" alt="User" class="navbar-svg-icon" title="Account">
-        </button>
-        <div class="dropdown-menu dropdown-menu-right">
-          <a class="dropdown-item link-mute" href="{{ url_for('dashboard') }}">Dashboard</a>
-          <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='active') }}">Active Quests</a>
-          <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='inactive') }}">Inactive Quests</a>
-          <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='claimed') }}">Claimed Quests</a>
-          <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='completed') }}">Completed Quests</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="{{url_for('logout')}}">Logout</a>
+        <a role="button" class="btn btn-success text-light link-mute me-2" href="{{ url_for('search') }}">
+          Search For ReQuests
+        </a>
+        <a role="button" class="btn btn-primary text-light link-mute {{ 'disabled' if not current_user.is_authenticated }}" href="{{ url_for('post_quest') if current_user.is_authenticated else '#' }}">
+          Post New ReQuest
+        </a>
+        {% if current_user.is_authenticated %}
+        <div class="dropdown">
+          <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="{{ url_for('static', filename='img/icons/user.svg') }}" alt="User" class="navbar-svg-icon" title="Account">
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item link-mute" href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='active') }}">Active Quests</a>
+            <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='inactive') }}">Inactive Quests</a>
+            <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='claimed') }}">Claimed Quests</a>
+            <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='completed') }}">Completed Quests</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{url_for('logout')}}">Logout</a>
+          </div>
         </div>
+        {% else %}
+        <a href="{{url_for('login')}}" class="navbar-icon">
+          <img src="{{ url_for('static', filename='img/icons/user.svg') }}" alt="User" class="navbar-svg-icon" title="Login / Sign-up">
+        </a>
+        {% endif %}
       </div>
-      {% else %}
-      <a href="{{url_for('login')}}" class="navbar-icon">
-        <img src="{{ url_for('static', filename='img/icons/user.svg') }}" alt="User" class="navbar-svg-icon" title="Login / Sign-up">
-      </a>
-      {% endif %}
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
     </nav>
   </header>
 
