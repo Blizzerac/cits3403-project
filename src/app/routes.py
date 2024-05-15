@@ -391,8 +391,16 @@ def approve_submission(post_id):
     if post and post.waitingApproval and current_user.userID == post.posterID:
         post.completed = True
         post.waitingApproval = False
+        gold = post.reward
+        claimer = Users.query.get(post.claimerID)
+        if not claimer:
+            flash('Could not find claimer in database.', 'danger')
+            return jsonify({"message": f"Could not find claimer in database."}), 400
+        
         try:
-            # UPDATE USER'S GOLD
+            # Check if it correctly got the user
+            claimer.add_gold(gold)
+            current_user.quest_payout(gold)
             db.session.commit()
             flash('ReQuest submission approved successfully!', 'success')
             return jsonify({"message": "ReQuest submission approved successfully!"}), 200
@@ -429,8 +437,9 @@ def deny_submission(post_id):
 def cancel_request(post_id):
     post = Posts.query.get(post_id)
     if post and not post.completed and current_user.userID == post.posterID:
+        gold = post.reward
         try:
-            # UPDATE USER'S GOLD
+            current_user.quest_refund(gold)
             db.session.delete(post)
             db.session.commit()
             flash('ReQuest cancelled successfully!', 'success')
