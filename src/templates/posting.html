@@ -2,11 +2,10 @@
 {% block title %}Quester's Cache || New ReQuest{% endblock %}
 {% block content %}
 
-<div class="container">
-  <div class="col-sm-12 border p-4 rounded" id="post-form">
+  <div class="col-md-8 rounded form-container" id="post-form">
     <fieldset>
-      <legend class="text-center">Post a ReQuest</legend>
-      <form method="POST" action="/posting">
+      <legend class="text-center"><h1>Post a ReQuest</h1></legend>
+      <form method="POST" action="/post">
         {{ posting_form.hidden_tag() }}
         <div class="col-md-7 col-sm-12">
             {{ posting_form.post_name.label }}
@@ -16,15 +15,19 @@
             {{ posting_form.post_description.label }}
             {{ posting_form.post_description() }}
         </div>
-        <div class="d-flex justify-content-center flex-column offset-sm-5 col-sm-2">
+        <div class="col-md-4 col-sm-12">
+            {{ posting_form.post_reward.label(class="form-label") }}
+            {{ posting_form.post_reward() }}
+            <div style="margin-top: -0.75rem"><em>Available Gold: {{ gold_available }}</em></div>
+        </div>
+        <div class="d-flex justify-content-center">
           {{ posting_form.submit() }}
         </div>
         <div class="d-flex justify-content-center">
-          <p id="disabled-info">The ReQuest name and description must each be at least 5 characters long.</p>
+          <p class="hidden" id="disabled-info">The ReQuest name and description must each be at least 5 characters long, the reward must be at least 0.</p>
         </div>
       </form>
     </fieldset>
   </div>
-</div>
 
 {% endblock %}  

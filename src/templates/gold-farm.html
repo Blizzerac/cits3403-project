@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Quester's Cache || Gold Farm{% endblock %}
+{% block content %}
+
+<!-- Gold Farm -->
+<div class="container d-flex flex-column justify-content-center align-items-center bg-wood" id="gold-farm">
+    <img id="coin-stack" src="../static/img/coins-scaled.png" alt="Click on coins to earn them!">
+    <div class="col-md-7 col-sm-5 d-flex flex-column justify-content-center align-items-center quest-card">
+        <p>Click the coins to earn gold!</p>
+        <p>Coins earned: <span id="gold">0</span>g</p>
+        <button class="btn btn-primary" id="cash-in-button">Cash In!</button>
+    </div>
+</div>
+{% endblock %}

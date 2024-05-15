@@ -7,21 +7,28 @@ $(document).ready(function() {
   $('.toggle-login').click(swapLoginForm);
 
   // Show the toast if any exist
-  $('.toast').toast({
-    delay: 1500  // Delay in milliseconds
-  }).toast('show');
+  $('.toast').toast('show');
 
   // Initialise Bootstrap dropdowns and other events
   handle_dropdownMenu();
 
-  // Handle quest post form
-  //handle_questPost();
 
-  // Handle control pannel (buttons) on quest view
-  handle_questView();
+  // Handle quest search form
+  handleSearchInput();
 
-  // Check for valid password on signup form
-  //$('#signup-password-input').keyup(checkPass)
+  // Handle gold farming
+  const coin_stack = document.getElementById("coin-stack");
+  const cash_in_button = document.getElementById("cash-in-button");
+
+  try {
+    coin_stack.addEventListener("click", addGold);
+    cash_in_button.addEventListener("click", cashIn);
+  }
+  catch (error) {
+    if (verbose) {
+      console.error("Error adding event listeners to gold farming buttons: " + error);
+    }
+  }
 });
 
 // Swap between account login and account creation
@@ -63,17 +70,18 @@ function handle_questPost() {
   questPost_checkFields();
 
   // Call checkFields() when  input fields change
-  $('#first-post-input, #second-post-input').on('input', questPost_checkFields);
+  $('#first-post-input, #second-post-input, #third-post-input').on('input', questPost_checkFields);
 }
 
 // Function to check if inputs for posting are filled
 function questPost_checkFields() {
   let field1 = $('#first-post-input').val();
   let field2 = $('#second-post-input').val();
+  let field3 = $('#third-post-input').val();
 
   // Minimum length of 5 for each
-  if ((field1.length >= 5) && (field2.length >= 5)) {
-      $('#submit-post').prop('disabled', false);
+  if (field1 && field2 && field3 && field1.length >= 5 && field2.length >= 5 && field3 >= 0) {
+    $('#submit-post').prop('disabled', false);
       $('#submit-post').removeClass('disabled');
       $('#disabled-info').addClass('hidden');
   } else {
@@ -83,51 +91,56 @@ function questPost_checkFields() {
   }
 }
 
+// Function to handle search input
+function handleSearchInput() {
+  // Disable initially
+  $('#submit-search').prop('disabled', true);
+  
+  // Call checkSearchInput initially in case the input retains values from a previous session
+  checkSearchInput();
 
-// Redudent for now, may be used in future
-function checkPass() {
-  let password = $(this).val();
-  let errors = [];
+  // Monitor changes to the input field
+  $('#search-input').on('input', checkSearchInput);
+}
 
-  // Check for length requirements (min=5, max=25)
-  if (password.length < 5 && password.length > 2) {
-    errors.push("Password must be between 5-25 characters long.");
-  }
+// Function to check if the search input has enough characters
+function checkSearchInput() {
+  let searchInput = $('#search-input').val();
 
-  // Check for allowed characters: letters, numbers, and specific special characters
-  if (!/^[a-zA-Z0-9!?+_\-]+$/.test(password)) {
-    errors.push("Password can only include letters, numbers, and the following special characters: !, ?, -, +, _.");
-  }
-
-  // Check for numbers
-  if (!/[0-9]/.test(password)) {
-    errors.push("Password must include at least one number.");
-  }
-
-  // Check for uppercase letters
-  if (!/[A-Z]/.test(password)) {
-    errors.push("Password must include at least one uppercase letter.");
-  }
-
-  // Display errors
-  let errorContainer = $('#password-errors');
-  errorContainer.html(''); // Clear previous errors
-  if (errors.length > 0) {
-    var errorList = $('<ul>'); // Create an unordered list
-    
-    $.each(errors, function(i, error) {
-      errorList.append($('<li>').text(error)); // Append each error as a list item
-    });
-    errorContainer.append(errorList);
-    errorContainer.removeClass('alert-success').addClass('alert-danger');
-
-    // Disable register button
-    $('#signup-submit-button').prop('disabled', true)
-
+  // Minimum length of 1 for enabling the search
+  if (searchInput && searchInput.length >= 1) {
+      $('#submit-search').prop('disabled', false);
+      $('#submit-search').removeClass('disabled');
   } else {
-    // Enable register button
-    $('#signup-submit-button').prop('disabled', false)
+      $('#submit-search').addClass('disabled');
+      $('#submit-search').prop('disabled', true);
   }
+}
+
+let coins = 0;
+function addGold() {
+  coins += 10;
+  console.log("Added 10 gold! Coins now at: " + coins + "g");
+  document.getElementById("gold").innerHTML = coins;
+}
+
+function cashIn() {
+  const coinsValue = coins;
+  fetch('/gold-farm', {
+    method: 'POST',
+    body: JSON.stringify({coins: coinsValue}),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(data => {
+    console.log(data);
+    coins = 0;
+    document.getElementById("gold").innerHTML = coins;
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
 }
 
 function ajaxPost(url, data) {

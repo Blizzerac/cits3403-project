@@ -51,9 +51,11 @@ a.link-mute {
 .bg-wood {
     background-image: url("../img/bg-woodplank-scaled.png");
     background-repeat: repeat;
-    border-width: 10px;
-    border-radius: 5px;
-    border-color: #2e1e0b;
+    border-image-slice: 60 60 60 60;
+    border-image-width: 15px 15px 15px 15px;
+    border-image-outset: 0px 0px 0px 0px;
+    border-image-repeat: stretch stretch;
+    border-image-source: url("../img/border-image.png");
     border-style: solid;
 }
 
@@ -61,18 +63,6 @@ a.link-mute {
     background-image: url("../img/navbar-scaled.png");
     background-repeat: repeat-x;
     height: 64px;
-}
-
-.quest-card, a.quest-card, a.quest-card:hover, a.quest-card:active, a.quest-card:visited {
-    background-color: #FFF2D5;
-    border-image-slice: 10 10 10 10;
-    border-image-width: 10px 10px 10px 10px;
-    border-image-outset: 3px 3px 3px 3px;
-    border-image-repeat: stretch stretch;
-    border-image-source: url("../img/quest-border.png");
-    border-style: solid;
-    background-clip: padding-box;
-    z-index: 1500;
 }
 
 .navbar-svg-icon {
@@ -224,12 +214,11 @@ button.btn.dropdown-toggle {
     margin-top: 3rem;
 }
 
-/*general post-form styling*/
+/* General post-form styling */
 #post-form {
-    background-image: url("../img/post-board.jpg");
-    background-size: cover;
-    background-position: center;
     margin-top: 30px;
+    padding-top: 10px;
+    padding-bottom: 25px;
 }
 
 #search-form {
@@ -247,7 +236,51 @@ button.btn.dropdown-toggle {
     resize: none; /* Don't allow the user to change the size of the input field */
 }
 
-/* styling of input areas for post-form */
+/* Available Quests on home page */
+#quest-list {
+    padding-top: 30px;
+}
+
+/* If a quest's description is one long word, it goes outside the div, so it must be broken up */
+.text-wrap {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.quest-card, a.quest-card, a.quest-card:hover, a.quest-card:active, a.quest-card:visited {
+    background-color: #FFF2D5;
+    border-image-slice: 10 10 10 10;
+    border-image-width: 10px 10px 10px 10px;
+    border-image-outset: 3px 3px 3px 3px;
+    border-image-repeat: stretch stretch;
+    border-image-source: url("../img/quest-border.png");
+    border-style: solid;
+    background-clip: padding-box;
+}
+
+/* Apply margin-bottom to all quest items except the first and last */
+.quest-card:not(:last-child) {
+    margin-bottom: 0.85rem; /* for smaller devices */
+}
+
+@media (min-width: 768px) { /* Adjust the breakpoint to match Bootstrap's MD breakpoint */
+    .quest-card:not(:last-child) {
+        margin-bottom: 1.25rem; /* for medium devices and up */
+    }
+}
+
+/* Minor styling add-ons for the gold-farm page */
+#gold-farm {
+    margin-top: 30px;
+    padding-bottom: 40px;
+}
+#gold-farm div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color:black;
+}
+
+/* Styling of input areas for post-form */
 #post-form input:not([type="submit"]),
 #post-form textarea {
     margin-bottom: 15px;

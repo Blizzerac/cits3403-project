@@ -5,7 +5,7 @@ from app.models import Users, Posts, Responses # Particular tables to be used
 from app import models, forms
 from app import flaskApp, db, login_manager
 from datetime import datetime
-from sqlalchemy import or_  # To search for titles or descriptions when searching
+from sqlalchemy import func, or_ # Methods to use when querying database
 from urllib.parse import urlparse, urljoin # URL checking
 
 # Settings
@@ -23,7 +23,31 @@ debug = True
 @flaskApp.route("/home")
 @flaskApp.route("/")
 def home():
-    return render_template("home.html")
+    # Set display limit on quests
+    DISPLAY_LIMIT = 3
+
+    # Fetch only unclaimed quests in random order
+    quests = db.session.query(Posts) \
+        .filter(Posts.claimed == False) \
+        .order_by(func.random()) \
+        .limit(DISPLAY_LIMIT) \
+        .all()
+
+    # Check if there are any unclaimed quests to display
+    moreQuests = len(quests) > DISPLAY_LIMIT-1 # True if more quests than can possibly display, False otherwise
+    unclaimedQuests = len(quests) > 0  # True if there exists unclaimed quests, False otherwise
+
+    return render_template("home.html", quests=quests, moreQuests=moreQuests, unclaimedQuests=unclaimedQuests)
+
+
+# If a user tried to access a page they aren't authorised for (not logged in)
+@login_manager.unauthorized_handler
+def unauthorized():
+    # Store the URL the user wanted to access
+    next_url = request.url
+    flash('Please log in to access this page.', 'danger')
+    return redirect(url_for('login', next=next_url))
+
 
 
 # If a user tried to access a page they aren't authorised for (not logged in)
@@ -79,7 +103,7 @@ def login():
                 # If failed, rollback database and warn user.
                 except Exception as e:
                     db.session.rollback()
-                    if debug:
+                    if flaskApp.debug:
                         flash('Error adding user to database. {}'.format(e), 'danger')
                     else: 
                         flash('Failed creating an account. Please try again later or contact staff.', 'danger')
@@ -116,6 +140,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash('Logged out successfully!', 'success')
     return redirect(url_for('home'))
 
 
@@ -127,9 +152,40 @@ def dashboard():
 
 
 # Post request
-@flaskApp.route('/view', methods=["POST", "GET"])
+@flaskApp.route('/post', methods=["POST", "GET"])
 @login_required
 def post_quest():
+    posting_form = forms.PostForm()
+    
+    if request.method == 'POST':
+        if posting_form.validate_on_submit():
+            # Check if a user has enough gold & user's available gold
+            if not current_user.quest_create(posting_form.post_reward.data):
+                flash('Not enough gold to uphold the reward!', 'danger')
+            
+            else:
+                try:
+                    new_post = Posts(posterID=current_user.userID, title=posting_form.post_name.data, description=posting_form.post_description.data, reward=posting_form.post_reward.data)
+                    db.session.add(new_post)
+                    db.session.commit()
+                    flash('ReQuest posted successfully!', 'success')
+                    return redirect(url_for('home'))
+            
+                except Exception as e:
+                    db.session.rollback()
+                    if flaskApp.debug:
+                        flash('Error adding ReQuest to database. {}'.format(e), 'danger')
+                    else: 
+                        flash('Failed posting ReQuest. Please try again later or contact staff.', 'danger')
+
+    gold = current_user.gold_available # Get user's available gold
+    return render_template("posting.html", posting_form=posting_form, gold_available=gold)
+
+
+# Post request
+@flaskApp.route('/view', methods=["POST", "GET"])
+@login_required
+def quest_view():
     # If no postID given, return user to the home screen
     post_id = request.args.get('postID') # Get the post ID to show
     if not post_id:
@@ -165,7 +221,7 @@ def post_quest():
 
         # Update posts
         flash('Response added successfully!', 'success')
-        return redirect(url_for('post_quest', postID=post.postID)) # Ensure form cant be resubmitted by redirecting user to same page (deletes current form)
+        return redirect(url_for('quest_view', postID=post.postID)) # Ensure form cant be resubmitted by redirecting user to same page (deletes current form)
 
 
     return render_template('post-view.html', post=post, response_form=response_form, date=creation_date)
@@ -207,34 +263,60 @@ def leaderboard():
 @flaskApp.route("/search", methods=["POST", "GET"])
 def search():
     searching_form = forms.SearchForm()
+    quest_type = request.args.get('type')
 
+    # Determine the base query based on user and quest type
+    if quest_type == 'active':
+        base_query = Posts.query.filter_by(posterID=current_user.userID, completed=False)  # Active quests posted by the user
+    elif quest_type == 'claimed':
+        base_query = Posts.query.filter_by(claimerID=current_user.userID, claimed=True, completed=False)  # Claimed quests by the user, not yet completeds
+    elif quest_type == 'completed':
+        base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True)  # Completed quests by the user
+    elif quest_type == 'inactive':
+        base_query = Posts.query.filter(Posts.posterID == current_user.userID, Posts.completed==True, Posts.claimerID != current_user.userID) # Complex inequality query, completed quests by others posted by user
+    else:
+        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False) # Complex inequality query, default
+
+    # Searching or showing all
     if request.method == 'POST' and searching_form.validate_on_submit():
-        # If the show all button is pressed
-        if searching_form.show_all.data:
-            posts = Posts.query.all()
-        # If we are searching for a post, filter
+        if 'show_all' in request.form:
+            posts = base_query.all()
         else:
             search_query = searching_form.post_search_name.data
-            posts = Posts.query.filter(
+            posts = base_query.filter(
                 or_(
                     Posts.title.contains(search_query),
                     Posts.description.contains(search_query)
                 )
             ).all()
-    # Otherwise get every post for a get request
+    # GET request for page
     else:
-        posts = Posts.query.all()
+        posts = base_query.all()
 
-    return render_template("search.html", searching_form=searching_form, posts=posts)
+    username = current_user.username if quest_type else ""
+    title = f"{quest_type.capitalize() if quest_type else 'All'} ReQuests of {username}" if username else "Available ReQuests"
 
+    return render_template("search.html", searching_form=searching_form, posts=posts, title=title, quest_type=quest_type)
 
-@flaskApp.route("/posting", methods=["POST", "GET"])
-def posting():
+@flaskApp.route("/gold-farm", methods=["POST", "GET"])
+@login_required
+def gold_farm():
+    if request.method == 'POST':
+        data = request.get_json()
+        coinsToAdd = data['coins']
+        try:
+            current_user.add_gold(coinsToAdd)
+            db.session.commit()
+            flash('You earned ' + str(coinsToAdd) + 'g!', 'success')
+        
+        except Exception as e:
+            db.session.rollback()
+            if flaskApp.debug:
+                flash('Error giving gold. {}'.format(e), 'danger')
+            else: 
+                flash('ERROR.', 'danger')
 
-    #need to add post and get conditions here
-
-    posting_form = forms.PostForm()
-    return render_template("posting.html", posting_form=posting_form)
+    return render_template("gold-farm.html")
 
 
 
@@ -373,3 +455,25 @@ def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
+
+
+
+
+# THIS ROUTE MUST BE REMOVED -- ONLY FOR DEVELOPMENT PURPOSES
+@flaskApp.route("/givegold")
+@login_required
+def giveGold():
+    try:
+        current_user.add_gold(500)
+        db.session.commit()
+        flash('Given user 500 gold.', 'success')
+    
+    except Exception as e:
+        db.session.rollback()
+        if flaskApp.debug:
+            flash('Error giving gold. {}'.format(e), 'danger')
+        else: 
+            flash('ERROR.', 'danger')
+    
+    return redirect(url_for('home'))

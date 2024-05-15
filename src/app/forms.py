@@ -1,7 +1,7 @@
 from app.models import Users # The user table in the database
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, EmailField
-from wtforms.validators import InputRequired, Length, ValidationError, Email
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, IntegerField, EmailField
+from wtforms.validators import InputRequired, Length, ValidationError, Email, NumberRange
 import re
 
 # Custom validator - apply validator to email or username depending on login type
@@ -76,7 +76,7 @@ class LoginForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-    post_name = TextAreaField(
+    post_name = StringField(
         'Name of ReQuest', 
         validators=[InputRequired(), Length(min=5, max=48)], 
         render_kw={"placeholder": "Track down gold atop Mount Dragon", "class": "form-control form-control-lg"},
@@ -85,25 +85,30 @@ class PostForm(FlaskForm):
     post_description = TextAreaField(
         'Description', 
         validators=[InputRequired(), Length(min=5, max=1000)], 
-        render_kw={"placeholder": "I have left my gold atop Mount Dragon and need it back!", "class": "form-control form-control-lg", "rows": 10},
+        render_kw={"placeholder": "I have left my gold atop Mount Dragon and need it back!", "class": "no-resize form-control form-control-lg", "rows": 10},
         id="second-post-input")
-
-    submit = SubmitField(
-        "Submit", 
-        render_kw={"class": "btn btn-success rounded disabled"},
+    
+    post_reward = IntegerField(
+        'Reward (Gold)',
+        validators=[InputRequired(), NumberRange(min=0, message="Please enter a non-negative number.")],
+        render_kw={"placeholder": "100", "class": "form-control form-control-lg"},
+        id="third-post-input")
+    
+    submit = SubmitField("Submit", 
+        render_kw={"class": "btn btn-lg btn-success rounded disabled"},
         id="submit-post")
 
     
 class SearchForm(FlaskForm):
     post_search_name = StringField(
         'Search for ReQuest', 
-        validators=[InputRequired(), Length(min=5, max=48)], 
+        validators=[Length(max=48)], 
         render_kw={"placeholder": "Track down gold atop Mount Dragon", "class": "form-control form-control-lg"},
         id="search-input")
 
     submit = SubmitField(
         "Submit", 
-        render_kw={"class": "btn btn-success rounded"},
+        render_kw={"class": "btn btn-success rounded disabled"},
         id="submit-search")
 
     show_all = SubmitField(
