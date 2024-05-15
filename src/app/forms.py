@@ -116,7 +116,7 @@ class ResponseForm(FlaskForm):
     response = TextAreaField(
         'Response', 
         validators=[InputRequired(), Length(max=1000)], 
-        render_kw={"placeholder": "I have found your gold atop Mount Dragon!", "class": "form-control form-control-lg", "rows": 4},
+        render_kw={"placeholder": "I have found your gold atop Mount Dragon!", "class": "no-resize form-control form-control-lg", "rows": 4},
         id="response-field")
 
     submit = SubmitField(
