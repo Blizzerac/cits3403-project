@@ -17,6 +17,9 @@ $(document).ready(function() {
   // Handle quest post form
   handle_questPost()
 
+  // Handle control pannel (buttons) on quest view
+  handle_questView()
+
   // Check for valid password on signup form
   //$('#signup-password-input').keyup(checkPass)
 });
@@ -127,22 +130,7 @@ function checkPass() {
   }
 }
 
-function ajaxPost(url, data, successMessage) {
-  $.ajax({
-    type: "POST",
-    url: url,
-    data: data,
-    success: function(response) {
-      alert(successMessage);
-      location.reload(); // Reload the page to update the content dynamically
-    },
-    error: function(response) {
-      alert('An error occurred. Please try again.');
-    }
-  });
-}
-
-$(document).ready(function() {
+function handle_questView() {
   $('#claim-request').click(function() {
     ajaxPost("{{ url_for('claim_request', post_id=post.postID) }}", {}, 'ReQuest claimed successfully!');
   });
@@ -172,4 +160,20 @@ $(document).ready(function() {
     const data = $(this).serialize();
     ajaxPost($(this).attr('action'), data, 'Response added successfully!');
   });
-});
+}
+
+function ajaxPost(url, data, successMessage) {
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: data,
+    success: function(response) {
+      // Flask will flash a message to the user.
+      location.reload(); // Reload the page to update the content dynamically
+    },
+    error: function(response) {
+      console.log(response)
+      location.reload();
+    }
+  });
+}
