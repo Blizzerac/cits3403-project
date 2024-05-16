@@ -7,9 +7,13 @@
     <!-- Floating Sidebar Controls -->
     <div class="control-panel row background-overlay">
       <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
-        <h4>Post created on: {{ date }}</h4>
+        <h4>Post created on: {{ creation_date }}</h4>
         {% if post.claimed%}
         <h4>Post claimed by: {{ post.claimer.username }}</h4>
+        <h4>Date claimed: {{ claim_date }}</h4>
+        {% if post.private %}
+        <h4><em>Post is <b>Private</b></em></h4>
+        {% endif %}
         {% else %}
         <h4>Post claimed by: No-one<h4>
         {% endif %}
@@ -29,7 +33,12 @@
         {% elif current_user.userID == post.posterID %}
           {% if post.waitingApproval %}
           <button class="btn btn-success mb-2" id="approve-submission" data-url="{{ url_for('approve_submission', post_id=post.postID) }}">Approve Submission</button>
-          <button class="btn btn-danger mb-2" id="deny-submission" data-url="{{ url_for('deny_submission', post_id=post.postID) }}">Deny Submission</button>
+          <button class="btn btn-danger mb-3" id="deny-submission" data-url="{{ url_for('deny_submission', post_id=post.postID) }}">Deny Submission</button>
+          {% endif %}
+          {% if not post.private %}
+          <button class="btn btn-info mb-2" id="private-request" data-url="{{ url_for('private_request', post_id=post.postID) }}">Private ReQuest</button>
+          {% else %}
+          <button class="btn btn-info mb-2" id="unprivate-request" data-url="{{ url_for('private_request', post_id=post.postID) }}">Unprivate ReQuest</button>
           {% endif %}
         <button class="btn btn-warning mb-2" id="cancel-request" data-url="{{ url_for('cancel_request', post_id=post.postID) }}">Cancel ReQuest</button>
         {% endif %}

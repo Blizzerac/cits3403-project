@@ -173,6 +173,14 @@ function handle_questView() {
     ajaxPost($(this).data('url'), {});
   });
 
+  $('#private-request').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#unprivate-request').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
   $('#cancel-request').click(function() {
     ajaxPost($(this).data('url'), {});
   });

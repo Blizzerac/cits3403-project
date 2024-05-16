@@ -28,7 +28,7 @@ def home():
 
     # Fetch only unclaimed quests in random order
     quests = db.session.query(Posts) \
-        .filter(Posts.claimed == False) \
+        .filter(Posts.claimed == False, Posts.private==False) \
         .order_by(func.random()) \
         .limit(DISPLAY_LIMIT) \
         .all()
@@ -197,8 +197,12 @@ def quest_view():
     if not post:
         flash('ReQuest does not exist.', 'danger')
         return redirect(url_for('home'))
+    if post.private and not (current_user.userID == post.claimerID or current_user.userID == post.posterID):
+        flash('Cant acces private ReQuest.', 'danger')
+        return redirect(url_for('home'))
     
     creation_date = post.creationDate.strftime('%Y-%m-%d')
+    claim_date = post.claimDate.strftime('%Y-%m-%d') if post.claimDate else None # Get the claim date if it exists
     response_form = forms.ResponseForm()
 
     if response_form.validate_on_submit():
@@ -224,7 +228,7 @@ def quest_view():
         return redirect(url_for('quest_view', postID=post.postID)) # Ensure form cant be resubmitted by redirecting user to same page (deletes current form)
 
 
-    return render_template('post-view.html', post=post, response_form=response_form, date=creation_date)
+    return render_template('post-view.html', post=post, response_form=response_form, creation_date=creation_date, claim_date=claim_date)
 
 
 # Leaderboard
@@ -275,7 +279,7 @@ def search():
     elif quest_type == 'inactive':
         base_query = Posts.query.filter(Posts.posterID == current_user.userID, Posts.completed==True, Posts.claimerID != current_user.userID) # Complex inequality query, completed quests by others posted by user
     else:
-        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False) # Complex inequality query, default
+        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False, Posts.private==False) # Complex inequality query, default
 
     # Searching or showing all
     if request.method == 'POST' and searching_form.validate_on_submit():
@@ -371,6 +375,7 @@ def relinquish_claim(post_id):
         post.claimerID = None
         post.claimDate = None
         post.waitingApproval = False # Ensure reset this value (can cause bug if left)
+        post.private = False # Ensure others can claim it
         try:
             db.session.commit()
             flash('Claim on ReQuest reliquished successfully!', 'success')
@@ -430,6 +435,25 @@ def deny_submission(post_id):
         
     flash('Unable deny ReQuest submission claim. Has it been submitted for approval?', 'danger')
     return jsonify({"message": "Unable to deny submission."}), 400
+
+
+@flaskApp.route('/private_request/<int:post_id>', methods=['POST'])
+@login_required
+def private_request(post_id):
+    post = Posts.query.get(post_id)
+    if post and post.claimed and current_user.userID == post.posterID:
+        try:
+            post.private = not post.private # Swap private boolean field
+            db.session.commit()
+            flash('ReQuest privacy changed successfully!', 'success')
+            return jsonify({"message": "ReQuest privacy changed successfully."}), 200
+        except Exception as e:
+            db.session.rollback()
+            flash_fail_ReQuestModify(e)
+            return jsonify({"message": f"Unable to change ReQuest privacy - Database error."}), 400
+        
+    flash('Unable to change ReQuest privacy. Is it claimed?', 'danger')
+    return jsonify({"message": "Unable to change ReQuest privacy."}), 400
 
 
 @flaskApp.route('/cancel_request/<int:post_id>', methods=['POST'])
