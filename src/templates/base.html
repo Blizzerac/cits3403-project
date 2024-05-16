@@ -92,12 +92,21 @@
     {% endwith %}
   </div>
 
+  <!-- Contributions modal -->
+  <div class="modal fade" id="contributions-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <img src="{{ url_for('static', filename='img/scroll.png') }}" alt="Contributions"/>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-md-10 footer-content">
         <p class="float-right"><a href="#">Back to top</a></p>
-        <p>© 2024 Quester's Cache</p>
+        <p>© 2024 Quester's Cache · <a href='#contributions-modal' data-toggle="modal" data-target="#contributions-modal">Contributions</a></p>
       </div>
     </div>
   </footer>
