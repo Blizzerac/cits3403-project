@@ -48,6 +48,10 @@ a.link-mute {
     text-decoration: none;
 }
 
+.navbar-toggler-icon {
+    background-image: url("../img/icons/hamburger-menu.svg");
+}
+
 .bg-wood {
     background-image: url("../img/bg-woodplank-scaled.png");
     background-repeat: repeat;
@@ -60,16 +64,29 @@ a.link-mute {
 }
 
 .bg-wood-nav {
-    background-image: url("../img/navbar-scaled.png");
-    background-repeat: repeat-x;
-    height: 64px;
+    background-color: #421C00;
+    border-image-slice: 12 0 8 0;
+    border-image-width: 12px 0px 8px 0px;
+    border-image-outset: 0px 0px -8px 0px;
+    border-image-repeat: stretch stretch;
+    border-image-source: url("../img/navbar-scaled.png");
+    border-style: solid;
+}
+
+button.btn.dropdown-toggle {
+    padding: 0 0 0 0 !important;  /* Remove padding around dropdown button */
 }
 
 .navbar-svg-icon {
-    width: 42px;
-    margin-left: 6px;
-    fill: white;
+    width: 40px;
 }
+
+@media (max-width: 991px) {
+    div.dropdown {
+        padding-top: 7px;
+    }
+}
+
 
 .form-container {
     background-image: url("../img/bg-woodplank-scaled.png");
