@@ -35,18 +35,21 @@
             Search For ReQuests
           </a>
         </div>
-        <div class="col-lg-auto px-0">
+        <div class="col-lg-auto px-0 mb-2 mb-lg-0">
           <a role="button" class="row-md row-sm btn btn-primary text-light link-mute mr-2 {{ 'disabled' if not current_user.is_authenticated }}" href="{{ url_for('post_quest') if current_user.is_authenticated else '#' }}">
             Post New ReQuest
           </a>
         </div>
         {% if current_user.is_authenticated %}
+        <img src={{ url_for('static', filename='../static/img/coins-scaled.png') }} alt="Gold" class="navbar-svg-icon" title="Gold">
+        <span class="navbar-text text-light mr-2"><b>{{ current_user.gold }}g</b></span>
         <div class="dropdown">
           <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <img src="{{ url_for('static', filename='img/icons/user.svg') }}" alt="User" class="navbar-svg-icon" title="Account">
           </button>
           <div class="dropdown-menu dropdown-menu-lg-right">
             <a class="dropdown-item link-mute" href="{{ url_for('dashboard') }}">Dashboard</a>
+            <div class="dropdown-divider"></div>
             <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='active') }}">Active Quests</a>
             <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='inactive') }}">Inactive Quests</a>
             <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='claimed') }}">Claimed Quests</a>
