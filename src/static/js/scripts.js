@@ -38,7 +38,7 @@ $(document).click(function(event) {
   let clickover = $(event.target);
   let $navbar = $(".navbar-collapse");               
   let _opened = $navbar.hasClass("show");
-  if (_opened === true && !clickover.hasClass("navbar-toggler")) {
+  if (_opened === true && !clickover.hasClass("navbar-toggler") && $(window).width() < 992) {
     $navbar.collapse('hide');
   }
 });
