@@ -49,15 +49,15 @@
 </div>
 
 <!-- Quest List -->
-<div class="container bg-wood mb-3 mb-md-5 pb-2 pb-md-4" id="quest-list">
+<div class="container bg-wood mb-3 mb-md-5 pb-4" id="quest-list">
     <h1 class="text-center pb-1 pb-md-3">Available Quests</h1>
-    <div class="list-group">
+    <div class="list-group pl-3 pr-3">
       {% if unclaimedQuests %}
       {% for quest in quests %}
       <a href ="{{ url_for('quest_view', postID=quest.postID) }}" class="quest-card list-group-item list-group-item-action">
         <div class="d-flex justify-content-between">
           <h5 class="mb-1 text-wrap">{{ quest.title }}</h5>
-          <small>Reward: {{ quest.reward }}g</small>
+          <small>Reward: {{ quest.reward }}G</small>
         </div>
         <p class="text-wrap">{{ quest.description | truncate(250, true, '.....') }}</p>
       </a>
