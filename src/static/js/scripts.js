@@ -18,6 +18,9 @@ $(document).ready(function() {
   // Handle quest modification buttons
   handle_questView();
 
+  // Handle quest post form checking
+  handle_questPost();
+
   // Handle gold farming
   $('#coin-stack').click(addGold);
   $('#cash-in-button').click(cashIn);
