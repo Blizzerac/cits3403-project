@@ -280,45 +280,18 @@ button.btn.dropdown-toggle {
 /* MODAL CUSTOMISATION
 -------------------------------------------------- */
 
-.modal-text ul li{
-    list-style-type: none;
-    padding-left: 0; /* Removes padding from the left side where bullets usually are */
-    margin: 0; /* Removes default margin from the list */
-}
-
-.modal-dialog {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: fit-content; /* Only take up as much width as needed */
-}
-
 .modal-content {
     padding: 0px;
     background-color: transparent;
     border: none;
     margin: auto;
+    width: 60%;
+    height: 60%;
 }
 
 .modal-content > img {
-    width: 100%;
-    max-height: 75vh;
     object-fit: contain; /* Keeps the aspect ratio without cropping */
-}
-
-.modal-text {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    max-width: 500px; /* Ensures text doesn't get too wide on larger screens */
-    color: #000;
-    text-align: center;
-    padding: 20px; /* Adds some padding around the text */
-    /* pointer-events: none; Makes text non-interactive */
-    font-size: 0.9rem; /* Base font size for modal text */
-
+    min-height: 90vh;
 }
 
 /* CAROUSEL CUSTOMISATION
