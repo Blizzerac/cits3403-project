@@ -285,13 +285,18 @@ button.btn.dropdown-toggle {
     background-color: transparent;
     border: none;
     margin: auto;
-    width: 60%;
-    height: 60%;
+    width: 85%;
 }
 
 .modal-content > img {
     object-fit: contain; /* Keeps the aspect ratio without cropping */
     min-height: 90vh;
+}
+
+@media (min-width: 992px) { /* Adjust the breakpoint to match Bootstrap's MD breakpoint */
+    .modal-content {
+        width: 60%; /* for medium devices and up */
+    }
 }
 
 /* CAROUSEL CUSTOMISATION
