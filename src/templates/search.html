@@ -29,8 +29,10 @@
         {% for post in posts %}
           {% if not post.private or (current_user.userID == post.posterID or current_user.userID == post.claimerID) %}
           <div class="border p-4 rounded bg-success my-4">
-            <div class="d-flex justify-content-between">
-              <h3 class="text-wrap text-center">{{ post.title }}</h3>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="flex-grow-1">
+                <h3 class="text-wrap text-center underline">{{ post.title }}</h3>
+              </div>
               {% if post.private %}
               <span class="align-self-center badge bg-secondary">Private</span>
               {% endif %}
