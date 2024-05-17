@@ -2,11 +2,14 @@
 {% block title %}Questers Cache || Login/Signup{% endblock %}
 {% block content %}
 
-<div class="col-md-5 rounded form-container {{ 'hidden' if is_signup }}" id="login-form-container">
+<div class="col-md-6 rounded form-container {{ 'hidden' if is_signup }}" id="login-form-container">
   <fieldset>
     <legend class="text-center" id="legend"><span class="toggle-login">Sign-up</span> | <span class="other-toggle">Login</span></legend>
     <form method='POST' id='login-form' action='/login'>
       {{ login_form.hidden_tag() }}
+      {% if next %}
+      <input type="hidden" name="next" value="{{ next }}">
+      {% endif %}
       <div>
         {{ login_form.login.label }}
         {{ login_form.login() }}
@@ -35,6 +38,9 @@
     <legend class="text-center" id="legend"><span class="other-toggle">Sign-up</span> | <span class="toggle-login">Login</span></legend>
     <form method='POST' id='signup-form' action='/signup'>
       {{ signup_form.hidden_tag() }}
+      {% if next %}
+      <input type="hidden" name="next" value="{{ next }}">
+      {% endif %}
       <div>
         {{ signup_form.username.label }}
         {{ signup_form.username() }}
@@ -55,8 +61,7 @@
       </div>
       <div>
         {{ signup_form.password.label }}
-        {{ signup_form.password(id='signup-password-input') }}
-        <!-- <div id="password-errors" class="form-error"></div> -->
+        {{ signup_form.password() }}
         {% if is_signup %}
         {% for error in signup_form.password.errors %}
           <div class="form-error alert alert-danger">{{ error }}</div>

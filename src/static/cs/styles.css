@@ -103,6 +103,15 @@ button.btn.dropdown-toggle {
     border-style: solid;
 }
 
+.bg-wood-large {
+background-image: url("../img/plank.jpg");
+  background-repeat: repeat; 
+  background-size: 90%;
+  padding: 1.75rem;
+  border: 2px solid #999; 
+  border-radius: 5px; /* Set border radius to 5px for rounded corners */ 
+}
+
 #leaderboard {
   background-image: url("../img/bg-woodplank-scaled.png");
   background-repeat: repeat; 
@@ -222,13 +231,7 @@ button.btn.dropdown-toggle {
     margin-top: 3rem;
 }
 
-/* General post-form styling */
-#post-form {
-    margin-top: 30px;
-    padding-top: 10px;
-    padding-bottom: 25px;
-}
-
+/* General ReQuest search page styling */
 #search-form {
     background-image: url("../img/plank.jpg");
     background-size: cover;
@@ -238,6 +241,21 @@ button.btn.dropdown-toggle {
 
 #search-form input {
     margin-top: 10px;
+}
+
+#list-of-posts {
+    padding: 20px;
+    border-radius: 8px;
+    background-image: url("../img/plank.jpg");
+    background-size: cover;
+    background-position: center;
+    margin-top: 30px;
+}
+
+#list-of-posts span.badge {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
 }
 
 .no-resize {
@@ -288,7 +306,13 @@ button.btn.dropdown-toggle {
     color:black;
 }
 
-/* Dtyling of input areas for post-form */
+/* Styling of input areas for post-form */
+#post-form {
+    margin-top: 30px;
+    padding-top: 10px;
+    padding-bottom: 25px;
+}
+
 #post-form input:not([type="submit"]),
 #post-form textarea {
     margin-bottom: 15px;
@@ -302,13 +326,24 @@ button.btn.dropdown-toggle {
     font-weight: bold;
 }
 
-#list-of-posts {
-    padding: 20px;
-    border-radius: 8px;
-    background-image: url("../img/plank.jpg");
-    background-size: cover;
-    background-position: center;
-    margin-top: 30px;
+/* Post View */
+.text-wrap {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+#post-header span.badge { /* Reward badge */
+    margin-top: -1rem;
+    padding: 1.15rem;
+    color: gold;
+    font-weight: bolder;
+}
+
+.post-item {
+    padding: 1.5rem;
+    color: black;
+    width: 100%; /* Ensure even a small quest takes up all the room given to it */
 }
 
 /* MODAL CUSTOMISATION

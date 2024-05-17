@@ -1,10 +1,16 @@
 # Imports
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
-from app.models import Users, Posts # Particular tables to be used
+from app.models import Users, Posts, Responses # Particular tables to be used
 from app import models, forms
-from app import flaskApp, db
-from sqlalchemy.sql.expression import func, or_ # Methods to use when querying database
+from app import flaskApp, db, login_manager
+from datetime import datetime
+from sqlalchemy import func, or_ # Methods to use when querying database
+from urllib.parse import urlparse, urljoin # URL checking
+
+# Settings
+debug = True
+
 
 ###########
 # Routes  #
@@ -22,7 +28,7 @@ def home():
 
     # Fetch only unclaimed quests in random order
     quests = db.session.query(Posts) \
-        .filter(Posts.claimed == False) \
+        .filter(Posts.claimed == False, Posts.private==False) \
         .order_by(func.random()) \
         .limit(DISPLAY_LIMIT) \
         .all()
@@ -32,6 +38,26 @@ def home():
     unclaimedQuests = len(quests) > 0  # True if there exists unclaimed quests, False otherwise
 
     return render_template("home.html", quests=quests, moreQuests=moreQuests, unclaimedQuests=unclaimedQuests)
+
+
+# If a user tried to access a page they aren't authorised for (not logged in)
+@login_manager.unauthorized_handler
+def unauthorized():
+    # Store the URL the user wanted to access
+    next_url = request.url
+    flash('Please log in to access this page.', 'danger')
+    return redirect(url_for('login', next=next_url))
+
+
+
+# If a user tried to access a page they aren't authorised for (not logged in)
+@login_manager.unauthorized_handler
+def unauthorized():
+    # Store the URL the user wanted to access
+    next_url = request.url
+    flash('Please log in to access this page.', 'danger')
+    return redirect(url_for('login', next=next_url))
+
 
 # Login
 @flaskApp.route("/signup", methods=["POST", "GET"])
@@ -45,7 +71,12 @@ def login():
     login_form = forms.LoginForm()
     signup_form = forms.SignupForm()
 
+    next_page = request.args.get('next')  # Get the next parameter from the URL, if present
+
     if request.method == 'POST':
+        # If user is going somewhere after login/signup
+        next_page = request.form.get('next')  # Override with the next parameter from the form
+
         # If signup form submitted
         if signup_form.validate_on_submit():
             existing_user = Users.query.filter_by(username=signup_form.username.data).first()
@@ -66,6 +97,8 @@ def login():
                     db.session.commit()
                     login_user(new_user, remember=False) # Assuming dont remember them
                     flash('Account created successfully!', 'success')
+                    if next_page and is_safe_url(next_page):
+                        return redirect(next_page) # If user was trying to go somewhere earlier
                     return redirect(url_for('home'))
                 # If failed, rollback database and warn user.
                 except Exception as e:
@@ -88,6 +121,8 @@ def login():
             if user and user.check_password(login_form.password.data):
                 login_user(user, remember=login_form.remember_me.data)
                 flash('Logged in successfully!', 'success')
+                if next_page and is_safe_url(next_page):
+                    return redirect(next_page) # If user was trying to go somewhere earlier
                 return redirect(url_for('dashboard'))
             else:
                 # Dont inform the user if the account or password is incorrect (security flaw) - only general error
@@ -97,7 +132,8 @@ def login():
         # elif not login_form.validate_on_submit() and request.method == 'POST':
         #     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=False)
 
-    return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup)
+    return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup, next=next_page)
+
 
 # User logout
 @flaskApp.route('/logout', methods=["POST", "GET"])
@@ -107,11 +143,13 @@ def logout():
     flash('Logged out successfully!', 'success')
     return redirect(url_for('home'))
 
+
 # User dashboard
 @flaskApp.route('/dashboard', methods=["POST", "GET"])
 @login_required
 def dashboard():
     return render_template('home.html') #TEMP UNTIL DASH FINISHED
+
 
 # Post request
 @flaskApp.route('/post', methods=["POST", "GET"])
@@ -142,6 +180,55 @@ def post_quest():
 
     gold = current_user.gold_available # Get user's available gold
     return render_template("posting.html", posting_form=posting_form, gold_available=gold)
+
+
+# Post request
+@flaskApp.route('/view', methods=["POST", "GET"])
+@login_required
+def quest_view():
+    # If no postID given, return user to the home screen
+    post_id = request.args.get('postID') # Get the post ID to show
+    if not post_id:
+        flash('Incorrect usage.', 'danger')
+        return redirect(url_for('home'))
+    
+    # If no post exists, return user to home screen
+    post = Posts.query.get(post_id)
+    if not post:
+        flash('ReQuest does not exist.', 'danger')
+        return redirect(url_for('home'))
+    if post.private and not (current_user.userID == post.claimerID or current_user.userID == post.posterID):
+        flash('Cant acces private ReQuest.', 'danger')
+        return redirect(url_for('home'))
+    
+    creation_date = post.creationDate.strftime('%Y-%m-%d')
+    claim_date = post.claimDate.strftime('%Y-%m-%d') if post.claimDate else None # Get the claim date if it exists
+    response_form = forms.ResponseForm()
+
+    if response_form.validate_on_submit():
+        # Add the response to the database
+        new_response = Responses(
+            responderID=current_user.userID,
+            postID=post.postID,
+            msg=response_form.response.data
+        )
+        db.session.add(new_response)
+        try:
+            db.session.commit()
+        # If failed, rollback database and warn user.
+        except Exception as e:
+            db.session.rollback()
+            if debug:
+                flash('Error adding response to database. {}'.format(e), 'danger')
+            else: 
+                flash('Failed adding response. Please try again later or contact staff.', 'danger')
+
+        # Update posts
+        flash('Response added successfully!', 'success')
+        return redirect(url_for('quest_view', postID=post.postID)) # Ensure form cant be resubmitted by redirecting user to same page (deletes current form)
+
+
+    return render_template('post-view.html', post=post, response_form=response_form, creation_date=creation_date, claim_date=claim_date)
 
 
 # Leaderboard
@@ -178,6 +265,7 @@ def leaderboard():
 
 
 @flaskApp.route("/search", methods=["POST", "GET"])
+@login_required
 def search():
     searching_form = forms.SearchForm()
     quest_type = request.args.get('type')
@@ -192,7 +280,7 @@ def search():
     elif quest_type == 'inactive':
         base_query = Posts.query.filter(Posts.posterID == current_user.userID, Posts.completed==True, Posts.claimerID != current_user.userID) # Complex inequality query, completed quests by others posted by user
     else:
-        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False) # Complex inequality query, default
+        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False, Posts.private==False) # Complex inequality query, default
 
     # Searching or showing all
     if request.method == 'POST' and searching_form.validate_on_submit():
@@ -234,6 +322,176 @@ def gold_farm():
                 flash('ERROR.', 'danger')
 
     return render_template("gold-farm.html")
+
+
+
+# Handle Post Control Panel Buttons
+
+@flaskApp.route('/claim_request/<int:post_id>', methods=['POST'])
+@login_required
+def claim_request(post_id):
+    post = Posts.query.get(post_id)
+    if post and not post.claimed and current_user.userID != post.posterID:
+        post.claimed = True
+        post.claimerID = current_user.userID
+        post.claimDate = datetime.now()
+        try:
+            db.session.commit()
+            flash('ReQuest claimed successfully!', 'success')
+            return jsonify({"message": "ReQuest claimed successfully!"}), 200
+        except Exception as e:
+            db.session.rollback()
+            flash_fail_ReQuestModify(e)
+            return jsonify({"message": f"Unable to claim ReQuest - Database error."}), 400
+        
+    flash('Unable to claim ReQuest. Is it already claimed?', 'danger')
+    return jsonify({"message": "Unable to claim ReQuest."}), 400
+
+
+@flaskApp.route('/finalise_request/<int:post_id>', methods=['POST'])
+@login_required
+def finalise_request(post_id):
+    post = Posts.query.get(post_id)
+    if post and post.claimed and current_user.userID == post.claimerID and not post.waitingApproval:
+        post.waitingApproval = True
+        try:
+            db.session.commit()
+            flash('ReQuest submission sent successfully!', 'success')
+            return jsonify({"message": "ReQuest finalised successfully!"}), 200
+        except Exception as e:
+            db.session.rollback()
+            flash_fail_ReQuestModify(e)
+            return jsonify({"message": f"Unable to finalise ReQuest - Database error."}), 400
+    
+    flash('Unable to send ReQuest submission. Have you claimed it?', 'danger')
+    return jsonify({"message": "Unable to finalise ReQuest."}), 400
+
+
+@flaskApp.route('/relinquish_claim/<int:post_id>', methods=['POST'])
+@login_required
+def relinquish_claim(post_id):
+    post = Posts.query.get(post_id)
+    if post and post.claimed and current_user.userID == post.claimerID:
+        post.claimed = False # Reset claim
+        post.claimerID = None
+        post.claimDate = None
+        post.waitingApproval = False # Ensure reset this value (can cause bug if left)
+        post.private = False # Ensure others can claim it
+        try:
+            db.session.commit()
+            flash('Claim on ReQuest reliquished successfully!', 'success')
+            return jsonify({"message": "ReQuest claim relinquished successfully!"}), 200
+        except Exception as e:
+            db.session.rollback()
+            flash_fail_ReQuestModify(e)
+            return jsonify({"message": f"Unable to relinquish ReQuest claim - Database error."}), 400
+        
+    flash('Unable relinquish ReQuest claim. Have you claimed it?', 'danger')
+    return jsonify({"message": "Unable to relinquish ReQuest claim."}), 400
+
+
+@flaskApp.route('/approve_submission/<int:post_id>', methods=['POST'])
+@login_required
+def approve_submission(post_id):
+    post = Posts.query.get(post_id)
+    if post and post.waitingApproval and current_user.userID == post.posterID:
+        post.completed = True
+        post.waitingApproval = False
+        gold = post.reward
+        claimer = Users.query.get(post.claimerID)
+        if not claimer:
+            flash('Could not find claimer in database.', 'danger')
+            return jsonify({"message": f"Could not find claimer in database."}), 400
+        
+        try:
+            # Check if it correctly got the user
+            claimer.add_gold(gold)
+            current_user.quest_payout(gold)
+            db.session.commit()
+            flash('ReQuest submission approved successfully!', 'success')
+            return jsonify({"message": "ReQuest submission approved successfully!"}), 200
+        except Exception as e:
+            db.session.rollback()
+            flash_fail_ReQuestModify(e)
+            return jsonify({"message": f"Unable to approve ReQuest submission - Database error."}), 400
+        
+    flash('Unable approve ReQuest submission claim. Has it been submitted for approval?', 'danger')
+    return jsonify({"message": "Unable to approve ReQuest submission."}), 400
+
+
+@flaskApp.route('/deny_submission/<int:post_id>', methods=['POST'])
+@login_required
+def deny_submission(post_id):
+    post = Posts.query.get(post_id)
+    if post and post.waitingApproval and current_user.userID == post.posterID:
+        post.waitingApproval = False
+        try:
+            db.session.commit()
+            flash('ReQuest submission denied successfully!', 'success')
+            return jsonify({"message": "ReQuest submission denied."}), 200
+        except Exception as e:
+            db.session.rollback()
+            flash_fail_ReQuestModify(e)
+            return jsonify({"message": f"Unable to deny ReQuest submission - Database error."}), 400
+        
+    flash('Unable deny ReQuest submission claim. Has it been submitted for approval?', 'danger')
+    return jsonify({"message": "Unable to deny submission."}), 400
+
+
+@flaskApp.route('/private_request/<int:post_id>', methods=['POST'])
+@login_required
+def private_request(post_id):
+    post = Posts.query.get(post_id)
+    if post and post.claimed and current_user.userID == post.posterID:
+        try:
+            post.private = not post.private # Swap private boolean field
+            db.session.commit()
+            flash('ReQuest privacy changed successfully!', 'success')
+            return jsonify({"message": "ReQuest privacy changed successfully."}), 200
+        except Exception as e:
+            db.session.rollback()
+            flash_fail_ReQuestModify(e)
+            return jsonify({"message": f"Unable to change ReQuest privacy - Database error."}), 400
+        
+    flash('Unable to change ReQuest privacy. Is it claimed?', 'danger')
+    return jsonify({"message": "Unable to change ReQuest privacy."}), 400
+
+
+@flaskApp.route('/cancel_request/<int:post_id>', methods=['POST'])
+@login_required
+def cancel_request(post_id):
+    post = Posts.query.get(post_id)
+    if post and not post.completed and current_user.userID == post.posterID:
+        gold = post.reward
+        try:
+            current_user.quest_refund(gold)
+            db.session.delete(post)
+            db.session.commit()
+            flash('ReQuest cancelled successfully!', 'success')
+            return jsonify({"message": "ReQuest cancelled successfully."}), 200
+        except Exception as e:
+            db.session.rollback()
+            flash_fail_ReQuestModify(e)
+            return jsonify({"message": f"Unable to cancel ReQuest - Database error."}), 400
+        
+    flash('Unable cancel ReQuest. Do you own it?', 'danger')
+    return jsonify({"message": "Unable to cancel ReQuest."}), 400
+
+
+def flash_fail_ReQuestModify(error):
+    if debug:
+        flash('Error adjusting ReQuest in database. {}'.format(error), 'danger')
+    else: 
+        flash('Failed adjusting ReQuest. Please try again later or contact staff.', 'danger')
+
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
+
+
 
 
 # THIS ROUTE MUST BE REMOVED -- ONLY FOR DEVELOPMENT PURPOSES

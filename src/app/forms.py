@@ -115,3 +115,16 @@ class SearchForm(FlaskForm):
         "Show All", 
         render_kw={"class": "btn btn-primary rounded"},
         id="show-all-search")
+    
+
+class ResponseForm(FlaskForm):
+    response = TextAreaField(
+        'Response', 
+        validators=[InputRequired(), Length(max=1000)], 
+        render_kw={"placeholder": "I have found your gold atop Mount Dragon!", "class": "no-resize form-control form-control-lg", "rows": 4},
+        id="response-field")
+
+    submit = SubmitField(
+        "Submit", 
+        render_kw={"class": "btn btn-success rounded"},
+        id="submit-response")

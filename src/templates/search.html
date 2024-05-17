@@ -27,13 +27,21 @@
       <div class="border p-4 rounded text-center text-wrap" id="list-of-posts">
         <h1>{{ title }}</h1>
         {% for post in posts %}
+          {% if not post.private or (current_user.userID == post.posterID or current_user.userID == post.claimerID) %}
           <div class="border p-4 rounded bg-success my-4">
-            <h2>{{ post.title }}</h2>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="flex-grow-1">
+                <h3 class="text-wrap text-center underline">{{ post.title }}</h3>
+              </div>
+              {% if post.private %}
+              <span class="align-self-center badge bg-secondary">Private</span>
+              {% endif %}
+            </div>
             <p>{{ post.description }}</p>
-            <p>Reward: {{ post.reward }}</p>
-            <!-- <a href=" url_for('post-view', post_id=post.postID) " class="btn btn-primary">Check Out ReQuest!</a> -->
-            <a href="#" class="btn btn-primary">Check Out ReQuest!</a> <!-- SINGLE QUEST VIEW NOT COMPLETED YET -->
+            <p>Reward: {{ post.reward }}G</p>
+            <a href="{{ url_for('quest_view', postID=post.postID) }}" class="btn btn-primary">Check Out ReQuest!</a>
           </div>
+          {% endif %}
         {% endfor %}
       </div>
     </div>

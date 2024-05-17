@@ -4,33 +4,26 @@ const verbose = true;
 // When page is loaded
 $(document).ready(function() {
   // Change signup to login form
-  $('.toggle-login').click(swapLoginForm)
+  $('.toggle-login').click(swapLoginForm);
 
   // Show the toast if any exist
   $('.toast').toast('show');
 
   // Initialise Bootstrap dropdowns and other events
-  handle_dropdownMenu()
-
-  // Handle quest post form
-  handle_questPost()
+  handle_dropdownMenu();
 
   // Handle quest search form
-  handleSearchInput();
+  check_searchInput();
+
+  // Handle quest modification buttons
+  handle_questView();
+
+  // Handle quest post form checking
+  handle_questPost();
 
   // Handle gold farming
-  const coin_stack = document.getElementById("coin-stack");
-  const cash_in_button = document.getElementById("cash-in-button");
-
-  try {
-    coin_stack.addEventListener("click", addGold);
-    cash_in_button.addEventListener("click", cashIn);
-  }
-  catch (error) {
-    if (verbose) {
-      console.error("Error adding event listeners to gold farming buttons: " + error);
-    }
-  }
+  $('#coin-stack').click(addGold);
+  $('#cash-in-button').click(cashIn);
 });
 
 // Collapse navbar when clicking outside restraints
@@ -116,7 +109,7 @@ function handleSearchInput() {
 }
 
 // Function to check if the search input has enough characters
-function checkSearchInput() {
+function check_searchInput() {
   let searchInput = $('#search-input').val();
 
   // Minimum length of 1 for enabling the search
@@ -152,5 +145,56 @@ function cashIn() {
   })
   .catch((error) => {
     console.error('Error:', error);
+  });
+}
+
+function ajaxPost(url, data) {
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: data,
+    success: function(response) {
+      // Flask will flash a message to the user.
+      location.reload(); // Reload the page to update the content dynamically
+    },
+    error: function(response) {
+      console.log(response)
+      location.reload();
+    }
+  });
+}
+
+function handle_questView() {
+  // Get the URL from the button before sending ajax
+  $('#claim-request').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#finalise-request').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#relinquish-claim').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#approve-submission').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#deny-submission').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#private-request').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#unprivate-request').click(function() {
+    ajaxPost($(this).data('url'), {});
+  });
+
+  $('#cancel-request').click(function() {
+    ajaxPost($(this).data('url'), {});
   });
 }
