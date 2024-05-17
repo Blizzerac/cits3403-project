@@ -265,6 +265,7 @@ def leaderboard():
 
 
 @flaskApp.route("/search", methods=["POST", "GET"])
+@login_required
 def search():
     searching_form = forms.SearchForm()
     quest_type = request.args.get('type')
