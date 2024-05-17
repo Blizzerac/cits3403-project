@@ -15,36 +15,41 @@
   <!-- Header Navbar -->
   <header>
     <nav class="navbar navbar-expand-lg bg-wood-nav">
-      <div class="container-fluid">
-        <a class="navbar-brand text-light link-mute" href="{{url_for('home')}}">Quester's Cache</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarContent">
-          <ul class="navbar-nav me-auto me-2">
-            <li class="nav-item">
-              <a class="nav-link active text-light link-mute" aria-current="page" href="{{url_for('home')}}">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light link-mute" href="{{url_for('leaderboard')}}">Leaderboard</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light link-mute" href="{{url_for('gold_farm')}}">Earn Gold</a>
-          </ul>
+      <a class="navbar-brand text-light link-mute" href="{{url_for('home')}}"><h3>Quester's Cache</h3></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link active text-light link-mute" aria-current="page" href="{{url_for('home')}}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light link-mute" href="{{url_for('leaderboard')}}">Leaderboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light link-mute" href="{{url_for('gold_farm')}}">Earn Gold</a>
+        </ul>
+        <div class="col-lg-auto px-0 mb-2 mb-lg-0">
+          <a role="button" class="row-md row-sm btn btn-success text-light link-mute mr-2" href="{{ url_for('search') }}">
+            Search For ReQuests
+          </a>
         </div>
-        <a role="button" class="btn btn-success text-light link-mute me-2" href="{{ url_for('search') }}">
-          Search For ReQuests
-        </a>
-        <a role="button" class="btn btn-primary text-light link-mute {{ 'disabled' if not current_user.is_authenticated }}" href="{{ url_for('post_quest') if current_user.is_authenticated else '#' }}">
-          Post New ReQuest
-        </a>
+        <div class="col-lg-auto px-0 mb-2 mb-lg-0">
+          <a role="button" class="row-md row-sm btn btn-primary text-light link-mute mr-2 {{ 'disabled' if not current_user.is_authenticated }}" href="{{ url_for('post_quest') if current_user.is_authenticated else '#' }}">
+            Post New ReQuest
+          </a>
+        </div>
         {% if current_user.is_authenticated %}
+        <img src={{ url_for('static', filename='../static/img/coins-scaled.png') }} alt="Gold" class="navbar-svg-icon" title="Gold">
+        <span class="navbar-text text-light mr-2"><b>{{ current_user.gold }}g</b></span>
         <div class="dropdown">
-          <button class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <img src="{{ url_for('static', filename='img/icons/user.svg') }}" alt="User" class="navbar-svg-icon" title="Account">
           </button>
-          <div class="dropdown-menu dropdown-menu-right">
+          <div class="dropdown-menu dropdown-menu-lg-right">
             <a class="dropdown-item link-mute" href="{{ url_for('dashboard') }}">Dashboard</a>
+            <div class="dropdown-divider"></div>
             <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='active') }}">Active Quests</a>
             <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='inactive') }}">Inactive Quests</a>
             <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='claimed') }}">Claimed Quests</a>
@@ -54,7 +59,7 @@
           </div>
         </div>
         {% else %}
-        <a href="{{url_for('login')}}" class="navbar-icon">
+        <a href="{{url_for('login')}}">
           <img src="{{ url_for('static', filename='img/icons/user.svg') }}" alt="User" class="navbar-svg-icon" title="Login / Sign-up">
         </a>
         {% endif %}
@@ -87,12 +92,21 @@
     {% endwith %}
   </div>
 
+  <!-- Contributions modal -->
+  <div class="modal fade" id="contributions-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <img src="{{ url_for('static', filename='img/scroll.png') }}" alt="Contributions"/>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-md-10 footer-content">
         <p class="float-right"><a href="#">Back to top</a></p>
-        <p>© 2024 Quester's Cache</p>
+        <p>© 2024 Quester's Cache · <a href='#contributions-modal' data-toggle="modal" data-target="#contributions-modal">Contributions</a></p>
       </div>
     </div>
   </footer>

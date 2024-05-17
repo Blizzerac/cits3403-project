@@ -26,6 +26,16 @@ $(document).ready(function() {
   $('#cash-in-button').click(cashIn);
 });
 
+// Collapse navbar when clicking outside restraints
+$(document).click(function(event) {
+  let clickover = $(event.target);
+  let $navbar = $(".navbar-collapse");               
+  let _opened = $navbar.hasClass("show");
+  if (_opened === true && !clickover.hasClass("navbar-toggler") && $(window).width() < 992) {
+    $navbar.collapse('hide');
+  }
+});
+
 // Swap between account login and account creation
 function swapLoginForm() {
   $('#login-form-container').toggleClass('hidden');
