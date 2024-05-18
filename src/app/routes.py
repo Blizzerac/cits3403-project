@@ -1,7 +1,7 @@
 # Imports
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
-from app.models import Users, Posts, Responses # Particular tables to be used
+from app.models import Users, Posts, Responses, GoldChanges, PostChanges # Particular tables to be used
 from app import models, forms
 from app import flaskApp, db, login_manager, debug
 from datetime import datetime
@@ -246,6 +246,35 @@ def leaderboard():
     return render_template("leaderboard.html", users=leaderboard_users, start_index=start_index, end_index=end_index, prev_page=prev_page, next_page=next_page, total_users=total_users, total_pages=total_pages, current_page=current_page, page_size=page_size)
 
 
+# Logs view
+@flaskApp.route('/logs', methods=["GET"])
+@login_required
+def logs():
+    if not current_user.isAdmin:
+        flash('Invalid Permissions.', 'danger')
+        return redirect(url_for('home'))
+
+    log_type = request.args.get('type', 'requests')  # Default to ReQuest logs
+    page_size = 50
+    page_number = int(request.args.get("page", 1))
+    start_index = (page_number - 1) * page_size
+
+    if log_type == 'gold':
+        logs_query = GoldChanges.query.order_by(GoldChanges.changeDate.desc())
+    else:
+        logs_query = PostChanges.query.order_by(PostChanges.changeDate.desc())
+
+    total_logs = logs_query.count()
+    logs = logs_query.offset(start_index).limit(page_size).all()
+
+    end_index = start_index + len(logs)
+    total_pages = (total_logs + page_size - 1) // page_size
+    prev_page = page_number - 1 if page_number > 1 else None
+    next_page = page_number + 1 if end_index < total_logs else None
+
+    return render_template('logs.html', logs=logs, log_type=log_type, current_page=page_number, total_pages=total_pages, prev_page=prev_page, next_page=next_page, start_index=start_index, end_index=end_index, page_size=page_size)
+
+
 @flaskApp.route("/search", methods=["POST", "GET"])
 @login_required
 def search():
@@ -284,6 +313,7 @@ def search():
     title = f"{quest_type.capitalize() if quest_type else 'All'} ReQuests of {username}" if username else "Available ReQuests"
 
     return render_template("search.html", searching_form=searching_form, posts=posts, title=title, quest_type=quest_type)
+
 
 @flaskApp.route("/gold-farm", methods=["POST", "GET"])
 @login_required

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Quester's Cache || Logs{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div id="logs-list" class="mt-4">
+        <h1 class="text-center">
+          <a href="{{ url_for('logs', type='gold') }}" class="{% if log_type == 'gold' %}active{% endif %}">Gold Logs</a> | 
+          <a href="{{ url_for('logs', type='requests') }}" class="{% if log_type == 'requests' %}active{% endif %}">Request Logs</a>
+        </h1>
+        <table class="table text-center">
+          <thead>
+            <tr>
+              <th>#</th>
+              {% if log_type == 'gold' %}
+                <th>User (ID)</th>
+                <th>Change Amount</th>
+                <th>Reason</th>
+                <th>Date</th>
+              {% else %}
+                <th>User (ID)</th>
+                <th>Post ID</th>
+                <th>Change Type</th>
+                <th>Date</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in logs %}
+              <tr>
+                <td>{{ (current_page - 1) * page_size + loop.index }}</td>
+                {% if log_type == 'gold' %}
+                  {% if log.user.isAdmin %}
+                  <td>{{ log.user.username }} ({{log.userID}}) <span class="text-danger">[ADMIN]</span></td>
+                  {% else %}
+                  <td>{{ log.user.username }} ({{log.userID}})</td>
+                  {% endif %}
+                  <td>{{ log.changeAmount }}</td>
+                  <td>{{ log.reason }}</td>
+                  <td>{{ log.changeDate }}</td>
+                {% else %}
+                  {% if log.user.isAdmin %}
+                  <td>{{ log.user.username }} ({{log.userID}}) <span class="text-danger">[ADMIN]</span></td>
+                  {% else %}
+                  <td>{{ log.user.username }} ({{log.userID}})</td>
+                  {% endif %}
+                  <td><a href="{{ url_for('quest_view', postID=log.postID) }}">{{ log.postID }}</a></td>
+                  <td>{{ log.changeType }}</td>
+                  <td>{{ log.changeDate }}</td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="pagination mt-4 d-flex justify-content-center align-items-center">
+          <a href="{% if prev_page %}?page={{ prev_page }}&type={{ log_type }}{% endif %}" class="btn btn-success{% if not prev_page %} disabled{% endif %}">Previous</a>
+          <div class="col-md-auto text-center mx-md-3">Page {{ current_page }} of {{ total_pages }}</div>
+          <a href="{% if next_page %}?page={{ next_page }}&type={{ log_type }}{% endif %}" class="btn btn-success{% if not next_page %} disabled{% endif %}">Next</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

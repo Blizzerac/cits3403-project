@@ -52,6 +52,10 @@
             <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='inactive') }}">Inactive Quests</a>
             <a class="dropdown-item link-mute" id="active" href="{{ url_for('search', type='claimed') }}">Claimed Quests</a>
             <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('search', type='completed') }}">Completed Quests</a>
+            {% if current_user.isAdmin %}
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item link-mute" id="logs" href="{{ url_for('logs')}}">Logs</a>
+            {% endif %}
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{{url_for('logout')}}">Logout</a>
           </div>
