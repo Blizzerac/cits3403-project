@@ -49,23 +49,13 @@ def unauthorized():
     return redirect(url_for('login', next=next_url))
 
 
-
-# If a user tried to access a page they aren't authorised for (not logged in)
-@login_manager.unauthorized_handler
-def unauthorized():
-    # Store the URL the user wanted to access
-    next_url = request.url
-    flash('Please log in to access this page.', 'danger')
-    return redirect(url_for('login', next=next_url))
-
-
 # Login
 @flaskApp.route("/signup", methods=["POST", "GET"])
 @flaskApp.route("/login", methods=["POST", "GET"])
 def login():
     # Check if user is already logged in
     if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('home'))
 
     is_signup = request.path.endswith('signup') # Determine if linked straight to signup
     login_form = forms.LoginForm()
@@ -123,7 +113,7 @@ def login():
                 flash('Logged in successfully!', 'success')
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page) # If user was trying to go somewhere earlier
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('home'))
             else:
                 # Dont inform the user if the account or password is incorrect (security flaw) - only general error
                 login_form.login.errors.append('Incorrect account details.')
@@ -142,13 +132,6 @@ def logout():
     logout_user()
     flash('Logged out successfully!', 'success')
     return redirect(url_for('home'))
-
-
-# User dashboard
-@flaskApp.route('/dashboard', methods=["POST", "GET"])
-@login_required
-def dashboard():
-    return render_template('home.html') #TEMP UNTIL DASH FINISHED
 
 
 # Post request
