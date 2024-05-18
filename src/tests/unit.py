@@ -19,7 +19,7 @@ class BasicUnitTest(TestCase):
     #basic unit test to check user creation
     def test_user_creation(self):
         # Create a test user
-        user = User(username='test_user', email='test@example.com')
+        user = User(username='test_user', email='test@email.com')
         db.session.add(user)
         db.session.commit()
 
@@ -28,23 +28,27 @@ class BasicUnitTest(TestCase):
 
         # Assert that the user was successfully created and retrieved
         self.assertIsNotNone(retrieved_user)
-        self.assertEqual(retrieved_user.email, 'test@example.com')
+        self.assertEqual(retrieved_user.email, 'test@email.com')
   
     #basic unit test to check if unit tests are actually running 
     #(as of writing they are not)
     def test_is_this_working(self):
         self.assertEqual(True,True)
-        
+    
+    #unit test to check user login/authetntication 
     def test_user_authentication(self):
-        user = Users(username='test_user', email='test@example.com')
-        user.set_password('testpassword')
+        #create test user login details?
+        user = Users(username='test_user', email='test@email.com')
+        user.set_password('Testpassword123')
         db.session.add(user)
         db.session.commit()
 
+        #get login response
         response = self.client.post('/login', data=dict(
             login='test_user',
             password='testpassword'
         ), follow_redirects=True)
+        #check if login was successful
         self.assertIn(b'Welcome, test_user!', response.data)
     
     
