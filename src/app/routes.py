@@ -241,12 +241,12 @@ def leaderboard():
    
     # start and end index of users for page
     start_index = (page_number - 1) * page_size
-    end_index = start_index + page_size
+    #end_index = start_index + page_size
     
     #Query the DB for the username and gold for each user ordered by the users gold count
-    leaderboard_users = Users.query.with_entities(Users.username, Users.gold).order_by(desc(Users.gold)).slice(start_index, end_index).all()
+    leaderboard_users = Users.query.with_entities(Users.username, Users.gold).order_by(desc(Users.gold)).slice(start_index, (start_index + page_size)).all()
     
-    #Recalculate end_index after gettign the leaderboard_users
+    #calculate end_index after gettign the leaderboard_users
     end_index = min(start_index + page_size, Users.query.count())
     
     prev_page = page_number - 1 if page_number > 1 else None
