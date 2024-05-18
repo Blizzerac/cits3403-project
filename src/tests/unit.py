@@ -82,4 +82,20 @@ class BasicUnitTest(TestCase):
         #check if the password must have at least one number message is given
         self.assertIn(b'Password must include at least one number.', response.data)
         
+    def test_post_creation(self):
+        #login as test user 
+        self.clientpost('/login',data=(
+            login='test_user',
+            password='Testpass123'
+        ), follow_redirects=True)
         
+        #create test post
+        response = self.client.post('/create_post', data=dict(
+            post_name='Test Post'
+            post_description='This is a test post description.'
+            post_reward=0
+        ), follow_redirects=True)
+        
+        #check if post creation was successful? not sure if this works cant test currently
+        self.assertIn(b'Test Post', response.data)
+        self.assertIn(b'This is a test post description.', response.data)
