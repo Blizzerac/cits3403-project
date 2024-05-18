@@ -236,7 +236,7 @@ def quest_view():
 def leaderboard():
     
     # Variable defines users per page on leaderboard
-    page_size = 10
+    page_size = 50
     # Get the current page number
     page_number = int(request.args.get("page", 1))  
    
@@ -252,7 +252,7 @@ def leaderboard():
     next_page = page_number + 1 if end_index < len(leaderboard_users) else None
     
     # calculate total users and total pages
-    total_users = Users.query.count()
+    total_users = len(leaderboard_users)
     total_pages = (total_users + page_size - 1) // page_size
     
     # set the current page number
