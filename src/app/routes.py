@@ -241,6 +241,8 @@ def leaderboard():
     #[start_index:end_index]
     #from the return statement
     #Huzzah the fix was successful
+    #multiple pages (included greater than two)
+    #tested and successful
     
     
     # Variable defines users per page on leaderboard
