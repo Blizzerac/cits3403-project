@@ -234,11 +234,6 @@ def quest_view():
 # Leaderboard
 @flaskApp.route("/leaderboard")
 def leaderboard():
-    # Hardcoded user data for leaderboard testing purposes
-    # Replace this with link to DB at later point
-    leaderboard_users = [
-        {"username": f"User {i+1}", "quests_complete": 10000 - i} for i in range(10000)
-    ]
     
     # Variable defines users per page on leaderboard
     page_size = 50
