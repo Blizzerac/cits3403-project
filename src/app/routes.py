@@ -1,23 +1,20 @@
 # Imports
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
-from app.models import Users, Posts, Responses # Particular tables to be used
-from app import forms
-from app.blueprints import main
+from app.models import Users, Posts, Responses, GoldChanges, PostChanges # Particular tables to be used
+from app import models, forms
 from app import db, login_manager
+from app.blueprints import main
 from datetime import datetime
 from sqlalchemy import func, or_ , desc # Methods to use when querying database
 from urllib.parse import urlparse, urljoin # URL checking
-
-# Settings
-debug = True
-
 
 ###########
 # Routes  #
 ###########
 # Please rememeber that the last app.route tag is what the page will be displayed as.
 
+debug = True
 
 # Home page
 @main.route("/index")
@@ -26,11 +23,10 @@ debug = True
 def home():
     # Set display limit on quests
     DISPLAY_LIMIT = 3
-    print("AAA")
-    print(current_user)
+
     # Fetch only unclaimed quests in random order
     quests = db.session.query(Posts) \
-        .filter(Posts.claimed == False, Posts.private==False) \
+        .filter(Posts.claimed == False, Posts.private==False, Posts.deleted==False) \
         .order_by(func.random()) \
         .limit(DISPLAY_LIMIT) \
         .all()
@@ -48,17 +44,7 @@ def unauthorized():
     # Store the URL the user wanted to access
     next_url = request.url
     flash('Please log in to access this page.', 'danger')
-    return redirect(url_for('login', next=next_url))
-
-
-
-# If a user tried to access a page they aren't authorised for (not logged in)
-@login_manager.unauthorized_handler
-def unauthorized():
-    # Store the URL the user wanted to access
-    next_url = request.url
-    flash('Please log in to access this page.', 'danger')
-    return redirect(url_for('login', next=next_url))
+    return redirect(url_for('main.login', next=next_url))
 
 
 # Login
@@ -67,7 +53,7 @@ def unauthorized():
 def login():
     # Check if user is already logged in
     if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('main.home'))
 
     is_signup = request.path.endswith('signup') # Determine if linked straight to signup
     login_form = forms.LoginForm()
@@ -101,11 +87,11 @@ def login():
                     flash('Account created successfully!', 'success')
                     if next_page and is_safe_url(next_page):
                         return redirect(next_page) # If user was trying to go somewhere earlier
-                    return redirect(url_for('home'))
+                    return redirect(url_for('main.home'))
                 # If failed, rollback database and warn user.
                 except Exception as e:
                     db.session.rollback()
-                    if main.debug:
+                    if debug:
                         flash('Error adding user to database. {}'.format(e), 'danger')
                     else: 
                         flash('Failed creating an account. Please try again later or contact staff.', 'danger')
@@ -125,7 +111,7 @@ def login():
                 flash('Logged in successfully!', 'success')
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page) # If user was trying to go somewhere earlier
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('main.home'))
             else:
                 # Dont inform the user if the account or password is incorrect (security flaw) - only general error
                 login_form.login.errors.append('Incorrect account details.')
@@ -143,14 +129,7 @@ def login():
 def logout():
     logout_user()
     flash('Logged out successfully!', 'success')
-    return redirect(url_for('home'))
-
-
-# User dashboard
-@main.route('/dashboard', methods=["POST", "GET"])
-@login_required
-def dashboard():
-    return render_template('home.html') #TEMP UNTIL DASH FINISHED
+    return redirect(url_for('main.home'))
 
 
 # Post request
@@ -169,13 +148,15 @@ def post_quest():
                 try:
                     new_post = Posts(posterID=current_user.userID, title=posting_form.post_name.data, description=posting_form.post_description.data, reward=posting_form.post_reward.data)
                     db.session.add(new_post)
+                    db.session.flush() # Push new post to database to assign its postID (used for logging)
+                    new_post.create_post_log(current_user.userID)
                     db.session.commit()
                     flash('ReQuest posted successfully!', 'success')
-                    return redirect(url_for('home'))
+                    return redirect(url_for('main.home'))
             
                 except Exception as e:
                     db.session.rollback()
-                    if main.debug:
+                    if debug:
                         flash('Error adding ReQuest to database. {}'.format(e), 'danger')
                     else: 
                         flash('Failed posting ReQuest. Please try again later or contact staff.', 'danger')
@@ -192,16 +173,19 @@ def quest_view():
     post_id = request.args.get('postID') # Get the post ID to show
     if not post_id:
         flash('Incorrect usage.', 'danger')
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     
     # If no post exists, return user to home screen
     post = Posts.query.get(post_id)
     if not post:
         flash('ReQuest does not exist.', 'danger')
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     if post.private and not (current_user.userID == post.claimerID or current_user.userID == post.posterID):
-        flash('Cant acces private ReQuest.', 'danger')
-        return redirect(url_for('home'))
+        flash('Cannot acces private ReQuest.', 'danger')
+        return redirect(url_for('main.home'))
+    if post.deleted and not current_user.isAdmin:
+        flash('Cannot access cancelled ReQuest.', 'danger')
+        return redirect(url_for('main.home'))
     
     creation_date = post.creationDate.strftime('%Y-%m-%d')
     claim_date = post.claimDate.strftime('%Y-%m-%d') if post.claimDate else None # Get the claim date if it exists
@@ -227,7 +211,7 @@ def quest_view():
 
         # Update posts
         flash('Response added successfully!', 'success')
-        return redirect(url_for('quest_view', postID=post.postID)) # Ensure form cant be resubmitted by redirecting user to same page (deletes current form)
+        return redirect(url_for('main.quest_view', postID=post.postID)) # Ensure form cant be resubmitted by redirecting user to same page (deletes current form)
 
 
     return render_template('post-view.html', post=post, response_form=response_form, creation_date=creation_date, claim_date=claim_date)
@@ -262,6 +246,35 @@ def leaderboard():
     
     # render the leaderboard template with necessary datas
     return render_template("leaderboard.html", users=leaderboard_users, start_index=start_index, end_index=end_index, prev_page=prev_page, next_page=next_page, total_users=total_users, total_pages=total_pages, current_page=current_page, page_size=page_size)
+
+
+# Logs view
+@main.route('/logs', methods=["GET"])
+@login_required
+def logs():
+    if not current_user.isAdmin:
+        flash('Invalid Permissions.', 'danger')
+        return redirect(url_for('main.home'))
+
+    log_type = request.args.get('type', 'requests')  # Default to ReQuest logs
+    page_size = 50
+    page_number = int(request.args.get("page", 1))
+    start_index = (page_number - 1) * page_size
+
+    if log_type == 'gold':
+        logs_query = GoldChanges.query.order_by(GoldChanges.changeDate.desc())
+    else:
+        logs_query = PostChanges.query.order_by(PostChanges.changeDate.desc())
+
+    total_logs = logs_query.count()
+    logs = logs_query.offset(start_index).limit(page_size).all()
+
+    end_index = start_index + len(logs)
+    total_pages = (total_logs + page_size - 1) // page_size
+    prev_page = page_number - 1 if page_number > 1 else None
+    next_page = page_number + 1 if end_index < total_logs else None
+
+    return render_template('logs.html', logs=logs, log_type=log_type, current_page=page_number, total_pages=total_pages, prev_page=prev_page, next_page=next_page, start_index=start_index, end_index=end_index, page_size=page_size)
 
 
 @main.route("/search", methods=["POST", "GET"])
@@ -303,20 +316,21 @@ def search():
 
     return render_template("search.html", searching_form=searching_form, posts=posts, title=title, quest_type=quest_type)
 
+
 @main.route("/gold-farm", methods=["POST", "GET"])
 @login_required
 def gold_farm():
     if request.method == 'POST':
-        data = request.get_json()
-        coinsToAdd = data['coins']
         try:
+            data = request.get_json()
+            coinsToAdd = data['coins']
             current_user.add_gold(coinsToAdd)
             db.session.commit()
-            flash('You earned ' + str(coinsToAdd) + 'g!', 'success')
+            flash('You earned ' + str(coinsToAdd) + 'G!', 'success')
         
         except Exception as e:
             db.session.rollback()
-            if main.debug:
+            if debug:
                 flash('Error giving gold. {}'.format(e), 'danger')
             else: 
                 flash('ERROR.', 'danger')
@@ -331,11 +345,15 @@ def gold_farm():
 @login_required
 def claim_request(post_id):
     post = Posts.query.get(post_id)
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and not post.claimed and current_user.userID != post.posterID:
-        post.claimed = True
-        post.claimerID = current_user.userID
-        post.claimDate = datetime.now()
         try:
+            post.claim_post(current_user.userID)
             db.session.commit()
             flash('ReQuest claimed successfully!', 'success')
             return jsonify({"message": "ReQuest claimed successfully!"}), 200
@@ -352,9 +370,15 @@ def claim_request(post_id):
 @login_required
 def finalise_request(post_id):
     post = Posts.query.get(post_id)
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and post.claimed and current_user.userID == post.claimerID and not post.waitingApproval:
-        post.waitingApproval = True
         try:
+            post.finalise_submission(current_user.userID)
             db.session.commit()
             flash('ReQuest submission sent successfully!', 'success')
             return jsonify({"message": "ReQuest finalised successfully!"}), 200
@@ -371,13 +395,15 @@ def finalise_request(post_id):
 @login_required
 def relinquish_claim(post_id):
     post = Posts.query.get(post_id)
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and post.claimed and current_user.userID == post.claimerID:
-        post.claimed = False # Reset claim
-        post.claimerID = None
-        post.claimDate = None
-        post.waitingApproval = False # Ensure reset this value (can cause bug if left)
-        post.private = False # Ensure others can claim it
         try:
+            post.unclaim_post(current_user.userID)
             db.session.commit()
             flash('Claim on ReQuest reliquished successfully!', 'success')
             return jsonify({"message": "ReQuest claim relinquished successfully!"}), 200
@@ -394,19 +420,18 @@ def relinquish_claim(post_id):
 @login_required
 def approve_submission(post_id):
     post = Posts.query.get(post_id)
+
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and post.waitingApproval and current_user.userID == post.posterID:
-        post.completed = True
-        post.waitingApproval = False
-        gold = post.reward
-        claimer = Users.query.get(post.claimerID)
-        if not claimer:
-            flash('Could not find claimer in database.', 'danger')
-            return jsonify({"message": f"Could not find claimer in database."}), 400
-        
         try:
-            # Check if it correctly got the user
-            claimer.add_gold(gold)
-            current_user.quest_payout(gold)
+            post.approve_submission(current_user.userID)
+            gold = post.reward
+            post.poster.quest_payout(gold)
+            post.claimer.quest_completed(gold)
             db.session.commit()
             flash('ReQuest submission approved successfully!', 'success')
             return jsonify({"message": "ReQuest submission approved successfully!"}), 200
@@ -423,9 +448,15 @@ def approve_submission(post_id):
 @login_required
 def deny_submission(post_id):
     post = Posts.query.get(post_id)
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and post.waitingApproval and current_user.userID == post.posterID:
-        post.waitingApproval = False
         try:
+            post.deny_submission(current_user.userID)
             db.session.commit()
             flash('ReQuest submission denied successfully!', 'success')
             return jsonify({"message": "ReQuest submission denied."}), 200
@@ -442,9 +473,15 @@ def deny_submission(post_id):
 @login_required
 def private_request(post_id):
     post = Posts.query.get(post_id)
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and post.claimed and current_user.userID == post.posterID:
         try:
-            post.private = not post.private # Swap private boolean field
+            post.private_post(current_user.userID)
             db.session.commit()
             flash('ReQuest privacy changed successfully!', 'success')
             return jsonify({"message": "ReQuest privacy changed successfully."}), 200
@@ -461,11 +498,17 @@ def private_request(post_id):
 @login_required
 def cancel_request(post_id):
     post = Posts.query.get(post_id)
-    if post and not post.completed and current_user.userID == post.posterID:
-        gold = post.reward
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
+    if post and not post.completed and (current_user.userID == post.posterID or current_user.isAdmin):
         try:
-            current_user.quest_refund(gold)
-            db.session.delete(post)
+            post.cancel_post(current_user.userID)
+            gold = post.reward
+            post.poster.quest_refund(gold)
             db.session.commit()
             flash('ReQuest cancelled successfully!', 'success')
             return jsonify({"message": "ReQuest cancelled successfully."}), 200
@@ -489,25 +532,3 @@ def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
-
-
-
-
-
-# THIS ROUTE MUST BE REMOVED -- ONLY FOR DEVELOPMENT PURPOSES
-@main.route("/givegold")
-@login_required
-def giveGold():
-    try:
-        current_user.add_gold(500)
-        db.session.commit()
-        flash('Given user 500 gold.', 'success')
-    
-    except Exception as e:
-        db.session.rollback()
-        if main.debug:
-            flash('Error giving gold. {}'.format(e), 'danger')
-        else: 
-            flash('ERROR.', 'danger')
-    
-    return redirect(url_for('home'))

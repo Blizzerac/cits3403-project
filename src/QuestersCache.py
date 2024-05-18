@@ -7,4 +7,3 @@ from app.models import Users
 
 flaskApp = create_app(DeploymentConfig)
 # migrate = Migrate(flaskApp, db)
-

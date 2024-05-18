@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Quester's Cache || Home{% endblock %}
+{% block title %}Quester's Cache || ReQuest View{% endblock %}
 {% block content %}
 
 <div class="container-fluid mt-5">
@@ -20,30 +20,34 @@
       </div>
       <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
         <!-- Assortment of buttons according to user type -->
-        {% if not post.completed %}
-        {% if not post.claimed and current_user.userID != post.posterID %}
-        <button class="btn btn-primary mb-2" id="claim-request" data-url="{{ url_for('main.claim_request', post_id=post.postID) }}">Claim ReQuest</button>
-
-        {% elif post.claimed and current_user.userID == post.claimerID %}
-          {% if not post.waitingApproval %}
-          <button class="btn btn-success mb-2" id="finalise-request" data-url="{{ url_for('main.finalise_request', post_id=post.postID) }}">Finalise ReQuest</button>
-          {% endif %}
-          <button class="btn btn-danger mb-2" id="relinquish-claim" data-url="{{ url_for('main.relinquish_claim', post_id=post.postID) }}">Relinquish Claim</button>
-
-        {% elif current_user.userID == post.posterID %}
-          {% if post.waitingApproval %}
-          <button class="btn btn-success mb-2" id="approve-submission" data-url="{{ url_for('main.approve_submission', post_id=post.postID) }}">Approve Submission</button>
-          <button class="btn btn-danger mb-3" id="deny-submission" data-url="{{ url_for('main.deny_submission', post_id=post.postID) }}">Deny Submission</button>
-          {% endif %}
-          {% if not post.private %}
-          <button class="btn btn-info mb-2" id="private-request" data-url="{{ url_for('main.private_request', post_id=post.postID) }}">Private ReQuest</button>
-          {% else %}
-          <button class="btn btn-info mb-2" id="unprivate-request" data-url="{{ url_for('main.private_request', post_id=post.postID) }}">Unprivate ReQuest</button>
-          {% endif %}
-        <button class="btn btn-warning mb-2" id="cancel-request" data-url="{{ url_for('main.cancel_request', post_id=post.postID) }}">Cancel ReQuest</button>
+        {% if not post.completed and not post.deleted %}
+          {% if not post.claimed and current_user.userID != post.posterID %}
+            <button class="btn btn-primary mb-2" id="claim-request" data-url="{{ url_for('main.claim_request', post_id=post.postID) }}">Claim ReQuest</button>
+          {% elif post.claimed and current_user.userID == post.claimerID %}
+            {% if not post.waitingApproval %}
+                <button class="btn btn-success mb-2" id="finalise-request" data-url="{{ url_for('main.finalise_request', post_id=post.postID) }}">Finalise ReQuest</button>
+            {% endif %}
+            <button class="btn btn-danger mb-2" id="relinquish-claim" data-url="{{ url_for('main.relinquish_claim', post_id=post.postID) }}">Relinquish Claim</button>
+          {% elif current_user.userID == post.posterID %}
+            {% if post.waitingApproval %}
+              <button class="btn btn-success mb-2" id="approve-submission" data-url="{{ url_for('main.approve_submission', post_id=post.postID) }}">Approve Submission</button>
+              <button class="btn btn-danger mb-3" id="deny-submission" data-url="{{ url_for('main.deny_submission', post_id=post.postID) }}">Deny Submission</button>
+            {% endif %}
+            {% if not post.private %}
+              <button class="btn btn-info mb-2" id="private-request" data-url="{{ url_for('main.private_request', post_id=post.postID) }}">Private ReQuest</button>
+            {% else %}
+              <button class="btn btn-info mb-2" id="unprivate-request" data-url="{{ url_for('main.private_request', post_id=post.postID) }}">Unprivate ReQuest</button>
+            {% endif %}
         {% endif %}
 
-        {% else %} <!-- If the ReQuest is completed -->
+        <!-- Cancel ReQuest button for poster or admin -->
+        {% if (current_user.userID == post.posterID or current_user.isAdmin) and not post.deleted %}
+          <button class="btn btn-warning mb-2" id="cancel-request" data-url="{{ url_for('main.cancel_request', post_id=post.postID) }}">Cancel ReQuest</button>
+        {% endif %}
+
+        {% elif post.deleted %} <!-- If the ReQuest is completed -->
+        <h4><b>Post is <u>DELETED</u></b></h4>
+        {% else %}
         <h4><b>Post completed by: {{post.claimer.username}}</b></h4>
         {% endif %}
       </div>
@@ -72,7 +76,7 @@
       {% endfor %}
 
       <!-- Form to add response -->
-      {% if not post.completed and ((current_user.userID == post.claimerID) or (current_user.userID == post.posterID)) %}
+      {% if not post.completed and ((current_user.userID == post.claimerID) or (current_user.userID == post.posterID) or current_user.isAdmin) %}
       <div class="container rounded post-item quest-card mt-5">
         <form method="POST" action="{{ url_for('main.quest_view', postID=post.postID) }}">
           {{ response_form.hidden_tag() }}
