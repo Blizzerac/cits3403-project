@@ -240,6 +240,7 @@ def leaderboard():
     #attempting fix by removing
     #[start_index:end_index]
     #from the return statement
+    #Huzzah the fix was successful
     
     
     # Variable defines users per page on leaderboard
