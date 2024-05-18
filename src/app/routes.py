@@ -252,7 +252,7 @@ def leaderboard():
     next_page = page_number + 1 if end_index < len(leaderboard_users) else None
     
     # calculate total users and total pages
-    total_users = len(leaderboard_users)
+    total_users = Users.query.count()
     total_pages = (total_users + page_size - 1) // page_size
     
     # set the current page number
