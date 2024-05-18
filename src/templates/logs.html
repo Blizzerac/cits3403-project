@@ -6,8 +6,8 @@
     <div class="col-md-10">
       <div id="logs-list" class="mt-4">
         <h1 class="text-center">
-          <a href="{{ url_for('logs', type='gold') }}" class="{% if log_type == 'gold' %}active{% endif %}">Gold Logs</a> | 
-          <a href="{{ url_for('logs', type='requests') }}" class="{% if log_type == 'requests' %}active{% endif %}">Request Logs</a>
+          <a href="{{ url_for('logs', type='gold') }}" class="{% if log_type == 'gold' %}active{% endif %} text-white">Gold Logs</a> | 
+          <a href="{{ url_for('logs', type='requests') }}" class="{% if log_type == 'requests' %}active{% endif %} text-white">Request Logs</a>
         </h1>
         <table class="table text-center">
           <thead>

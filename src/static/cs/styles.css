@@ -183,6 +183,11 @@ background-image: url("../img/plank.jpg");
     margin-bottom: 20px;
 }
 
+#login-form-container,
+#signup-form-container {
+    max-width: 750px;
+}
+
 /* Separates labels and inputs */
 #login-form div label,
 #signup-form div label {
@@ -191,10 +196,14 @@ background-image: url("../img/plank.jpg");
 
 .other-toggle {
     font-weight: bold;
+    text-decoration: underline;
 }
 
 .toggle-login {
     cursor: pointer;
+}
+
+.toggle-login:hover {
     text-decoration: underline;
 }
 
