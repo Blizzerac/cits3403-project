@@ -34,11 +34,14 @@ class BasicUnitTest(TestCase):
   #(as of writing they are not)
   def test_is_this_working(self):
       self.assertEqual(True,True)
-      
+  
+  #unit test to check the signup form validation
   def test_signup_form_validation(self):
+      #attempt to sign up with an invalid username
       response = self.client.post('/signup', data=dict(
         username='user name with space',
         email='test@email.com',
         password='Testpassword123'
       ), follow_redirects=True)
+      #checks if the no spaces message is given
       self.assertIn(b'The username must not contain spaces.', response.data)
