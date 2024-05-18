@@ -81,7 +81,8 @@ class BasicUnitTest(TestCase):
         ), follow_redirects=True)
         #check if the password must have at least one number message is given
         self.assertIn(b'Password must include at least one number.', response.data)
-        
+    
+    #unit test for creating a test post
     def test_post_creation(self):
         #login as test user 
         self.clientpost('/login',data=(
