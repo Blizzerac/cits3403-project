@@ -5,3 +5,4 @@ env
 *.db
 src/logs
 *.log
+*:memory

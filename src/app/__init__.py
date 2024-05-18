@@ -17,20 +17,26 @@ def create_app(config):
     flaskApp.config.from_object(config)
 
     # Initialise using flask app
-    from app.blueprints import main
-    flaskApp.register_blueprint(main)
     db.init_app(flaskApp)
     login_manager.init_app(flaskApp)
 
+    from app.models import Users
+    @login_manager.user_loader
+    def load_user(user_id):
+        return Users.query.get(int(user_id))
+    
+    from app.blueprints import main
+    flaskApp.register_blueprint(main)
+
+    with flaskApp.app_context():
+        db.create_all()
+                         
     return flaskApp
 
 # Import routes and models at the end to avoid circular imports
-from app import routes, models
+#
 
 # Initialise database on startup (if it doesnt exist).
 #models.init_db()
 
 # User loader function
-@login_manager.user_loader
-def load_user(userID):
-        return models.Users.query.get(int(userID))

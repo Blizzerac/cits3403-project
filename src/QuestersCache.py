@@ -1,12 +1,10 @@
 # Imports
-from app import models
-from app import create_app, db
+from app import create_app, db, login_manager
 from app.config import TestConfig, DeploymentConfig, Config
 from flask_migrate import Migrate
+from app.models import Users
 
 
-flaskApp = create_app(TestConfig)
-migrate = Migrate(flaskApp, db)
+flaskApp = create_app(DeploymentConfig)
+# migrate = Migrate(flaskApp, db)
 
-if __name__ == "__main__":
-    flaskApp.run()

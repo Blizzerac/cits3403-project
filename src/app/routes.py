@@ -2,7 +2,7 @@
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 from app.models import Users, Posts, Responses # Particular tables to be used
-from app import models, forms
+from app import forms
 from app.blueprints import main
 from app import db, login_manager
 from datetime import datetime
@@ -26,7 +26,8 @@ debug = True
 def home():
     # Set display limit on quests
     DISPLAY_LIMIT = 3
-
+    print("AAA")
+    print(current_user)
     # Fetch only unclaimed quests in random order
     quests = db.session.query(Posts) \
         .filter(Posts.claimed == False, Posts.private==False) \
