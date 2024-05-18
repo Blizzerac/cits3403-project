@@ -237,6 +237,9 @@ def leaderboard():
     #Current issue:
     #second page now renders
     #But does not contain any users
+    #attempting fix by removing
+    #[start_index:end_index]
+    #from the return statement
     
     
     # Variable defines users per page on leaderboard
