@@ -247,6 +247,7 @@ def leaderboard():
     start_index = (page_number - 1) * page_size
     end_index = start_index + page_size
     
+    #Query the DB for the username and gold for each user ordered by the users gold count
     leaderboard_users = Users.query.with_entities(Users.username, Users.gold).order_by(desc(Users.gold)).slice(start_index, end_index).all()
     
     # calcualte which page number is prev and next (if they exist)
