@@ -100,3 +100,18 @@ class BasicUnitTest(TestCase):
         #check if post creation was successful? not sure if this works cant test currently
         self.assertIn(b'Test Post', response.data)
         self.assertIn(b'This is a test post description.', response.data)
+        
+    def test_search(self):
+        post1 = Post(name='Test Post 1', description='Description for Test Post 1', reward=50)
+        post2 = Post(name='Test Post 2', description='Description for Test Post 2', reward=100)
+        db.session.add_all([post1, post2])
+        db.session.commit()
+        
+        
+        response = self.client.post('/search', data=dict(
+            post_search_name='Test Post 1'
+        ), follow_redirects=True)
+        
+        
+        self.assertIn(b'Test Post 1', response.data)
+        self.assertNotIn(b'Test Post 2', response.data)
