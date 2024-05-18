@@ -63,3 +63,13 @@ class BasicUnitTest(TestCase):
         ), follow_redirects=True)
         #check if the password must incldue uppercase letter message is given
         self.assertIn(b'Password must include at least one uppercase letter.', response.data)
+        
+        #attempt to signup with an invalid password
+        response = self.client.post('/signup', data=dict(
+            username='validusername',
+            email='test@email.com',
+            password='testpassword123%&$#'
+        ), follow_redirects=True)
+        #check if the password must not include special characters message is given
+        self.assertIn(b'Password can only include letters, numbers, and the following special characters: !, ?, +, -, _.', response.data)
+        
