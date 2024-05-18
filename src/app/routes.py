@@ -240,13 +240,13 @@ def leaderboard():
     # Get the current page number
     page_number = int(request.args.get("page", 1))  
     
-    leaderboard_users = Users.query.with_entities(Users.username, Users.gold).order_by(desc(Users.gold)).slice(start_index, end_index).all()
+    
     
     
     # start and end index of users for page
     start_index = (page_number - 1) * page_size
-    end_index = start_index + page_size len(leaderboard_users))
-   
+    end_index = start_index + page_size # len(leaderboard_users))
+    leaderboard_users = Users.query.with_entities(Users.username, Users.gold).order_by(desc(Users.gold)).slice(start_index, end_index).all()
     
     # calcualte which page number is prev and next (if they exist)
     prev_page = page_number - 1 if page_number > 1 else None
