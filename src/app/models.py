@@ -193,7 +193,7 @@ def init_db_examples():
 
         # Insert example data
         try:
-            new_admin = Users(username='admin', email='admin@example.com')
+            new_admin = Users(username='admin', email='admin@example.com', isAdmin=True)
             new_admin.set_password('Admin123')
             db.session.add(new_admin)
             new_user = Users(username='user', email='user@example.com')
