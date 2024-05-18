@@ -5,7 +5,7 @@ from app.config import TestConfig, DeploymentConfig, Config
 from flask_migrate import Migrate
 
 
-flaskApp = create_app(TestConfig)
+flaskApp = create_app(DeploymentConfig)
 migrate = Migrate(flaskApp, db)
 
 if __name__ == "__main__":

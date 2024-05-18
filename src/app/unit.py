@@ -15,4 +15,17 @@ class BasicUnitTest(TestCase):
     db.session.remove()
     db.drop_all()
     self.app_context.pop()
-    
+  
+  #basic unit test to check user creation
+  def test_user_creation(self):
+        # Create a test user
+        user = User(username='test_user', email='test@example.com')
+        db.session.add(user)
+        db.session.commit()
+
+        # Retrieve the user from the database
+        retrieved_user = User.query.filter_by(username='test_user').first()
+
+        # Assert that the user was successfully created and retrieved
+        self.assertIsNotNone(retrieved_user)
+        self.assertEqual(retrieved_user.email, 'test@example.com')
