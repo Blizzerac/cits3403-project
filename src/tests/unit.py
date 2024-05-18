@@ -55,9 +55,11 @@ class BasicUnitTest(TestCase):
         #checks if invalid email address message is given (unsure if this is the correct error message)
         self.assertIn(b'Invalid email address.', response.data)
         
+        #attempt to signup with an invalid password
         response = self.client.post('/signup', data=dict(
             username='validusername',
             email='test@email.com',
             password='testpassword123'
         ), follow_redirects=True)
+        #check if the password must incldue uppercase letter message is given
         self.assertIn(b'Password must include at least one uppercase letter.', response.data)
