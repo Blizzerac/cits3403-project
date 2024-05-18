@@ -97,6 +97,9 @@ class Posts(db.Model):
 
     responses = db.relationship('Responses', backref='post', lazy=True, cascade='all, delete-orphan', order_by='Responses.creationDate.asc()') # Link posts to their responses, sorted by creation date (ensure post deletion deletes responses)
 
+    def create_post_log(self, userID):
+        db.session.add(PostChanges(postID=self.postID, userID=userID, changeType='CREATED'))
+
     def claim_post(self, userID):
         if not self.claimed:
             self.claimed = True
@@ -168,7 +171,7 @@ class PostChanges(db.Model):
     changeID = db.Column(db.Integer, primary_key=True)
     postID = db.Column(db.Integer, db.ForeignKey('posts.postID'), nullable=False, index=True)
     userID = db.Column(db.Integer, db.ForeignKey('users.userID'), nullable=False, index=True)  # User who made the change
-    changeType = db.Column(db.String(50), nullable=False)  # Type of change (Types: 'CLAIMED', 'UNCLAIMED', 'FINALISE_SUBMISSION', 'DENIED_SUBMISSION', 'APPROVED_SUBMISSION', 'DELETED', 'PRIVATED', 'UNPRIVATED')
+    changeType = db.Column(db.String(50), nullable=False)  # Type of change (Types: 'CREATED', 'CLAIMED', 'UNCLAIMED', 'FINALISE_SUBMISSION', 'DENIED_SUBMISSION', 'APPROVED_SUBMISSION', 'DELETED', 'PRIVATED', 'UNPRIVATED')
     changeDate = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
     user = db.relationship('Users', lazy='joined') # User information (not bidirectional)

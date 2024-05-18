@@ -150,6 +150,7 @@ def post_quest():
                 try:
                     new_post = Posts(posterID=current_user.userID, title=posting_form.post_name.data, description=posting_form.post_description.data, reward=posting_form.post_reward.data)
                     db.session.add(new_post)
+                    new_post.create_post_log(current_user.userID)
                     db.session.commit()
                     flash('ReQuest posted successfully!', 'success')
                     return redirect(url_for('home'))
