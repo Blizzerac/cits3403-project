@@ -236,13 +236,10 @@ def quest_view():
 def leaderboard():
     
     # Variable defines users per page on leaderboard
-    page_size = 50
+    page_size = 10
     # Get the current page number
     page_number = int(request.args.get("page", 1))  
-    
-    
-    
-    
+   
     # start and end index of users for page
     start_index = (page_number - 1) * page_size
     end_index = start_index + page_size
