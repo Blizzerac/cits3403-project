@@ -3,6 +3,7 @@ from unittest import TestCase
 from app import create_app, db
 from app.config import TestConfig
 
+#Unit tests - HAVE NOT MADE CONTROLLERS.py yet
 class BasicUnitTest(TestCase):
     def setUp(self):
         testApp = create_app(TestConfig)
