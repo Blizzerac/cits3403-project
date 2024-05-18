@@ -11,7 +11,7 @@
             <tr>
               <th>Rank</th>
               <th>User</th>
-              <th>Quests Complete</th>
+              <th>Total Gold</th>
             </tr>
           </thead>
           <tbody>
@@ -19,7 +19,7 @@
             <tr>
               <td>{{ (current_page - 1) * page_size + loop.index }}</td>
               <td>{{ user.username }}</td>
-              <td>{{ user.quests_complete }}</td>
+              <td>{{ user.gold }}</td>
             </tr>
             {% endfor %}
           </tbody>
