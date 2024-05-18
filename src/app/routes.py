@@ -243,10 +243,10 @@ def leaderboard():
     #Huzzah the fix was successful
     #multiple pages (included greater than two)
     #tested and successful
-    
+    #returning page_size to 50 
     
     # Variable defines users per page on leaderboard
-    page_size = 2
+    page_size = 50
     # Get the current page number
     page_number = int(request.args.get("page", 1))  
    
