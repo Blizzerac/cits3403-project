@@ -3,7 +3,8 @@ from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 from app.models import Users, Posts, Responses # Particular tables to be used
 from app import models, forms
-from app import flaskApp, db, login_manager
+from app.blueprints import main
+from app import db, login_manager
 from datetime import datetime
 from sqlalchemy import func, or_ , desc # Methods to use when querying database
 from urllib.parse import urlparse, urljoin # URL checking
@@ -19,9 +20,9 @@ debug = True
 
 
 # Home page
-@flaskApp.route("/index")
-@flaskApp.route("/home")
-@flaskApp.route("/")
+@main.route("/index")
+@main.route("/home")
+@main.route("/")
 def home():
     # Set display limit on quests
     DISPLAY_LIMIT = 3
@@ -60,8 +61,8 @@ def unauthorized():
 
 
 # Login
-@flaskApp.route("/signup", methods=["POST", "GET"])
-@flaskApp.route("/login", methods=["POST", "GET"])
+@main.route("/signup", methods=["POST", "GET"])
+@main.route("/login", methods=["POST", "GET"])
 def login():
     # Check if user is already logged in
     if current_user.is_authenticated:
@@ -103,7 +104,7 @@ def login():
                 # If failed, rollback database and warn user.
                 except Exception as e:
                     db.session.rollback()
-                    if flaskApp.debug:
+                    if main.debug:
                         flash('Error adding user to database. {}'.format(e), 'danger')
                     else: 
                         flash('Failed creating an account. Please try again later or contact staff.', 'danger')
@@ -136,7 +137,7 @@ def login():
 
 
 # User logout
-@flaskApp.route('/logout', methods=["POST", "GET"])
+@main.route('/logout', methods=["POST", "GET"])
 @login_required
 def logout():
     logout_user()
@@ -145,14 +146,14 @@ def logout():
 
 
 # User dashboard
-@flaskApp.route('/dashboard', methods=["POST", "GET"])
+@main.route('/dashboard', methods=["POST", "GET"])
 @login_required
 def dashboard():
     return render_template('home.html') #TEMP UNTIL DASH FINISHED
 
 
 # Post request
-@flaskApp.route('/post', methods=["POST", "GET"])
+@main.route('/post', methods=["POST", "GET"])
 @login_required
 def post_quest():
     posting_form = forms.PostForm()
@@ -173,7 +174,7 @@ def post_quest():
             
                 except Exception as e:
                     db.session.rollback()
-                    if flaskApp.debug:
+                    if main.debug:
                         flash('Error adding ReQuest to database. {}'.format(e), 'danger')
                     else: 
                         flash('Failed posting ReQuest. Please try again later or contact staff.', 'danger')
@@ -183,7 +184,7 @@ def post_quest():
 
 
 # Post request
-@flaskApp.route('/view', methods=["POST", "GET"])
+@main.route('/view', methods=["POST", "GET"])
 @login_required
 def quest_view():
     # If no postID given, return user to the home screen
@@ -232,7 +233,7 @@ def quest_view():
 
 
 # Leaderboard
-@flaskApp.route("/leaderboard")
+@main.route("/leaderboard")
 def leaderboard():
     # Variable defines users per page on leaderboard
     page_size = 50
@@ -262,7 +263,7 @@ def leaderboard():
     return render_template("leaderboard.html", users=leaderboard_users, start_index=start_index, end_index=end_index, prev_page=prev_page, next_page=next_page, total_users=total_users, total_pages=total_pages, current_page=current_page, page_size=page_size)
 
 
-@flaskApp.route("/search", methods=["POST", "GET"])
+@main.route("/search", methods=["POST", "GET"])
 @login_required
 def search():
     searching_form = forms.SearchForm()
@@ -301,7 +302,7 @@ def search():
 
     return render_template("search.html", searching_form=searching_form, posts=posts, title=title, quest_type=quest_type)
 
-@flaskApp.route("/gold-farm", methods=["POST", "GET"])
+@main.route("/gold-farm", methods=["POST", "GET"])
 @login_required
 def gold_farm():
     if request.method == 'POST':
@@ -314,7 +315,7 @@ def gold_farm():
         
         except Exception as e:
             db.session.rollback()
-            if flaskApp.debug:
+            if main.debug:
                 flash('Error giving gold. {}'.format(e), 'danger')
             else: 
                 flash('ERROR.', 'danger')
@@ -325,7 +326,7 @@ def gold_farm():
 
 # Handle Post Control Panel Buttons
 
-@flaskApp.route('/claim_request/<int:post_id>', methods=['POST'])
+@main.route('/claim_request/<int:post_id>', methods=['POST'])
 @login_required
 def claim_request(post_id):
     post = Posts.query.get(post_id)
@@ -346,7 +347,7 @@ def claim_request(post_id):
     return jsonify({"message": "Unable to claim ReQuest."}), 400
 
 
-@flaskApp.route('/finalise_request/<int:post_id>', methods=['POST'])
+@main.route('/finalise_request/<int:post_id>', methods=['POST'])
 @login_required
 def finalise_request(post_id):
     post = Posts.query.get(post_id)
@@ -365,7 +366,7 @@ def finalise_request(post_id):
     return jsonify({"message": "Unable to finalise ReQuest."}), 400
 
 
-@flaskApp.route('/relinquish_claim/<int:post_id>', methods=['POST'])
+@main.route('/relinquish_claim/<int:post_id>', methods=['POST'])
 @login_required
 def relinquish_claim(post_id):
     post = Posts.query.get(post_id)
@@ -388,7 +389,7 @@ def relinquish_claim(post_id):
     return jsonify({"message": "Unable to relinquish ReQuest claim."}), 400
 
 
-@flaskApp.route('/approve_submission/<int:post_id>', methods=['POST'])
+@main.route('/approve_submission/<int:post_id>', methods=['POST'])
 @login_required
 def approve_submission(post_id):
     post = Posts.query.get(post_id)
@@ -417,7 +418,7 @@ def approve_submission(post_id):
     return jsonify({"message": "Unable to approve ReQuest submission."}), 400
 
 
-@flaskApp.route('/deny_submission/<int:post_id>', methods=['POST'])
+@main.route('/deny_submission/<int:post_id>', methods=['POST'])
 @login_required
 def deny_submission(post_id):
     post = Posts.query.get(post_id)
@@ -436,7 +437,7 @@ def deny_submission(post_id):
     return jsonify({"message": "Unable to deny submission."}), 400
 
 
-@flaskApp.route('/private_request/<int:post_id>', methods=['POST'])
+@main.route('/private_request/<int:post_id>', methods=['POST'])
 @login_required
 def private_request(post_id):
     post = Posts.query.get(post_id)
@@ -455,7 +456,7 @@ def private_request(post_id):
     return jsonify({"message": "Unable to change ReQuest privacy."}), 400
 
 
-@flaskApp.route('/cancel_request/<int:post_id>', methods=['POST'])
+@main.route('/cancel_request/<int:post_id>', methods=['POST'])
 @login_required
 def cancel_request(post_id):
     post = Posts.query.get(post_id)
@@ -493,7 +494,7 @@ def is_safe_url(target):
 
 
 # THIS ROUTE MUST BE REMOVED -- ONLY FOR DEVELOPMENT PURPOSES
-@flaskApp.route("/givegold")
+@main.route("/givegold")
 @login_required
 def giveGold():
     try:
@@ -503,7 +504,7 @@ def giveGold():
     
     except Exception as e:
         db.session.rollback()
-        if flaskApp.debug:
+        if main.debug:
             flash('Error giving gold. {}'.format(e), 'danger')
         else: 
             flash('ERROR.', 'danger')
