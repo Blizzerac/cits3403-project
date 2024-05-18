@@ -46,15 +46,17 @@ class BasicUnitTest(TestCase):
         #get login response
         response = self.client.post('/login', data=dict(
             login='test_user',
-            password='testpassword'
+            password='Testpassword123'
         ), follow_redirects=True)
         #check if login was successful
         self.assertIn(b'Welcome, test_user!', response.data)
-    
+        
+        #get login response for invalid credentials
         response = self.client.post('/login', data=dict(
             login='test_user',
             password='wrongpassword'
         ), follow_redirects=True)
+        #check if login was not successful
         self.assertIn(b'Invalid username or password', response.data)
   
     #unit test to check the signup form validation
