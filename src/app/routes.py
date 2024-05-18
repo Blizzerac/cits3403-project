@@ -28,7 +28,7 @@ def home():
 
     # Fetch only unclaimed quests in random order
     quests = db.session.query(Posts) \
-        .filter(Posts.claimed == False, Posts.private==False) \
+        .filter(Posts.claimed == False, Posts.private==False, Posts.deleted==False) \
         .order_by(func.random()) \
         .limit(DISPLAY_LIMIT) \
         .all()
@@ -198,7 +198,10 @@ def quest_view():
         flash('ReQuest does not exist.', 'danger')
         return redirect(url_for('home'))
     if post.private and not (current_user.userID == post.claimerID or current_user.userID == post.posterID):
-        flash('Cant acces private ReQuest.', 'danger')
+        flash('Cannot acces private ReQuest.', 'danger')
+        return redirect(url_for('home'))
+    if post.deleted:
+        flash('Cannot access cancelled ReQuest', 'danger')
         return redirect(url_for('home'))
     
     creation_date = post.creationDate.strftime('%Y-%m-%d')
