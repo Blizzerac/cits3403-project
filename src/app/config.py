@@ -13,3 +13,10 @@ class Config(object):
 	# WINDOWS CMD: set FLASK_SECRET_KEY=your_secret_key_here
 
 	# with dotenv, you can instead create a .env file and set a local secret key in the same style as Windows
+
+class DeploymentConfig(config):
+    SQLACHEMY_DATABASE_URI = "sqlite:///" +os.path.join(basedir,'test.db')
+    
+class TestConfig(config):
+    SQLACHEMY_DATABASE_URI = "sqlite:///:memory" 
+    TESTING = True 
