@@ -5,7 +5,7 @@ from app.models import Users, Posts, Responses # Particular tables to be used
 from app import models, forms
 from app import flaskApp, db, login_manager
 from datetime import datetime
-from sqlalchemy import func, or_ # Methods to use when querying database
+from sqlalchemy import func, or_ , desc # Methods to use when querying database
 from urllib.parse import urlparse, urljoin # URL checking
 
 # Settings
@@ -240,9 +240,13 @@ def leaderboard():
     # Get the current page number
     page_number = int(request.args.get("page", 1))  
     
+    leaderboard_users = Users.query.with_entities(Users.username, Users.gold).order_by(desc(Users.gold)).slice(start_index, end_index).all()
+    
+    
     # start and end index of users for page
     start_index = (page_number - 1) * page_size
-    end_index = min(start_index + page_size, len(leaderboard_users))
+    end_index = start_index + page_size len(leaderboard_users))
+   
     
     # calcualte which page number is prev and next (if they exist)
     prev_page = page_number - 1 if page_number > 1 else None
