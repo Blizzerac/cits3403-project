@@ -62,9 +62,10 @@ class Users(db.Model, UserMixin):
         db.session.add(GoldChanges(userID=self.userID, changeAmount=-gold_reward, reason='Quest Completed'))
 
     def add_gold(self, gold):
-        self.gold += gold
-        self.gold_available += gold
-        db.session.add(GoldChanges(userID=self.userID, changeAmount=gold, reason='Gold Addition'))
+        if gold >= 0: # Ensure user can't spam gold generator
+            self.gold += gold
+            self.gold_available += gold
+            db.session.add(GoldChanges(userID=self.userID, changeAmount=gold, reason='Gold Addition'))
 
     # Password handling
     def set_password(self, password):

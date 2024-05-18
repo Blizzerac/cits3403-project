@@ -291,12 +291,12 @@ def search():
 @login_required
 def gold_farm():
     if request.method == 'POST':
-        data = request.get_json()
-        coinsToAdd = data['coins']
         try:
+            data = request.get_json()
+            coinsToAdd = data['coins']
             current_user.add_gold(coinsToAdd)
             db.session.commit()
-            flash('You earned ' + str(coinsToAdd) + 'g!', 'success')
+            flash('You earned ' + str(coinsToAdd) + 'G!', 'success')
         
         except Exception as e:
             db.session.rollback()
