@@ -29,7 +29,9 @@ class BasicUnitTest(TestCase):
         # Assert that the user was successfully created and retrieved
         self.assertIsNotNone(retrieved_user)
         self.assertEqual(retrieved_user.email, 'test@example.com')
-        
+  
+  #basic unit test to check if unit tests are actually running 
+  #(as of writing they are not)
   def test_is_this_working(self):
       self.assertEqual(True,True)
       
