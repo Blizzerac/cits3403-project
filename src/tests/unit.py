@@ -46,10 +46,11 @@ class BasicUnitTest(TestCase):
         #checks if the no spaces message is given
         self.assertIn(b'The username must not contain spaces.', response.data)
           
-          
+        #attempt to signup with an invalid email address
         response = self.client.post('/signup', data=dict(
             username='validusername',
             email='invalidemail',
             password='testpassword'
         ), follow_redirects=True)
+        #checks if invalid email address message is given (unsure if this is the correct error message)
         self.assertIn(b'Invalid email address.', response.data)
