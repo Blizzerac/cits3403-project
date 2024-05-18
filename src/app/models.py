@@ -184,5 +184,22 @@ class PostChanges(db.Model):
 
 # Data base initialisation
 def init_db():
-	  with flaskApp.app_context():
-		    db.create_all()
+    with flaskApp.app_context():
+        db.create_all()
+
+def init_db_examples():
+    with flaskApp.app_context():
+        db.create_all()
+
+        # Insert example data
+        try:
+            new_admin = Users(username='admin', email='admin@example.com')
+            new_admin.set_password('Admin123')
+            db.session.add(new_admin)
+            new_user = Users(username='user', email='user@example.com')
+            new_user.set_password('User123')
+            db.session.add(new_user)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error adding example database entries. Error: {e}")
