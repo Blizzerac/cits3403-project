@@ -4,7 +4,9 @@
 
 <div class="col-md-6 rounded form-container {{ 'hidden' if is_signup }}" id="login-form-container">
   <fieldset>
-    <legend class="text-center" id="legend"><span class="toggle-login">Sign-up</span> | <span class="other-toggle">Login</span></legend>
+    <legend class="text-center" id="legend">
+      <h1><span class="toggle-login">Sign-up</span> | <span class="other-toggle active">Login</span></h1>
+    </legend>
     <form method='POST' id='login-form' action='/login'>
       {{ login_form.hidden_tag() }}
       {% if next %}
@@ -35,7 +37,9 @@
 
 <div class="col-md-5 rounded form-container {{ 'hidden' if not is_signup }}" id="signup-form-container">
   <fieldset>
-    <legend class="text-center" id="legend"><span class="other-toggle">Sign-up</span> | <span class="toggle-login">Login</span></legend>
+    <legend class="text-center" id="legend">
+      <h1><span class="other-toggle active">Sign-up</span> | <span class="toggle-login">Login</span></h1>
+    </legend>
     <form method='POST' id='signup-form' action='/signup'>
       {{ signup_form.hidden_tag() }}
       {% if next %}
