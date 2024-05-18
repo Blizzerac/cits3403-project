@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 # Configuration class
 class Config(object):
 	SQLALCHEMY_DATABASE_URI =  os.getenv('DATABASE_URL') or 'sqlite:///../instance/database.db'
@@ -14,9 +16,9 @@ class Config(object):
 
 	# with dotenv, you can instead create a .env file and set a local secret key in the same style as Windows
 
-class DeploymentConfig(config):
+class DeploymentConfig(Config):
     SQLACHEMY_DATABASE_URI = "sqlite:///" +os.path.join(basedir,'test.db')
     
-class TestConfig(config):
+class TestConfig(Config):
     SQLACHEMY_DATABASE_URI = "sqlite:///:memory" 
     TESTING = True 
