@@ -266,7 +266,7 @@ def leaderboard():
     current_page = page_number
     
     # render the leaderboard template with necessary datas
-    return render_template("leaderboard.html", users=leaderboard_users[start_index:end_index], start_index=start_index, end_index=end_index, prev_page=prev_page, next_page=next_page, total_users=total_users, total_pages=total_pages, current_page=current_page, page_size=page_size)
+    return render_template("leaderboard.html", users=leaderboard_users, start_index=start_index, end_index=end_index, prev_page=prev_page, next_page=next_page, total_users=total_users, total_pages=total_pages, current_page=current_page, page_size=page_size)
 
 
 @flaskApp.route("/search", methods=["POST", "GET"])
