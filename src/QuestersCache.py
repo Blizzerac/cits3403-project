@@ -6,4 +6,4 @@ from app.models import Users
 
 
 flaskApp = create_app(DeploymentConfig)
-# migrate = Migrate(flaskApp, db)
+migrate = Migrate(flaskApp, db) # Comment this out when doing unit tests

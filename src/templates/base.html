@@ -48,8 +48,6 @@
             <img src="{{ url_for('static', filename='img/icons/user.svg') }}" alt="User" class="navbar-svg-icon" title="Account">
           </button>
           <div class="dropdown-menu dropdown-menu-lg-right">
-            <a class="dropdown-item link-mute" href="{{ url_for('main.dashboard') }}">Dashboard</a>
-            <div class="dropdown-divider"></div>
             <a class="dropdown-item link-mute" id="active" href="{{ url_for('main.search', type='active') }}">Active Quests</a>
             <a class="dropdown-item link-mute" id="claimed" href="{{ url_for('main.search', type='inactive') }}">Inactive Quests</a>
             <a class="dropdown-item link-mute" id="active" href="{{ url_for('main.search', type='claimed') }}">Claimed Quests</a>
