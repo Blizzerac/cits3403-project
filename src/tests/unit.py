@@ -51,7 +51,11 @@ class BasicUnitTest(TestCase):
         #check if login was successful
         self.assertIn(b'Welcome, test_user!', response.data)
     
-    
+        response = self.client.post('/login', data=dict(
+            login='test_user',
+            password='wrongpassword'
+        ), follow_redirects=True)
+        self.assertIn(b'Invalid username or password', response.data)
   
     #unit test to check the signup form validation
     def test_signup_form_validation(self):
