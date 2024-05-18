@@ -234,6 +234,10 @@ def quest_view():
 # Leaderboard
 @flaskApp.route("/leaderboard")
 def leaderboard():
+    #Current issue:
+    #second page now renders
+    #But does not contain any users
+    
     
     # Variable defines users per page on leaderboard
     page_size = 10
