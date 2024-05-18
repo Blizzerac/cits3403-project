@@ -3,14 +3,10 @@ from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 from app.models import Users, Posts, Responses # Particular tables to be used
 from app import models, forms
-from app import flaskApp, db, login_manager
+from app import flaskApp, db, login_manager, debug
 from datetime import datetime
 from sqlalchemy import func, or_ , desc # Methods to use when querying database
 from urllib.parse import urlparse, urljoin # URL checking
-
-# Settings
-debug = True
-
 
 ###########
 # Routes  #
@@ -93,7 +89,7 @@ def login():
                 # If failed, rollback database and warn user.
                 except Exception as e:
                     db.session.rollback()
-                    if flaskApp.debug:
+                    if debug:
                         flash('Error adding user to database. {}'.format(e), 'danger')
                     else: 
                         flash('Failed creating an account. Please try again later or contact staff.', 'danger')
@@ -150,6 +146,7 @@ def post_quest():
                 try:
                     new_post = Posts(posterID=current_user.userID, title=posting_form.post_name.data, description=posting_form.post_description.data, reward=posting_form.post_reward.data)
                     db.session.add(new_post)
+                    db.session.flush() # Push new post to database to assign its postID (used for logging)
                     new_post.create_post_log(current_user.userID)
                     db.session.commit()
                     flash('ReQuest posted successfully!', 'success')
@@ -157,7 +154,7 @@ def post_quest():
             
                 except Exception as e:
                     db.session.rollback()
-                    if flaskApp.debug:
+                    if debug:
                         flash('Error adding ReQuest to database. {}'.format(e), 'danger')
                     else: 
                         flash('Failed posting ReQuest. Please try again later or contact staff.', 'danger')
@@ -185,7 +182,7 @@ def quest_view():
         flash('Cannot acces private ReQuest.', 'danger')
         return redirect(url_for('home'))
     if post.deleted:
-        flash('Cannot access cancelled ReQuest', 'danger')
+        flash('Cannot access cancelled ReQuest.', 'danger')
         return redirect(url_for('home'))
     
     creation_date = post.creationDate.strftime('%Y-%m-%d')
@@ -257,15 +254,15 @@ def search():
 
     # Determine the base query based on user and quest type
     if quest_type == 'active':
-        base_query = Posts.query.filter_by(posterID=current_user.userID, completed=False)  # Active quests posted by the user
+        base_query = Posts.query.filter_by(posterID=current_user.userID, completed=False, deleted=False)  # Active quests posted by the user
     elif quest_type == 'claimed':
-        base_query = Posts.query.filter_by(claimerID=current_user.userID, claimed=True, completed=False)  # Claimed quests by the user, not yet completeds
+        base_query = Posts.query.filter_by(claimerID=current_user.userID, claimed=True, completed=False, deleted=False)  # Claimed quests by the user, not yet completeds
     elif quest_type == 'completed':
-        base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True)  # Completed quests by the user
+        base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True, deleted=False)  # Completed quests by the user
     elif quest_type == 'inactive':
-        base_query = Posts.query.filter(Posts.posterID == current_user.userID, Posts.completed==True, Posts.claimerID != current_user.userID) # Complex inequality query, completed quests by others posted by user
+        base_query = Posts.query.filter(Posts.posterID == current_user.userID, Posts.completed==True, Posts.claimerID != current_user.userID, Posts.deleted==False) # Complex inequality query, completed quests by others posted by user
     else:
-        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False, Posts.private==False) # Complex inequality query, default
+        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False, Posts.private==False, Posts.deleted==False) # Complex inequality query, default
 
     # Searching or showing all
     if request.method == 'POST' and searching_form.validate_on_submit():
@@ -301,7 +298,7 @@ def gold_farm():
         
         except Exception as e:
             db.session.rollback()
-            if flaskApp.debug:
+            if debug:
                 flash('Error giving gold. {}'.format(e), 'danger')
             else: 
                 flash('ERROR.', 'danger')

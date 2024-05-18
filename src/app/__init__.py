@@ -10,7 +10,7 @@ flaskApp = Flask(__name__, template_folder='../templates', static_folder='../sta
 
 # Configuration
 flaskApp.config.from_object(Config)
-flaskApp.debug = True # Debug error messages
+debug = True # Debug error messages
 
 # Initialise extensions
 db = SQLAlchemy(flaskApp)
