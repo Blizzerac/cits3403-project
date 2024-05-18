@@ -329,11 +329,15 @@ def gold_farm():
 @login_required
 def claim_request(post_id):
     post = Posts.query.get(post_id)
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and not post.claimed and current_user.userID != post.posterID:
-        post.claimed = True
-        post.claimerID = current_user.userID
-        post.claimDate = datetime.now()
         try:
+            post.claim_post(current_user.userID)
             db.session.commit()
             flash('ReQuest claimed successfully!', 'success')
             return jsonify({"message": "ReQuest claimed successfully!"}), 200
@@ -350,9 +354,15 @@ def claim_request(post_id):
 @login_required
 def finalise_request(post_id):
     post = Posts.query.get(post_id)
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and post.claimed and current_user.userID == post.claimerID and not post.waitingApproval:
-        post.waitingApproval = True
         try:
+            post.finalise_submission(current_user.userID)
             db.session.commit()
             flash('ReQuest submission sent successfully!', 'success')
             return jsonify({"message": "ReQuest finalised successfully!"}), 200
@@ -369,13 +379,15 @@ def finalise_request(post_id):
 @login_required
 def relinquish_claim(post_id):
     post = Posts.query.get(post_id)
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and post.claimed and current_user.userID == post.claimerID:
-        post.claimed = False # Reset claim
-        post.claimerID = None
-        post.claimDate = None
-        post.waitingApproval = False # Ensure reset this value (can cause bug if left)
-        post.private = False # Ensure others can claim it
         try:
+            post.unclaim_post(current_user.userID)
             db.session.commit()
             flash('Claim on ReQuest reliquished successfully!', 'success')
             return jsonify({"message": "ReQuest claim relinquished successfully!"}), 200
@@ -392,19 +404,18 @@ def relinquish_claim(post_id):
 @login_required
 def approve_submission(post_id):
     post = Posts.query.get(post_id)
+
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and post.waitingApproval and current_user.userID == post.posterID:
-        post.completed = True
-        post.waitingApproval = False
-        gold = post.reward
-        claimer = Users.query.get(post.claimerID)
-        if not claimer:
-            flash('Could not find claimer in database.', 'danger')
-            return jsonify({"message": f"Could not find claimer in database."}), 400
-        
         try:
-            # Check if it correctly got the user
-            claimer.add_gold(gold)
-            current_user.quest_payout(gold)
+            post.approve_submission(current_user.userID)
+            gold = post.reward
+            post.poster.quest_payout(gold)
+            post.claimer.quest_completed(gold)
             db.session.commit()
             flash('ReQuest submission approved successfully!', 'success')
             return jsonify({"message": "ReQuest submission approved successfully!"}), 200
@@ -421,9 +432,15 @@ def approve_submission(post_id):
 @login_required
 def deny_submission(post_id):
     post = Posts.query.get(post_id)
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and post.waitingApproval and current_user.userID == post.posterID:
-        post.waitingApproval = False
         try:
+            post.deny_submission(current_user.userID)
             db.session.commit()
             flash('ReQuest submission denied successfully!', 'success')
             return jsonify({"message": "ReQuest submission denied."}), 200
@@ -440,9 +457,15 @@ def deny_submission(post_id):
 @login_required
 def private_request(post_id):
     post = Posts.query.get(post_id)
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and post.claimed and current_user.userID == post.posterID:
         try:
-            post.private = not post.private # Swap private boolean field
+            post.private_post(current_user.userID)
             db.session.commit()
             flash('ReQuest privacy changed successfully!', 'success')
             return jsonify({"message": "ReQuest privacy changed successfully."}), 200
@@ -459,11 +482,17 @@ def private_request(post_id):
 @login_required
 def cancel_request(post_id):
     post = Posts.query.get(post_id)
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        flash('Cannot modify cancelled ReQuest.', 'danger')
+        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
+
     if post and not post.completed and current_user.userID == post.posterID:
-        gold = post.reward
         try:
-            current_user.quest_refund(gold)
-            db.session.delete(post)
+            post.cancel_post(current_user.userID)
+            gold = post.reward
+            post.poster.quest_refund(gold)
             db.session.commit()
             flash('ReQuest cancelled successfully!', 'success')
             return jsonify({"message": "ReQuest cancelled successfully."}), 200
@@ -487,25 +516,3 @@ def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
-
-
-
-
-
-# THIS ROUTE MUST BE REMOVED -- ONLY FOR DEVELOPMENT PURPOSES
-@flaskApp.route("/givegold")
-@login_required
-def giveGold():
-    try:
-        current_user.add_gold(500)
-        db.session.commit()
-        flash('Given user 500 gold.', 'success')
-    
-    except Exception as e:
-        db.session.rollback()
-        if flaskApp.debug:
-            flash('Error giving gold. {}'.format(e), 'danger')
-        else: 
-            flash('ERROR.', 'danger')
-    
-    return redirect(url_for('home'))
