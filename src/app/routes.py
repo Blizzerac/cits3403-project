@@ -235,7 +235,7 @@ def quest_view():
 @flaskApp.route("/leaderboard")
 def leaderboard():
     # Variable defines users per page on leaderboard
-    page_size = 2
+    page_size = 50
     # Get the current page number
     page_number = int(request.args.get("page", 1))  
    
