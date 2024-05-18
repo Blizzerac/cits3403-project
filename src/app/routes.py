@@ -181,7 +181,7 @@ def quest_view():
     if post.private and not (current_user.userID == post.claimerID or current_user.userID == post.posterID):
         flash('Cannot acces private ReQuest.', 'danger')
         return redirect(url_for('home'))
-    if post.deleted:
+    if post.deleted and not current_user.isAdmin:
         flash('Cannot access cancelled ReQuest.', 'danger')
         return redirect(url_for('home'))
     
@@ -254,15 +254,15 @@ def search():
 
     # Determine the base query based on user and quest type
     if quest_type == 'active':
-        base_query = Posts.query.filter_by(posterID=current_user.userID, completed=False, deleted=False)  # Active quests posted by the user
+        base_query = Posts.query.filter_by(posterID=current_user.userID, completed=False)  # Active quests posted by the user
     elif quest_type == 'claimed':
-        base_query = Posts.query.filter_by(claimerID=current_user.userID, claimed=True, completed=False, deleted=False)  # Claimed quests by the user, not yet completeds
+        base_query = Posts.query.filter_by(claimerID=current_user.userID, claimed=True, completed=False)  # Claimed quests by the user, not yet completeds
     elif quest_type == 'completed':
-        base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True, deleted=False)  # Completed quests by the user
+        base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True)  # Completed quests by the user
     elif quest_type == 'inactive':
-        base_query = Posts.query.filter(Posts.posterID == current_user.userID, Posts.completed==True, Posts.claimerID != current_user.userID, Posts.deleted==False) # Complex inequality query, completed quests by others posted by user
+        base_query = Posts.query.filter(Posts.posterID == current_user.userID, Posts.completed==True, Posts.claimerID != current_user.userID) # Complex inequality query, completed quests by others posted by user
     else:
-        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False, Posts.private==False, Posts.deleted==False) # Complex inequality query, default
+        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False, Posts.private==False) # Complex inequality query, default
 
     # Searching or showing all
     if request.method == 'POST' and searching_form.validate_on_submit():
@@ -472,7 +472,7 @@ def cancel_request(post_id):
         flash('Cannot modify cancelled ReQuest.', 'danger')
         return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
 
-    if post and not post.completed and current_user.userID == post.posterID:
+    if post and not post.completed and (current_user.userID == post.posterID or current_user.isAdmin):
         try:
             post.cancel_post(current_user.userID)
             gold = post.reward

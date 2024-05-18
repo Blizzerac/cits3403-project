@@ -12,6 +12,7 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(20), unique=True, nullable=False, index=True) # Usernames are unique
     email = db.Column(db.String(320), unique=True, nullable=False, index=True) # Emails are also unique (maximum determined from physical maximum researched)
     password = db.Column(db.String(128), nullable=False)
+    isAdmin = db.Column(db.Boolean, nullable=False, default=False) # Set a user's account as admin (allowed logs)
     gold = db.Column(db.BigInteger, default=0, nullable=False) # User's currency
     gold_available = db.Column(db.BigInteger, default=0, nullable=False) # User's available currency to make a quest with
     creationDate = db.Column(db.DateTime, nullable=False, default=datetime.now) # User account creation date
