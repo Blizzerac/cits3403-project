@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Quester's Cache || Home{% endblock %}
+{% block title %}Quester's Cache || ReQuest View{% endblock %}
 {% block content %}
 
 <div class="container-fluid mt-5">
@@ -20,7 +20,7 @@
       </div>
       <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
         <!-- Assortment of buttons according to user type -->
-        {% if not post.completed %}
+        {% if not post.completed and not post.deleted %}
           {% if not post.claimed and current_user.userID != post.posterID %}
             <button class="btn btn-primary mb-2" id="claim-request" data-url="{{ url_for('claim_request', post_id=post.postID) }}">Claim ReQuest</button>
           {% elif post.claimed and current_user.userID == post.claimerID %}
@@ -41,11 +41,13 @@
         {% endif %}
 
         <!-- Cancel ReQuest button for poster or admin -->
-        {% if current_user.userID == post.posterID or current_user.isAdmin %}
+        {% if (current_user.userID == post.posterID or current_user.isAdmin) and not post.deleted %}
           <button class="btn btn-warning mb-2" id="cancel-request" data-url="{{ url_for('cancel_request', post_id=post.postID) }}">Cancel ReQuest</button>
         {% endif %}
 
-        {% else %} <!-- If the ReQuest is completed -->
+        {% elif post.deleted %} <!-- If the ReQuest is completed -->
+        <h4><b>Post is <u>DELETED</u></b></h4>
+        {% else %}
         <h4><b>Post completed by: {{post.claimer.username}}</b></h4>
         {% endif %}
       </div>
