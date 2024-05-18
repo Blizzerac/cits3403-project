@@ -34,6 +34,20 @@ class BasicUnitTest(TestCase):
     #(as of writing they are not)
     def test_is_this_working(self):
         self.assertEqual(True,True)
+        
+    def test_user_authentication(self):
+        user = Users(username='test_user', email='test@example.com')
+        user.set_password('testpassword')
+        db.session.add(user)
+        db.session.commit()
+
+        response = self.client.post('/login', data=dict(
+            login='test_user',
+            password='testpassword'
+        ), follow_redirects=True)
+        self.assertIn(b'Welcome, test_user!', response.data)
+    
+    
   
     #unit test to check the signup form validation
     def test_signup_form_validation(self):
