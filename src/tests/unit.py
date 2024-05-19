@@ -235,4 +235,18 @@ class BasicUnitTest(TestCase):
         with self.assertRaises(Exception) as cm:
             self.assertIn(b'Password must include at least one number.', response.data)
     
+    def test_post_creation(self):
+        self.client.post('/login',data=dict(username='test_user',password='Testpass123'), follow_redirects=True)
+        
+        response = self.client.post('/create_post', data=dict(
+            post_name='Test Post',
+            post_description='This is a test post description.',
+            post_reward=0
+        ), follow_redirects=True)
+        
+        with self.assertRaises(Exception) as cm:
+            self.assertIn(b'Test Post', response.data)
+            self.assertIn(b'This is a test post description.', response.data)
+    
+
     
