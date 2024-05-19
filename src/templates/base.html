@@ -15,28 +15,28 @@
   <!-- Header Navbar -->
   <header>
     <nav class="navbar navbar-expand-lg bg-wood-nav">
-      <a class="navbar-brand text-light link-mute" href="{{url_for('home')}}"><h3>Quester's Cache</h3></a>
+      <a class="navbar-brand text-light link-mute" href="{{url_for('main.home')}}"><h3>Quester's Cache</h3></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link active text-light link-mute" aria-current="page" href="{{url_for('home')}}">Home</a>
+            <a class="nav-link active text-light link-mute" aria-current="page" href="{{url_for('main.home')}}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light link-mute" href="{{url_for('leaderboard')}}">Leaderboard</a>
+            <a class="nav-link text-light link-mute" href="{{url_for('main.leaderboard')}}">Leaderboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light link-mute" href="{{url_for('gold_farm')}}">Earn Gold</a>
+            <a class="nav-link text-light link-mute" href="{{url_for('main.gold_farm')}}">Earn Gold</a>
         </ul>
         <div class="col-lg-auto px-0 mb-2 mb-lg-0">
-          <a role="button" class="row-md row-sm btn btn-success text-light link-mute mr-2" href="{{ url_for('search') }}">
+          <a role="button" id="search-button" class="row-md row-sm btn btn-success text-light link-mute mr-2" href="{{ url_for('main.search') }}">
             Search For ReQuests
           </a>
         </div>
         <div class="col-lg-auto px-0 mb-2 mb-lg-0">
-          <a role="button" class="row-md row-sm btn btn-primary text-light link-mute mr-2 {{ 'disabled' if not current_user.is_authenticated }}" href="{{ url_for('post_quest') if current_user.is_authenticated else '#' }}">
+          <a role="button" id="post-button" class="row-md row-sm btn btn-primary text-light link-mute mr-2 {{ 'disabled' if not current_user.is_authenticated }}" href="{{ url_for('main.post_quest') if current_user.is_authenticated else '#' }}">
             Post New ReQuest
           </a>
         </div>
@@ -48,20 +48,20 @@
             <img src="{{ url_for('static', filename='img/icons/user.svg') }}" alt="User" class="navbar-svg-icon" title="Account">
           </button>
           <div class="dropdown-menu dropdown-menu-lg-right">
-            <a class="dropdown-item link-mute" href="{{ url_for('search', type='active') }}">Active Quests</a> <!-- Add the link to the active quests page -->
-            <a class="dropdown-item link-mute" href="{{ url_for('search', type='inactive') }}">Inactive Quests</a> <!-- Add the link to the inactive quests page -->
-            <a class="dropdown-item link-mute" href="{{ url_for('search', type='claimed') }}">Claimed Quests</a> <!-- Add the link to the claimed quests page -->
-            <a class="dropdown-item link-mute" href="{{ url_for('search', type='completed') }}">Completed Quests</a> <!-- Add the link to the completed quests page -->
+            <a class="dropdown-item link-mute" href="{{ url_for('main.search', type='active') }}">Active Quests</a> <!-- Add the link to the active quests page -->
+            <a class="dropdown-item link-mute" href="{{ url_for('main.search', type='inactive') }}">Inactive Quests</a> <!-- Add the link to the inactive quests page -->
+            <a class="dropdown-item link-mute" href="{{ url_for('main.search', type='claimed') }}">Claimed Quests</a> <!-- Add the link to the claimed quests page -->
+            <a class="dropdown-item link-mute" href="{{ url_for('main.search', type='completed') }}">Completed Quests</a> <!-- Add the link to the completed quests page -->
             {% if current_user.isAdmin %}
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item link-mute" id="logs" href="{{ url_for('logs')}}">Admin Logs</a>
+            <a class="dropdown-item link-mute" id="logs" href="{{ url_for('main.logs')}}">Admin Logs</a>
             {% endif %}
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{{url_for('logout')}}">Logout</a>
+            <a class="dropdown-item" id="logout" href="{{url_for('main.logout')}}">Logout</a>
           </div>
         </div>
         {% else %}
-        <a href="{{url_for('login')}}">
+        <a href="{{url_for('main.login')}}">
           <img src="{{ url_for('static', filename='img/icons/user.svg') }}" alt="User" class="navbar-svg-icon" title="Login / Sign-up">
         </a>
         {% endif %}

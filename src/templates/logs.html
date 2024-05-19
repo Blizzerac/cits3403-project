@@ -6,8 +6,8 @@
     <div class="col-md-10">
       <div id="logs-list" class="mt-4">
         <h1 class="text-center">
-          <a href="{{ url_for('logs', type='gold') }}" class="{% if log_type == 'gold' %}active{% endif %} text-white">Gold Logs</a> | 
-          <a href="{{ url_for('logs', type='requests') }}" class="{% if log_type == 'requests' %}active{% endif %} text-white">ReQuest Logs</a>
+          <a href="{{ url_for('main.logs', type='gold') }}" class="{% if log_type == 'gold' %}active{% endif %} text-white">Gold Logs</a> | 
+          <a href="{{ url_for('main.logs', type='requests') }}" class="{% if log_type == 'requests' %}active{% endif %} text-white">ReQuest Logs</a>
         </h1>
         <table class="table text-center">
           <thead>
@@ -45,7 +45,7 @@
                   {% else %}
                   <td>{{ log.user.username }} ({{log.userID}})</td>
                   {% endif %}
-                  <td><a href="{{ url_for('quest_view', postID=log.postID) }}">{{ log.postID }}</a></td>
+                  <td><a href="{{ url_for('main.quest_view', postID=log.postID) }}">{{ log.postID }}</a></td>
                   <td>{{ log.changeType }}</td>
                   <td>{{ log.changeDate }}</td>
                 {% endif %}
