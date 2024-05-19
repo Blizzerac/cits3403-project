@@ -46,7 +46,7 @@ class BasicUnitTest(TestCase):
 
         #get login response
         response = self.client.post('/login', data=dict(
-            login='test_user',
+            username='test_user',
             password='Testpassword123'
         ), follow_redirects=True)
         #check if login was successful
