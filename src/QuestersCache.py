@@ -9,3 +9,7 @@ from flask_migrate import Migrate
 
 # Testing Configuration
 flaskApp = create_app(TestConfig)
+
+# Ensure db is created
+with flaskApp.app_context():
+    db.create_all()
