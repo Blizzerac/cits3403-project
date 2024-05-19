@@ -3,8 +3,8 @@
 {% block content %}
 
 <div class="col-md-6 rounded form-container {{ 'hidden' if is_signup }}" id="login-form-container">
-  <fieldset class="d-flex flex-column align-items-center justify-content-center">
-    <legend class="text-center w-100">
+  <fieldset class="d-flex flex-column align-items-center justify-content-center col-md-6 offset-md-3">
+    <legend class="text-center">
       <h1><span class="toggle-login">Sign-up</span> | <span class="other-toggle active">Login</span></h1>
     </legend>
     <form method='POST' id='login-form' action='/login' class="w-100 text-center">
@@ -36,8 +36,8 @@
 </div>
 
 <div class="col-md-5 rounded form-container {{ 'hidden' if not is_signup }}" id="signup-form-container">
-  <fieldset class="d-flex flex-column align-items-center justify-content-center">
-    <legend class="text-center w-100">
+  <fieldset class="d-flex flex-column align-items-center justify-content-center col-md-6 offset-md-3">
+    <legend class="text-center">
       <h1><span class="other-toggle active">Sign-up</span> | <span class="toggle-login">Login</span></h1>
     </legend>
     <form method='POST' id='signup-form' action='/signup' class="w-100 text-center">

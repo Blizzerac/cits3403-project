@@ -34,19 +34,21 @@ class SignupForm(FlaskForm):
     username = StringField(
         'Username',
         validators=[InputRequired(), Length(min=4, max=20), noSpaces],
-        render_kw={"placeholder": "Username"})
+        render_kw={"placeholder": "Username", "class": "form-control form-control-lg"})
 
     email = EmailField(
         'Email',
         validators=[InputRequired(), Email(message='Invalid email address.')],
-        render_kw={"placeholder": "Email"})
+        render_kw={"placeholder": "Email", "class": "form-control form-control-lg"})
 
     password = PasswordField(
         'Password', 
         validators=[InputRequired(), Length(min=5, max=25), pass_characters, pass_digit, pass_uppercase],
-        render_kw={"placeholder": "Password"})
+        render_kw={"placeholder": "Password", "class": "form-control form-control-lg"})
     
-    submit = SubmitField("Register", id='signup-submit-button')
+    submit = SubmitField("Register",
+                        id='signup-submit-button',
+                        render_kw={"class": "btn btn-success rounded"})
 
     def validate_username(self, username):
         existing_user = Users.query.filter_by(username=username.data).first()
@@ -63,16 +65,18 @@ class LoginForm(FlaskForm):
     login = StringField(
         'Username or Email', 
         validators=[InputRequired(), username_or_email], 
-        render_kw={"placeholder": "Username/Email"})
+        render_kw={"placeholder": "Username/Email", "class": "form-control form-control-lg"})
 
     password = PasswordField(
         'Password', 
         validators=[InputRequired(), Length(min=5, max=25)], 
-        render_kw={"placeholder": "Password"})
+        render_kw={"placeholder": "Password", "class": "form-control form-control-lg"})
 
     remember_me = BooleanField('Remember me')
 
-    submit = SubmitField("Login", id='login-submit-button')
+    submit = SubmitField("Login",
+                        id='login-submit-button',
+                        render_kw={"class": "btn btn-success rounded"})
 
 
 class PostForm(FlaskForm):
