@@ -76,7 +76,12 @@ def login():
         # If signup form submitted
         if signup_form.validate_on_submit():
             try:
-                try_signup_user(signup_form)
+                username = signup_form.username.data
+                email = signup_form.email.data
+                password = signup_form.password.data
+                new_user = try_signup_user(username, email, password)
+                login_user(new_user, remember=False) # Assuming dont remember them
+                flash('Account created successfully!', 'success')
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page) # If user was trying to go somewhere earlier
                 return redirect(url_for('main.home'))
