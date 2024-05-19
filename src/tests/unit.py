@@ -174,4 +174,24 @@ class BasicUnitTest(TestCase):
     def test_is_this_working(self):
         self.assertEqual(True,True)
     
+    def test_user_authentication(self):
+        user = Users(username='test_user', email='test@email.com')
+        user.set_password('Testpassword123')
+        db.session.add(user)
+        db.session.commit()
+
+        response = self.client.post('/login', data=dict(
+            login='test_user',
+            password='Testpassword123'
+        ), follow_redirects=True)
+        with self.assertRaises(Exception) as cm:
+            self.assertIn(b'Logged in successfully!', response.data)
+        
+        response = self.client.post('/login', data=dict(
+            login='test_user',
+            password='wrongpassword'
+        ), follow_redirects=True)
+        with self.assertRaises(Exception) as cm:
+            self.assertIn(b'Incorrect account details.', response.data)
+  
     
