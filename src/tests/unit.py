@@ -1,4 +1,18 @@
-from unittest import TestCase
+# Imports
+from flask import render_template, request, redirect, url_for, flash, jsonify
+from flask_login import login_required, login_user, logout_user, current_user
+from app.models import Users, Posts, Responses, GoldChanges, PostChanges # Particular tables to be used
+from app import models, forms
+from app import db, login_manager
+from app.blueprints import main
+from sqlalchemy.exc import SQLAlchemyError
+from datetime import datetime
+from sqlalchemy import func, or_ , desc # Methods to use when querying database
+from urllib.parse import urlparse, urljoin # URL checking
+from app.controllers import flash_db_error, try_signup_user, try_login_user, try_post_quest, try_quest_view, try_quest_respond, try_search_quests, try_redeem_gold, try_claim_quest, try_finalise_quest, try_relinquish_claim, try_approve_submission, try_deny_submission, try_private_request, try_cancel_request
+from app.controllers import InvalidLogin, AccountAlreadyExists, InvalidAction, InvalidPermissions
+#imports
+rom unittest import TestCase
 
 from app import create_app, db
 from app.models import Users, Posts, Responses, GoldChanges, PostChanges
