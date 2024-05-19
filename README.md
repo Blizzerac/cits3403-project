@@ -43,9 +43,13 @@ flask run
 
 Navigate to the src directory and open QuesterCache.py file. Comment out the deployment configuration, allowing the testing database configuration to be used.
 
-From the same directory, run from the command line:
+From the same directory, run unit tests with:
 
 python -m unittest tests/unit.py
+
+Run selenium tests with:
+
+python -m unittest tests/selenium.py (cannot be done in WSL)
 
 ## Languages and Frameworks Used
 - HTML
