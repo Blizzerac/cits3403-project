@@ -53,7 +53,8 @@ class BasicUnitTest(TestCase):
         # Check if the user was successfully created
         self.assertIsNotNone(retrieved_user)
         self.assertEqual(retrieved_user.email, 'test@email.com')
-  
+    
+    #test that should always pass
     def test_is_this_working(self):
         self.assertEqual(True,True)
     
