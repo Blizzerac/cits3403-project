@@ -57,12 +57,15 @@ class BasicUnitTest(TestCase):
     def test_is_this_working(self):
         self.assertEqual(True,True)
     
+    #Unit test: test user auth
     def test_user_authentication(self):
+        #create user
         user = Users(username='test_user', email='test@email.com')
         user.set_password('Testpassword123')
         db.session.add(user)
         db.session.commit()
-
+        
+        #attempt login
         response = self.client.post('/login', data=dict(
             login='test_user',
             password='Testpassword123'
@@ -70,6 +73,7 @@ class BasicUnitTest(TestCase):
         with self.assertRaises(Exception):
             self.assertIn(b'Logged in successfully!', response.data)
         
+        #attempt incorrect login
         response = self.client.post('/login', data=dict(
             login='test_user',
             password='wrongpassword'
