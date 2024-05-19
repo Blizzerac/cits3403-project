@@ -18,7 +18,7 @@ from app import create_app, db
 from app.models import Users, Posts, Responses, GoldChanges, PostChanges
 from app.config import TestConfig
 
-#Unit tests - HAVE NOT MADE CONTROLLERS.py yet
+#Unit tests
 class BasicUnitTest(TestCase):
     def setUp(self):
         testApp = create_app(TestConfig)
@@ -31,7 +31,8 @@ class BasicUnitTest(TestCase):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
- 
+    
+    #test user creation in db
     def test_user_creation(self):
         user_data = {
         'username': 'test_user',
