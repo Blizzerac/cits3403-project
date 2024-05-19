@@ -27,7 +27,11 @@ Next, create a virtual environment. If you do not have virtualenv, it can be ins
 
 pip install virtualenv
 
-Navigate to the deliverables folder and install the required packages with:
+Create a virtual environment within the project directory with:
+
+python3 -m venv env_name
+
+Activate the virtual environment and install the required packages with:
 
 pip install -r requirements.txt
 
