@@ -8,6 +8,7 @@ from app.config import TestConfig
 class BasicUnitTest(TestCase):
     def setUp(self):
         testApp = create_app(TestConfig)
+        self.client = testApp.test_client()
         self.app_context = testApp.app_context()
         self.app_context.push()
         db.create_all()
@@ -17,7 +18,7 @@ class BasicUnitTest(TestCase):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
-    
+        
     
     #basic unit test to check user creation
     def test_user_creation(self):
@@ -112,7 +113,7 @@ class BasicUnitTest(TestCase):
     #unit test for creating a test post
     def test_post_creation(self):
         #login as test user 
-        self.clientpost('/login',data={login:'test_user',password:'Testpass123'}, follow_redirects=True)
+        self.client.post('/login',data={login:'test_user',password:'Testpass123'}, follow_redirects=True)
         
         #create test post
         response = self.client.post('/create_post', data=dict(
@@ -122,13 +123,14 @@ class BasicUnitTest(TestCase):
         ), follow_redirects=True)
         
         #check if post creation was successful? not sure if this works cant test currently
-        self.assertIn(b'Test Post', response.data)
+        self.assertIn(b'Test Post'  , response.data)
         self.assertIn(b'This is a test post description.', response.data)
-      
+    
+
     #unit test to test the search function
     def test_search(self):
-        post1 = Posts(name='Test Post 1', description='Description for Test Post 1', reward=50)
-        post2 = Posts(name='Test Post 2', description='Description for Test Post 2', reward=100)
+        post1 = Posts(posterID=1,title='Test Post 1', description='Description for Test Post 1', reward=50)
+        post2 = Posts(posterID=1,title='Test Post 2', description='Description for Test Post 2', reward=100)
         db.session.add_all([post1, post2])
         db.session.commit()
         
@@ -140,4 +142,5 @@ class BasicUnitTest(TestCase):
         #check if search worked correctly (not sure if this is the correct way to test, I cannot run the web app rn)
         self.assertIn(b'Test Post 1', response.data)
         self.assertNotIn(b'Test Post 2', response.data)
+
         
