@@ -286,7 +286,7 @@ def finalise_request(post_id):
         flash('ReQuest submission sent successfully!', 'success')
         return jsonify({"message": "ReQuest finalised successfully!"}), 200
     except InvalidAction as e:
-        flash(str(e).message, 'danger')
+        flash(str(e), 'danger')
         return jsonify({"message": "Unable to finalise ReQuest."}), 400
     except SQLAlchemyError as e:
         flash_db_error(debug, str(e), "Failed to finalise ReQuest.")
@@ -305,7 +305,7 @@ def relinquish_claim(post_id):
         flash('Claim on ReQuest relinquished successfully!', 'success')
         return jsonify({"message": "ReQuest claim relinquished successfully!"}), 200
     except InvalidAction as e:
-        flash(str(e).message, 'danger')
+        flash(str(e), 'danger')
         return jsonify({"message": "Unable to relinquish ReQuest claim."}), 400
     except SQLAlchemyError as e:
         flash_db_error(debug, str(e), "Failed to relinquish ReQuest claim.")
@@ -324,7 +324,7 @@ def approve_submission(post_id):
         flash('ReQuest submission approved successfully!', 'success')
         return jsonify({"message": "ReQuest submission approved successfully!"}), 200
     except InvalidAction as e:
-        flash(str(e).message, 'danger')
+        flash(str(e), 'danger')
         return jsonify({"message": "Unable to approve ReQuest submission."}), 400
     except SQLAlchemyError as e:
         flash_db_error(debug, str(e), "Failed to approve ReQuest submission.")
@@ -343,7 +343,7 @@ def deny_submission(post_id):
         flash('ReQuest submission denied successfully!', 'success')
         return jsonify({"message": "ReQuest submission denied."}), 200
     except InvalidAction as e:
-        flash(str(e).message, 'danger')
+        flash(str(e), 'danger')
         return jsonify({"message": "Unable to deny ReQuest submission."}), 400
     except SQLAlchemyError as e:
         flash_db_error(debug, str(e), "Failed to deny ReQuest submission.")
@@ -362,7 +362,7 @@ def private_request(post_id):
         flash('ReQuest privacy changed successfully!', 'success')
         return jsonify({"message": "ReQuest privacy changed successfully."}), 200
     except InvalidAction as e:
-        flash(str(e).message, 'danger')
+        flash(str(e), 'danger')
         return jsonify({"message": "Unable to change ReQuest privacy."}), 400
     except SQLAlchemyError as e:
         flash_db_error(debug, str(e), "Failed to change ReQuest privacy.")
@@ -381,7 +381,7 @@ def cancel_request(post_id):
         flash('ReQuest cancelled successfully!', 'success')
         return jsonify({"message": "ReQuest cancelled successfully."}), 200
     except InvalidAction as e:
-        flash(str(e).message, 'danger')
+        flash(str(e), 'danger')
         return jsonify({"message": "Unable to cancel ReQuest."}), 400
     except SQLAlchemyError as e:
         flash_db_error(debug, str(e), "Failed to cancel ReQuest.")
