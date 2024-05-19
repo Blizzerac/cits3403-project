@@ -12,7 +12,7 @@ from urllib.parse import urlparse, urljoin # URL checking
 from app.controllers import flash_db_error, try_signup_user, try_login_user, try_post_quest, try_quest_view, try_quest_respond, try_search_quests, try_redeem_gold, try_claim_quest, try_finalise_quest, try_relinquish_claim, try_approve_submission, try_deny_submission, try_private_request, try_cancel_request
 from app.controllers import InvalidLogin, AccountAlreadyExists, InvalidAction, InvalidPermissions
 #imports
-rom unittest import TestCase
+from unittest import TestCase
 
 from app import create_app, db
 from app.models import Users, Posts, Responses, GoldChanges, PostChanges
@@ -160,4 +160,15 @@ class BasicUnitTest(TestCase):
         self.assertNotIn(b'Test Post 2', response.data)
     '''
 
-        
+    def test_user_creation(self):
+        user = Users(username='test_user', email='test@email.com',password='Testpassword123',isAdmin=0,gold=1000,gold_available=0)
+        db.session.add(user)
+        db.session.commit()
+
+        retrieved_user = Users.query.filter_by(username='test_user').first()
+
+        with self.assertRaises(Exception) as cm:
+            self.assertIsNotNone(retrieved_user)
+            self.assertEqual(retrieved_user.email, 'test@email.com')
+  
+    
