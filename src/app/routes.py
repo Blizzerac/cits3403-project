@@ -5,9 +5,11 @@ from app.models import Users, Posts, Responses, GoldChanges, PostChanges # Parti
 from app import models, forms
 from app import db, login_manager
 from app.blueprints import main
+from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 from sqlalchemy import func, or_ , desc # Methods to use when querying database
 from urllib.parse import urlparse, urljoin # URL checking
+from app.controllers import flash_db_error, try_signup_user, try_login_user, InvalidLogin, AccountAlreadyExists
 
 ###########
 # Routes  #
@@ -22,17 +24,22 @@ debug = True
 @main.route("/")
 def home():
     # Set display limit on quests
-    DISPLAY_LIMIT = 3
+    display_limit = 3
 
     # Fetch only unclaimed quests in random order
-    quests = db.session.query(Posts) \
-        .filter(Posts.claimed == False, Posts.private==False, Posts.deleted==False) \
-        .order_by(func.random()) \
-        .limit(DISPLAY_LIMIT) \
-        .all()
+    try:
+        quests = db.session.query(Posts) \
+            .filter(Posts.claimed == False, Posts.private==False, Posts.deleted==False) \
+            .order_by(func.random()) \
+            .limit(display_limit) \
+            .all()
+    except SQLAlchemyError as e:
+        flash_db_error(debug, e, "Failed loading quests.")
+        return render_template("home.html", quests=None, moreQuests=False, unclaimedQuests=False)
 
-    # Check if there are any unclaimed quests to display
-    moreQuests = len(quests) > DISPLAY_LIMIT-1 # True if more quests than can possibly display, False otherwise
+
+    # Check if there are any unclaimed quests to display (could be none)
+    moreQuests = len(quests) > display_limit - 1 # True if more quests than can possibly display, False otherwise
     unclaimedQuests = len(quests) > 0  # True if there exists unclaimed quests, False otherwise
 
     return render_template("home.html", quests=quests, moreQuests=moreQuests, unclaimedQuests=unclaimedQuests)
@@ -67,58 +74,27 @@ def login():
 
         # If signup form submitted
         if signup_form.validate_on_submit():
-            existing_user = Users.query.filter_by(username=signup_form.username.data).first()
-            existing_email = Users.query.filter_by(email=signup_form.email.data.lower()).first() # MUST lower email (case insensitive)
-
-            # Check for existing users
-            if existing_user:
-                signup_form.username.errors.append('Username is already taken.')
-            if existing_email:
-                signup_form.email.errors.append('An account with this email already exists.')
-
-            if not existing_user and not existing_email:
-                new_user = Users(username=signup_form.username.data, email=signup_form.email.data.lower())
-                new_user.set_password(signup_form.password.data)
-                db.session.add(new_user)
-                # Try commit new user to database.
-                try:
-                    db.session.commit()
-                    login_user(new_user, remember=False) # Assuming dont remember them
-                    flash('Account created successfully!', 'success')
-                    if next_page and is_safe_url(next_page):
-                        return redirect(next_page) # If user was trying to go somewhere earlier
-                    return redirect(url_for('main.home'))
-                # If failed, rollback database and warn user.
-                except Exception as e:
-                    db.session.rollback()
-                    if debug:
-                        flash('Error adding user to database. {}'.format(e), 'danger')
-                    else: 
-                        flash('Failed creating an account. Please try again later or contact staff.', 'danger')
-        
-        # If login form submitted
-        elif login_form.validate_on_submit():
-            user_input = login_form.login.data
-            # Determine if the input is an email or username
-            if "@" in user_input:
-                user = Users.query.filter_by(email=user_input.lower()).first() # MUST lower email to remain case insensitive
-            else:
-                user = Users.query.filter_by(username=user_input).first()
-
-            # Check password hash and login
-            if user and user.check_password(login_form.password.data):
-                login_user(user, remember=login_form.remember_me.data)
-                flash('Logged in successfully!', 'success')
+            try:
+                try_signup_user(debug, signup_form)
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page) # If user was trying to go somewhere earlier
                 return redirect(url_for('main.home'))
-            else:
-                # Dont inform the user if the account or password is incorrect (security flaw) - only general error
-                login_form.login.errors.append('Incorrect account details.')
-
-        # # If login fails with errors, return to login form
-        # elif not login_form.validate_on_submit() and request.method == 'POST':
-        #     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=False)
+            except AccountAlreadyExists as e:
+                signup_form.username.errors.append(e.message)
+            except Exception as e:
+                flash_db_error(debug, e, "Failed creating an account.")
+        
+        # If login form submitted
+        elif login_form.validate_on_submit():
+            try:
+                try_login_user(debug, login_form)
+                if next_page and is_safe_url(next_page):
+                    return redirect(next_page) # If user was trying to go somewhere earlier
+                return redirect(url_for('main.home'))
+            except SQLAlchemyError as e:
+                flash_db_error(debug, e, "Failed getting user information.")
+            except InvalidLogin as e:
+                login_form.login.errors.append(e.messsage)
 
     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup, next=next_page)
 
