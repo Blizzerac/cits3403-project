@@ -109,13 +109,15 @@ class BasicUnitTest(TestCase):
         with self.assertRaises(Exception) as cm:
             posts = try_search_quests(None, None, 'active')
 
+    #Unit Test: try signup valid user
     def test_try_signup_user(self):
+        #valid user data
+        signup_form_data = {
+            'username': 'test_user',
+            'email': 'test@email.com',
+            'password': 'Testpassword123'
+        }    
         try:
-            signup_form_data = {
-                'username': 'test_user',
-                'email': 'test@email.com',
-                'password': 'Testpassword123'
-            }
             try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
         except Exception as e:
             self.fail(f"Exception raised: {e}")
