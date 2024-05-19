@@ -9,7 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 from sqlalchemy import func, or_ , desc # Methods to use when querying database
 from urllib.parse import urlparse, urljoin # URL checking
-from app.controllers import flash_db_error, try_signup_user, try_login_user, try_post_quest, try_quest_view, try_quest_respond
+from app.controllers import flash_db_error, try_signup_user, try_login_user, try_post_quest, try_quest_view, try_quest_respond, try_search_quests, try_redeem_gold, try_claim_quest, try_finalise_quest, try_relinquish_claim, try_approve_submission, try_deny_submission, try_private_request, try_cancel_request
 from app.controllers import InvalidLogin, AccountAlreadyExists, InvalidAction, InvalidPermissions
 
 ###########
@@ -35,7 +35,7 @@ def home():
             .limit(display_limit) \
             .all()
     except SQLAlchemyError as e:
-        flash_db_error(debug, e, "Failed loading quests.")
+        flash_db_error(debug, str(e), "Failed loading quests.")
         return render_template("home.html", quests=None, moreQuests=False, unclaimedQuests=False)
 
 
@@ -81,11 +81,11 @@ def login():
                     return redirect(next_page) # If user was trying to go somewhere earlier
                 return redirect(url_for('main.home'))
             except SQLAlchemyError as e:
-                flash_db_error(debug, e, "Failed loading user information.")
+                flash_db_error(debug, str(e), "Failed loading user information.")
             except AccountAlreadyExists as e:
                 signup_form.username.errors.append(e)
             except Exception as e:
-                flash_db_error(debug, e, "Failed creating an account.")
+                flash_db_error(debug, str(e), "Failed creating an account.")
         
         # If login form submitted
         elif login_form.validate_on_submit():
@@ -95,7 +95,7 @@ def login():
                     return redirect(next_page) # If user was trying to go somewhere earlier
                 return redirect(url_for('main.home'))
             except SQLAlchemyError as e:
-                flash_db_error(debug, e, "Failed loading user information.")
+                flash_db_error(debug, str(e), "Failed loading user information.")
             except InvalidLogin as e:
                 login_form.login.errors.append(e)
 
@@ -124,9 +124,9 @@ def post_quest():
                 flash('ReQuest posted successfully!', 'success')
                 return redirect(url_for('main.home'))
             except InvalidAction as e:
-                flash(e, 'danger')
+                flash(str(e), 'danger')
             except Exception as e:
-                flash_db_error(debug, e, "Failed posting ReQuest.")
+                flash_db_error(debug, str(e), "Failed posting ReQuest.")
 
     gold = current_user.gold_available # Get user's available gold
     return render_template("posting.html", posting_form=posting_form, gold_available=gold)
@@ -139,7 +139,7 @@ def quest_view():
     try:
         post = try_quest_view(request)
     except Exception as e:
-        flash(e, 'danger')
+        flash(str(e), 'danger')
         return redirect(url_for('main.home'))
     
     creation_date = post.creationDate.strftime('%Y-%m-%d')
@@ -152,7 +152,7 @@ def quest_view():
             flash('Response added successfully!', 'success')
             return redirect(url_for('main.quest_view', postID=post.postID)) # Ensure form cant be resubmitted by redirecting user to same page (deletes current form)
         except Exception as e:
-            flash_db_error(debug, e, "Failed adding response.")
+            flash_db_error(debug, str(e), "Failed adding response.")
 
     return render_template('post-view.html', post=post, response_form=response_form, creation_date=creation_date, claim_date=claim_date)
 
@@ -163,22 +163,27 @@ def leaderboard():
     # Variable defines users per page on leaderboard
     page_size = 50
     # Get the current page number
-    page_number = int(request.args.get("page", 1))  
+    page_number = int(request.args.get("page", 1)) # Doesn't need error handling
    
     # start index of users for page
     start_index = (page_number - 1) * page_size
     
-    #Query the DB for the username and gold for each user ordered by the users gold count
-    leaderboard_users = Users.query.with_entities(Users.username, Users.gold).order_by(desc(Users.gold)).slice(start_index, (start_index + page_size)).all()
-    
+    try:
+        #Query the DB for the username and gold for each user ordered by the users gold count
+        leaderboard_users = Users.query.with_entities(Users.username, Users.gold).order_by(desc(Users.gold)).slice(start_index, (start_index + page_size)).all()
+        # Find number of users
+        total_users = Users.query.count()
+    except SQLAlchemyError as e:
+        flash_db_error(debug, str(e), "Failed loading users.")
+        return redirect(url_for('main.home'))
+
     #calculate end_index after gettign the leaderboard_users
-    end_index = min(start_index + page_size, Users.query.count())
+    end_index = min(start_index + page_size, total_users)
     
     prev_page = page_number - 1 if page_number > 1 else None
-    next_page = page_number + 1 if end_index < Users.query.count() else None
+    next_page = page_number + 1 if end_index < total_users else None
     
-    # calculate total users and total pages
-    total_users = Users.query.count()
+    # Calculate total pages
     total_pages = (total_users + page_size - 1) // page_size
     
     # set the current page number
@@ -201,13 +206,17 @@ def logs():
     page_number = int(request.args.get("page", 1))
     start_index = (page_number - 1) * page_size
 
-    if log_type == 'gold':
-        logs_query = GoldChanges.query.order_by(GoldChanges.changeDate.desc())
-    else:
-        logs_query = PostChanges.query.order_by(PostChanges.changeDate.desc())
+    try:
+        if log_type == 'gold':
+            logs_query = GoldChanges.query.order_by(GoldChanges.changeDate.desc())
+        else:
+            logs_query = PostChanges.query.order_by(PostChanges.changeDate.desc())
 
-    total_logs = logs_query.count()
-    logs = logs_query.offset(start_index).limit(page_size).all()
+        total_logs = logs_query.count()
+        logs = logs_query.offset(start_index).limit(page_size).all()
+    except SQLAlchemyError as e:
+        flash_db_error(debug, str(e), "Failed loading logs.")
+        return redirect(url_for('main.home'))
 
     end_index = start_index + len(logs)
     total_pages = (total_logs + page_size - 1) // page_size
@@ -221,35 +230,13 @@ def logs():
 @login_required
 def search():
     searching_form = forms.SearchForm()
-    quest_type = request.args.get('type')
+    quest_type = request.args.get('type') # No need to check if this fails (handled later)
 
-    # Determine the base query based on user and quest type
-    if quest_type == 'active':
-        base_query = Posts.query.filter_by(posterID=current_user.userID, completed=False)  # Active quests posted by the user
-    elif quest_type == 'claimed':
-        base_query = Posts.query.filter_by(claimerID=current_user.userID, claimed=True, completed=False)  # Claimed quests by the user, not yet completeds
-    elif quest_type == 'completed':
-        base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True)  # Completed quests by the user
-    elif quest_type == 'inactive':
-        base_query = Posts.query.filter(Posts.posterID == current_user.userID, Posts.completed==True, Posts.claimerID != current_user.userID) # Complex inequality query, completed quests by others posted by user
-    else:
-        base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False, Posts.private==False) # Complex inequality query, default
-
-    # Searching or showing all
-    if request.method == 'POST' and searching_form.validate_on_submit():
-        if 'show_all' in request.form:
-            posts = base_query.all()
-        else:
-            search_query = searching_form.post_search_name.data
-            posts = base_query.filter(
-                or_(
-                    Posts.title.contains(search_query),
-                    Posts.description.contains(search_query)
-                )
-            ).all()
-    # GET request for page
-    else:
-        posts = base_query.all()
+    try:
+        posts = try_search_quests(request, searching_form, quest_type)
+    except SQLAlchemyError as e:
+        flash_db_error(debug, str(e), "Failed to load ReQuests.")
+        return redirect(url_for('main.home'))
 
     username = current_user.username if quest_type else ""
     title = f"{quest_type.capitalize() if quest_type else 'All'} ReQuests of {username}" if username else "Available ReQuests"
@@ -262,210 +249,146 @@ def search():
 def gold_farm():
     if request.method == 'POST':
         try:
-            data = request.get_json()
-            coinsToAdd = data['coins']
-            current_user.add_gold(coinsToAdd)
-            db.session.commit()
-            flash('You earned ' + str(coinsToAdd) + 'G!', 'success')
-        
+            try_redeem_gold(request)
         except Exception as e:
-            db.session.rollback()
-            if debug:
-                flash('Error giving gold. {}'.format(e), 'danger')
-            else: 
-                flash('ERROR.', 'danger')
+            flash_db_error(debug, str(e), "Failed updating gold.")
 
     return render_template("gold-farm.html")
 
 
 
 # Handle Post Control Panel Buttons
-
+# Claim request
 @main.route('/claim_request/<int:post_id>', methods=['POST'])
 @login_required
 def claim_request(post_id):
-    post = Posts.query.get(post_id)
-        
-    # Check if a post is deleted -> Can't modify
-    if post.deleted:
-        flash('Cannot modify cancelled ReQuest.', 'danger')
-        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
-
-    if post and not post.claimed and current_user.userID != post.posterID:
-        try:
-            post.claim_post(current_user.userID)
-            db.session.commit()
-            flash('ReQuest claimed successfully!', 'success')
-            return jsonify({"message": "ReQuest claimed successfully!"}), 200
-        except Exception as e:
-            db.session.rollback()
-            flash_fail_ReQuestModify(e)
-            return jsonify({"message": f"Unable to claim ReQuest - Database error."}), 400
-        
-    flash('Unable to claim ReQuest. Is it already claimed?', 'danger')
-    return jsonify({"message": "Unable to claim ReQuest."}), 400
+    try:
+        try_claim_quest(post_id)
+        flash('ReQuest claimed successfully!', 'success')
+        return jsonify({"message": "ReQuest claimed successfully!"}), 200
+    except InvalidAction as e:
+        flash(str(e), 'danger')
+        return jsonify({"message": "Unable to claim ReQuest."}), 400
+    except SQLAlchemyError as e:
+        flash_db_error(debug, str(e), "Failed to claim ReQuest.")
+        return jsonify({"message": f"Unable to claim ReQuest - Database error."}), 400
+    except Exception as e:
+        flash_db_error(debug, str(e), "Failed to claim ReQuest.")
+        return jsonify({"message": f"Unable to claim ReQuest - Database error."}), 400
 
 
+# Finalise request
 @main.route('/finalise_request/<int:post_id>', methods=['POST'])
 @login_required
 def finalise_request(post_id):
-    post = Posts.query.get(post_id)
-        
-    # Check if a post is deleted -> Can't modify
-    if post.deleted:
-        flash('Cannot modify cancelled ReQuest.', 'danger')
-        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
-
-    if post and post.claimed and current_user.userID == post.claimerID and not post.waitingApproval:
-        try:
-            post.finalise_submission(current_user.userID)
-            db.session.commit()
-            flash('ReQuest submission sent successfully!', 'success')
-            return jsonify({"message": "ReQuest finalised successfully!"}), 200
-        except Exception as e:
-            db.session.rollback()
-            flash_fail_ReQuestModify(e)
-            return jsonify({"message": f"Unable to finalise ReQuest - Database error."}), 400
-    
-    flash('Unable to send ReQuest submission. Have you claimed it?', 'danger')
-    return jsonify({"message": "Unable to finalise ReQuest."}), 400
+    try:
+        try_finalise_quest(post_id)
+        flash('ReQuest submission sent successfully!', 'success')
+        return jsonify({"message": "ReQuest finalised successfully!"}), 200
+    except InvalidAction as e:
+        flash(str(e).message, 'danger')
+        return jsonify({"message": "Unable to finalise ReQuest."}), 400
+    except SQLAlchemyError as e:
+        flash_db_error(debug, str(e), "Failed to finalise ReQuest.")
+        return jsonify({"message": "Unable to finalise ReQuest - Database error."}), 400
+    except Exception as e:
+        flash_db_error(debug, str(e), "Failed to finalise ReQuest.")
+        return jsonify({"message": "Unable to finalise ReQuest - Database error."}), 400
 
 
+# Relinquish claim
 @main.route('/relinquish_claim/<int:post_id>', methods=['POST'])
 @login_required
 def relinquish_claim(post_id):
-    post = Posts.query.get(post_id)
-        
-    # Check if a post is deleted -> Can't modify
-    if post.deleted:
-        flash('Cannot modify cancelled ReQuest.', 'danger')
-        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
-
-    if post and post.claimed and current_user.userID == post.claimerID:
-        try:
-            post.unclaim_post(current_user.userID)
-            db.session.commit()
-            flash('Claim on ReQuest reliquished successfully!', 'success')
-            return jsonify({"message": "ReQuest claim relinquished successfully!"}), 200
-        except Exception as e:
-            db.session.rollback()
-            flash_fail_ReQuestModify(e)
-            return jsonify({"message": f"Unable to relinquish ReQuest claim - Database error."}), 400
-        
-    flash('Unable relinquish ReQuest claim. Have you claimed it?', 'danger')
-    return jsonify({"message": "Unable to relinquish ReQuest claim."}), 400
+    try:
+        try_relinquish_claim(post_id)
+        flash('Claim on ReQuest relinquished successfully!', 'success')
+        return jsonify({"message": "ReQuest claim relinquished successfully!"}), 200
+    except InvalidAction as e:
+        flash(str(e).message, 'danger')
+        return jsonify({"message": "Unable to relinquish ReQuest claim."}), 400
+    except SQLAlchemyError as e:
+        flash_db_error(debug, str(e), "Failed to relinquish ReQuest claim.")
+        return jsonify({"message": "Unable to relinquish ReQuest claim - Database error."}), 400
+    except Exception as e:
+        flash_db_error(debug, str(e), "Failed to relinquish ReQuest claim.")
+        return jsonify({"message": "Unable to relinquish ReQuest claim - Database error."}), 400
 
 
+# Approve submission
 @main.route('/approve_submission/<int:post_id>', methods=['POST'])
 @login_required
 def approve_submission(post_id):
-    post = Posts.query.get(post_id)
-
-    # Check if a post is deleted -> Can't modify
-    if post.deleted:
-        flash('Cannot modify cancelled ReQuest.', 'danger')
-        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
-
-    if post and post.waitingApproval and current_user.userID == post.posterID:
-        try:
-            post.approve_submission(current_user.userID)
-            gold = post.reward
-            post.poster.quest_payout(gold)
-            post.claimer.quest_completed(gold)
-            db.session.commit()
-            flash('ReQuest submission approved successfully!', 'success')
-            return jsonify({"message": "ReQuest submission approved successfully!"}), 200
-        except Exception as e:
-            db.session.rollback()
-            flash_fail_ReQuestModify(e)
-            return jsonify({"message": f"Unable to approve ReQuest submission - Database error."}), 400
-        
-    flash('Unable approve ReQuest submission claim. Has it been submitted for approval?', 'danger')
-    return jsonify({"message": "Unable to approve ReQuest submission."}), 400
+    try:
+        try_approve_submission(post_id)
+        flash('ReQuest submission approved successfully!', 'success')
+        return jsonify({"message": "ReQuest submission approved successfully!"}), 200
+    except InvalidAction as e:
+        flash(str(e).message, 'danger')
+        return jsonify({"message": "Unable to approve ReQuest submission."}), 400
+    except SQLAlchemyError as e:
+        flash_db_error(debug, str(e), "Failed to approve ReQuest submission.")
+        return jsonify({"message": "Unable to approve ReQuest submission - Database error."}), 400
+    except Exception as e:
+        flash_db_error(debug, str(e), "Failed to approve ReQuest submission.")
+        return jsonify({"message": "Unable to approve ReQuest submission - Database error."}), 400
 
 
+# Deny submission
 @main.route('/deny_submission/<int:post_id>', methods=['POST'])
 @login_required
 def deny_submission(post_id):
-    post = Posts.query.get(post_id)
-        
-    # Check if a post is deleted -> Can't modify
-    if post.deleted:
-        flash('Cannot modify cancelled ReQuest.', 'danger')
-        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
-
-    if post and post.waitingApproval and current_user.userID == post.posterID:
-        try:
-            post.deny_submission(current_user.userID)
-            db.session.commit()
-            flash('ReQuest submission denied successfully!', 'success')
-            return jsonify({"message": "ReQuest submission denied."}), 200
-        except Exception as e:
-            db.session.rollback()
-            flash_fail_ReQuestModify(e)
-            return jsonify({"message": f"Unable to deny ReQuest submission - Database error."}), 400
-        
-    flash('Unable deny ReQuest submission claim. Has it been submitted for approval?', 'danger')
-    return jsonify({"message": "Unable to deny submission."}), 400
+    try:
+        try_deny_submission(post_id)
+        flash('ReQuest submission denied successfully!', 'success')
+        return jsonify({"message": "ReQuest submission denied."}), 200
+    except InvalidAction as e:
+        flash(str(e).message, 'danger')
+        return jsonify({"message": "Unable to deny ReQuest submission."}), 400
+    except SQLAlchemyError as e:
+        flash_db_error(debug, str(e), "Failed to deny ReQuest submission.")
+        return jsonify({"message": "Unable to deny ReQuest submission - Database error."}), 400
+    except Exception as e:
+        flash_db_error(debug, str(e), "Failed to deny ReQuest submission.")
+        return jsonify({"message": "Unable to deny ReQuest submission - Database error."}), 400
 
 
+# Change request privacy
 @main.route('/private_request/<int:post_id>', methods=['POST'])
 @login_required
 def private_request(post_id):
-    post = Posts.query.get(post_id)
-        
-    # Check if a post is deleted -> Can't modify
-    if post.deleted:
-        flash('Cannot modify cancelled ReQuest.', 'danger')
-        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
-
-    if post and post.claimed and current_user.userID == post.posterID:
-        try:
-            post.private_post(current_user.userID)
-            db.session.commit()
-            flash('ReQuest privacy changed successfully!', 'success')
-            return jsonify({"message": "ReQuest privacy changed successfully."}), 200
-        except Exception as e:
-            db.session.rollback()
-            flash_fail_ReQuestModify(e)
-            return jsonify({"message": f"Unable to change ReQuest privacy - Database error."}), 400
-        
-    flash('Unable to change ReQuest privacy. Is it claimed?', 'danger')
-    return jsonify({"message": "Unable to change ReQuest privacy."}), 400
+    try:
+        try_private_request(post_id)
+        flash('ReQuest privacy changed successfully!', 'success')
+        return jsonify({"message": "ReQuest privacy changed successfully."}), 200
+    except InvalidAction as e:
+        flash(str(e).message, 'danger')
+        return jsonify({"message": "Unable to change ReQuest privacy."}), 400
+    except SQLAlchemyError as e:
+        flash_db_error(debug, str(e), "Failed to change ReQuest privacy.")
+        return jsonify({"message": "Unable to change ReQuest privacy - Database error."}), 400
+    except Exception as e:
+        flash_db_error(debug, str(e), "Failed to change ReQuest privacy.")
+        return jsonify({"message": "Unable to change ReQuest privacy - Database error."}), 400
 
 
+# Cancel request
 @main.route('/cancel_request/<int:post_id>', methods=['POST'])
 @login_required
 def cancel_request(post_id):
-    post = Posts.query.get(post_id)
-        
-    # Check if a post is deleted -> Can't modify
-    if post.deleted:
-        flash('Cannot modify cancelled ReQuest.', 'danger')
-        return jsonify({"message": "Cannot modify cancelled ReQuest"}), 403
-
-    if post and not post.completed and (current_user.userID == post.posterID or current_user.isAdmin):
-        try:
-            post.cancel_post(current_user.userID)
-            gold = post.reward
-            post.poster.quest_refund(gold)
-            db.session.commit()
-            flash('ReQuest cancelled successfully!', 'success')
-            return jsonify({"message": "ReQuest cancelled successfully."}), 200
-        except Exception as e:
-            db.session.rollback()
-            flash_fail_ReQuestModify(e)
-            return jsonify({"message": f"Unable to cancel ReQuest - Database error."}), 400
-        
-    flash('Unable cancel ReQuest. Do you own it?', 'danger')
-    return jsonify({"message": "Unable to cancel ReQuest."}), 400
-
-
-def flash_fail_ReQuestModify(error):
-    if debug:
-        flash('Error adjusting ReQuest in database. {}'.format(error), 'danger')
-    else: 
-        flash('Failed adjusting ReQuest. Please try again later or contact staff.', 'danger')
+    try:
+        try_cancel_request(post_id)
+        flash('ReQuest cancelled successfully!', 'success')
+        return jsonify({"message": "ReQuest cancelled successfully."}), 200
+    except InvalidAction as e:
+        flash(str(e).message, 'danger')
+        return jsonify({"message": "Unable to cancel ReQuest."}), 400
+    except SQLAlchemyError as e:
+        flash_db_error(debug, str(e), "Failed to cancel ReQuest.")
+        return jsonify({"message": "Unable to cancel ReQuest - Database error."}), 400
+    except Exception as e:
+        flash_db_error(debug, str(e), "Failed to cancel ReQuest.")
+        return jsonify({"message": "Unable to cancel ReQuest - Database error."}), 400
 
 
 def is_safe_url(target):
