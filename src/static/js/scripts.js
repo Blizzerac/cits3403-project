@@ -13,7 +13,7 @@ $(document).ready(function() {
   handle_dropdownMenu();
 
   // Handle quest search form
-  check_searchInput();
+  handleSearchInput();
 
   // Handle quest modification buttons
   handle_questView();
@@ -109,7 +109,7 @@ function handleSearchInput() {
 }
 
 // Function to check if the search input has enough characters
-function check_searchInput() {
+function checkSearchInput() {
   let searchInput = $('#search-input').val();
 
   // Minimum length of 1 for enabling the search
