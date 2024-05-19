@@ -179,7 +179,7 @@ class BasicUnitTest(TestCase):
         except Exception as e:
             self.fail(f"Exception raised: {e}")
 
-    def test_try_login_user(self): 
+    def test_try_login_user_valid(self): 
         # Create a user
         user = Users(username='test_user', email='test@email.com')
         user.set_password('Testpassword123')
@@ -195,6 +195,14 @@ class BasicUnitTest(TestCase):
             try_login_user(login_form_data['login'],login_form_data['password'])
         except AssertionError:
             self.fail("try_login_user raised an unexpected exception")
+
+            
+    def test_try_login_user_invalid(self): 
+        # Create a user
+        user = Users(username='test_user', email='test@email.com')
+        user.set_password('Testpassword123')
+        db.session.add(user)
+        db.session.commit()
 
         # Try to login with incorrect password
         login_form_data = {
