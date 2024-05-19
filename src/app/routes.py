@@ -406,7 +406,7 @@ def is_safe_url(target):
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 # Routes to add or remove admin from an account, requires an already logged in user account
-@flaskApp.route("/admin4meplz", methods=["GET"])
+@main.route("/admin4meplz", methods=["GET"])
 @login_required
 def give_admin():
     if current_user.isAdmin:
@@ -422,9 +422,9 @@ def give_admin():
                 flash('Error adding admin to database. {}'.format(e), 'danger')
             else: 
                 flash('Failed adding admin. Please try again later or contact staff.', 'danger')
-    return redirect(url_for('home'))
+    return redirect(url_for('main.home'))
 
-@flaskApp.route("/noadmin4meplz", methods=["GET"])
+@main.route("/noadmin4meplz", methods=["GET"])
 @login_required
 def remove_admin():
     if current_user.isAdmin:
@@ -440,4 +440,4 @@ def remove_admin():
                 flash('Failed removing admin. Please try again later or contact staff.', 'danger')
     else:
         flash('User is not an admin!', 'danger')
-    return redirect(url_for('home'))
+    return redirect(url_for('main.home'))
