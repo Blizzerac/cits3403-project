@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from app import create_app, db
+from app.models import Users, Posts, Responses, GoldChanges, PostChanges
 from app.config import TestConfig
 
 #Unit tests - HAVE NOT MADE CONTROLLERS.py yet
@@ -20,12 +21,12 @@ class BasicUnitTest(TestCase):
     #basic unit test to check user creation
     def test_user_creation(self):
         # Create a test user
-        user = User(username='test_user', email='test@email.com')
+        user = Users(username='test_user', email='test@email.com')
         db.session.add(user)
         db.session.commit()
 
         # Retrieve the user from the database
-        retrieved_user = User.query.filter_by(username='test_user').first()
+        retrieved_user = Users.query.filter_by(username='test_user').first()
 
         # Assert that the user was successfully created and retrieved
         self.assertIsNotNone(retrieved_user)
@@ -110,10 +111,7 @@ class BasicUnitTest(TestCase):
     #unit test for creating a test post
     def test_post_creation(self):
         #login as test user 
-        self.clientpost('/login',data=(
-            login='test_user',
-            password='Testpass123'
-        ), follow_redirects=True)
+        self.clientpost('/login',data=(login='test_user',password='Testpass123'), follow_redirects=True)
         
         #create test post
         response = self.client.post('/create_post', data=dict(
@@ -128,8 +126,8 @@ class BasicUnitTest(TestCase):
       
     #unit test to test the search function
     def test_search(self):
-        post1 = Post(name='Test Post 1', description='Description for Test Post 1', reward=50)
-        post2 = Post(name='Test Post 2', description='Description for Test Post 2', reward=100)
+        post1 = Posts(name='Test Post 1', description='Description for Test Post 1', reward=50)
+        post2 = Posts(name='Test Post 2', description='Description for Test Post 2', reward=100)
         db.session.add_all([post1, post2])
         db.session.commit()
         
