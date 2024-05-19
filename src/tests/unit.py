@@ -169,15 +169,17 @@ class BasicUnitTest(TestCase):
             posts = try_search_quests(None, None, 'active')
 
     def test_try_signup_user(self):
-        with self.assertNoRaises():
+        try:
             signup_form_data = {
                 'username': 'test_user',
                 'email': 'test@email.com',
                 'password': 'Testpassword123'
             }
             try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
+        except Exception as e:
+            self.fail(f"Exception raised: {e}")
 
-    def test_try_login_user(self):
+    def test_try_login_user(self): 
         # Create a user
         user = Users(username='test_user', email='test@email.com')
         user.set_password('Testpassword123')
@@ -190,7 +192,7 @@ class BasicUnitTest(TestCase):
             'password': 'Testpassword123'
         }
         try:
-            try_login_user(login_form_data['log in'],login_form_data['password'])
+            try_login_user(login_form_data['login'],login_form_data['password'])
         except AssertionError:
             self.fail("try_login_user raised an unexpected exception")
 
