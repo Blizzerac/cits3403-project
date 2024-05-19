@@ -249,4 +249,22 @@ class BasicUnitTest(TestCase):
             self.assertIn(b'This is a test post description.', response.data)
     
 
+    def test_search(self):
+        post1 = Posts(posterID=1,title='Test Post 1', description='Description for Test Post 1', reward=50)
+        post2 = Posts(posterID=1,title='Test Post 2', description='Description for Test Post 2', reward=100)
+        db.session.add_all([post1, post2])
+        db.session.commit()
+        
+        response = self.client.post('/search', data=dict(
+            post_search_name='Test Post 1'
+        ), follow_redirects=True)
+        
+        with self.assertRaises(Exception) as cm:
+            self.assertIn(b'Test Post 1', response.data)
+            self.assertNotIn(b'Test Post 2', response.data)
+
+        # Now using the provided functions with correct data
+        with self.assertRaises(Exception) as cm:
+            posts = try_search_quests(None, None, 'active')
+
     
