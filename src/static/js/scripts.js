@@ -142,6 +142,7 @@ function cashIn() {
     console.log(data);
     coins = 0;
     document.getElementById("gold").innerHTML = coins;
+    location.reload(true);
   })
   .catch((error) => {
     console.error('Error:', error);
