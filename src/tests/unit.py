@@ -194,4 +194,45 @@ class BasicUnitTest(TestCase):
         with self.assertRaises(Exception) as cm:
             self.assertIn(b'Incorrect account details.', response.data)
   
+    def test_signup_form_validation(self):
+        response = self.client.post('/signup', data=dict(
+            username='user name with space',
+            email='test@email.com',
+            password='Testpassword123'
+        ), follow_redirects=True)
+        with self.assertRaises(Exception) as cm:
+            self.assertIn(b'The username must not contain spaces.', response.data)
+          
+        response = self.client.post('/signup', data=dict(
+            username='validusername',
+            email='invalidemail',
+            password='Testpassword123'
+        ), follow_redirects=True)
+        with self.assertRaises(Exception) as cm:
+            self.assertIn(b'Invalid email address.', response.data)
+        
+        response = self.client.post('/signup', data=dict(
+            username='validusername',
+            email='test@email.com',
+            password='testpassword123'
+        ), follow_redirects=True)
+        with self.assertRaises(Exception) as cm:
+            self.assertIn(b'Password must include at least one uppercase letter.', response.data)
+        
+        response = self.client.post('/signup', data=dict(
+            username='validusername',
+            email='test@email.com',
+            password='testpassword123%&$#'
+        ), follow_redirects=True)
+        with self.assertRaises(Exception) as cm:
+            self.assertIn(b'Password can only include letters, numbers, and the following special characters: !, ?, +, -, _.', response.data)
+        
+        response = self.client.post('/signup', data=dict(
+            username='validusername',
+            email='test@email.com',
+            password='Testpassword'
+        ), follow_redirects=True)
+        with self.assertRaises(Exception) as cm:
+            self.assertIn(b'Password must include at least one number.', response.data)
+    
     
