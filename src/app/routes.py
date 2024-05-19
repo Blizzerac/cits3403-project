@@ -163,22 +163,27 @@ def leaderboard():
     # Variable defines users per page on leaderboard
     page_size = 50
     # Get the current page number
-    page_number = int(request.args.get("page", 1))  
+    page_number = int(request.args.get("page", 1)) # Doesn't need error handling
    
     # start index of users for page
     start_index = (page_number - 1) * page_size
     
-    #Query the DB for the username and gold for each user ordered by the users gold count
-    leaderboard_users = Users.query.with_entities(Users.username, Users.gold).order_by(desc(Users.gold)).slice(start_index, (start_index + page_size)).all()
-    
+    try:
+        #Query the DB for the username and gold for each user ordered by the users gold count
+        leaderboard_users = Users.query.with_entities(Users.username, Users.gold).order_by(desc(Users.gold)).slice(start_index, (start_index + page_size)).all()
+        # Find number of users
+        total_users = Users.query.count()
+    except SQLAlchemyError as e:
+        flash_db_error(debug, e, "Failed loading users.")
+        return redirect(url_for('main.home'))
+
     #calculate end_index after gettign the leaderboard_users
-    end_index = min(start_index + page_size, Users.query.count())
+    end_index = min(start_index + page_size, total_users)
     
     prev_page = page_number - 1 if page_number > 1 else None
-    next_page = page_number + 1 if end_index < Users.query.count() else None
+    next_page = page_number + 1 if end_index < total_users else None
     
-    # calculate total users and total pages
-    total_users = Users.query.count()
+    # Calculate total pages
     total_pages = (total_users + page_size - 1) // page_size
     
     # set the current page number
@@ -201,13 +206,17 @@ def logs():
     page_number = int(request.args.get("page", 1))
     start_index = (page_number - 1) * page_size
 
-    if log_type == 'gold':
-        logs_query = GoldChanges.query.order_by(GoldChanges.changeDate.desc())
-    else:
-        logs_query = PostChanges.query.order_by(PostChanges.changeDate.desc())
+    try:
+        if log_type == 'gold':
+            logs_query = GoldChanges.query.order_by(GoldChanges.changeDate.desc())
+        else:
+            logs_query = PostChanges.query.order_by(PostChanges.changeDate.desc())
 
-    total_logs = logs_query.count()
-    logs = logs_query.offset(start_index).limit(page_size).all()
+        total_logs = logs_query.count()
+        logs = logs_query.offset(start_index).limit(page_size).all()
+    except SQLAlchemyError as e:
+        flash_db_error(debug, e, "Failed loading logs.")
+        return redirect(url_for('main.home'))
 
     end_index = start_index + len(logs)
     total_pages = (total_logs + page_size - 1) // page_size
