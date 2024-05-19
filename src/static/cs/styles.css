@@ -72,7 +72,7 @@ a.link-mute {
     background-color: #421C00;
     border-image-slice: 12 0 8 0;
     border-image-width: 12px 0px 8px 0px;
-    border-image-outset: 0px 0px -8px 0px;
+    border-image-outset: 0px 0px 0px 0px;
     border-image-repeat: stretch stretch;
     border-image-source: url("../img/navbar-scaled.png");
     border-style: solid;

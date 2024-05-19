@@ -10,16 +10,16 @@ $(document).ready(function() {
   $('.toast').toast('show');
 
   // Initialise Bootstrap dropdowns and other events
-  handle_dropdownMenu();
+  handleDropdownMenu();
 
   // Handle quest search form
-  check_searchInput();
+  handleSearchInput();
 
   // Handle quest modification buttons
-  handle_questView();
+  handleQuestView();
 
   // Handle quest post form checking
-  handle_questPost();
+  handleQuestPost();
 
   // Handle gold farming
   $('#coin-stack').click(addGold);
@@ -44,7 +44,7 @@ function swapLoginForm() {
 
 
 // Handle dropdown menu
-function handle_dropdownMenu() {
+function handleDropdownMenu() {
   // Toggle dropdown visibility when clicking button
   $('.dropdown-toggle').click(function(event) {
     event.stopPropagation(); // Prevent click event from bubbling up (and triggering event to close menu)
@@ -67,19 +67,19 @@ function handle_dropdownMenu() {
 
 
 // Handle quest post form
-function handle_questPost() {
+function handleQuestPost() {
   // Disable initially
   $('#submit-post').prop('disabled', true);
 
   // If refreshing page and keeping inputs, checks inputs
-  questPost_checkFields();
+  questPostCheckFields();
 
   // Call checkFields() when  input fields change
-  $('#first-post-input, #second-post-input, #third-post-input').on('input', questPost_checkFields);
+  $('#first-post-input, #second-post-input, #third-post-input').on('input', questPostCheckFields);
 }
 
 // Function to check if inputs for posting are filled
-function questPost_checkFields() {
+function questPostCheckFields() {
   let field1 = $('#first-post-input').val();
   let field2 = $('#second-post-input').val();
   let field3 = $('#third-post-input').val();
@@ -109,7 +109,7 @@ function handleSearchInput() {
 }
 
 // Function to check if the search input has enough characters
-function check_searchInput() {
+function checkSearchInput() {
   let searchInput = $('#search-input').val();
 
   // Minimum length of 1 for enabling the search
@@ -142,6 +142,7 @@ function cashIn() {
     console.log(data);
     coins = 0;
     document.getElementById("gold").innerHTML = coins;
+    location.reload(true);
   })
   .catch((error) => {
     console.error('Error:', error);
@@ -164,7 +165,7 @@ function ajaxPost(url, data) {
   });
 }
 
-function handle_questView() {
+function handleQuestView() {
   // Get the URL from the button before sending ajax
   $('#claim-request').click(function() {
     ajaxPost($(this).data('url'), {});
