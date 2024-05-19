@@ -9,13 +9,24 @@ from sqlalchemy.exc import SQLAlchemyError
 
 # Errors to raise
 class DatabaseError(Exception):
-    pass
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 class InvalidLogin(Exception):
-    pass
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 class AccountAlreadyExists(Exception):
-    pass
+    def __init__(self, message):
+        super().__init__(self.message)
+        self.message = message
+
+class InvalidAction(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 def flash_db_error(debug, error, msg):
     if debug:
@@ -67,3 +78,20 @@ def try_login_user(debug, login_form):
         flash('Logged in successfully!', 'success')
     else:
         raise InvalidLogin("Incorrect account details.")
+
+def try_post_quest(posting_form):
+    # Check if a user has enough gold & user's available gold
+    if not current_user.quest_create(posting_form.post_reward.data):
+        raise InvalidAction("Not enough gold to uphold the reward!")
+    
+    else:
+        try:
+            new_post = Posts(posterID=current_user.userID, title=posting_form.post_name.data, description=posting_form.post_description.data, reward=posting_form.post_reward.data)
+            db.session.add(new_post)
+            db.session.flush() # Push new post to database to assign its postID (used for logging)
+            new_post.create_post_log(current_user.userID)
+            db.session.commit()
+    
+        except Exception as e:
+            db.session.rollback()
+            raise e

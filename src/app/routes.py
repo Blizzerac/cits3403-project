@@ -9,7 +9,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 from sqlalchemy import func, or_ , desc # Methods to use when querying database
 from urllib.parse import urlparse, urljoin # URL checking
-from app.controllers import flash_db_error, try_signup_user, try_login_user, InvalidLogin, AccountAlreadyExists
+from app.controllers import flash_db_error, try_signup_user, try_login_user, try_post_quest
+from app.controllers import InvalidLogin, AccountAlreadyExists, InvalidAction
 
 ###########
 # Routes  #
@@ -75,28 +76,28 @@ def login():
         # If signup form submitted
         if signup_form.validate_on_submit():
             try:
-                try_signup_user(debug, signup_form)
+                try_signup_user(signup_form)
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page) # If user was trying to go somewhere earlier
                 return redirect(url_for('main.home'))
             except SQLAlchemyError as e:
                 flash_db_error(debug, e, "Failed loading user information.")
             except AccountAlreadyExists as e:
-                signup_form.username.errors.append(e.message)
+                signup_form.username.errors.append(e)
             except Exception as e:
                 flash_db_error(debug, e, "Failed creating an account.")
         
         # If login form submitted
         elif login_form.validate_on_submit():
             try:
-                try_login_user(debug, login_form)
+                try_login_user(login_form)
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page) # If user was trying to go somewhere earlier
                 return redirect(url_for('main.home'))
             except SQLAlchemyError as e:
                 flash_db_error(debug, e, "Failed loading user information.")
             except InvalidLogin as e:
-                login_form.login.errors.append(e.messsage)
+                login_form.login.errors.append(e)
 
     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup, next=next_page)
 
@@ -118,26 +119,14 @@ def post_quest():
     
     if request.method == 'POST':
         if posting_form.validate_on_submit():
-            # Check if a user has enough gold & user's available gold
-            if not current_user.quest_create(posting_form.post_reward.data):
-                flash('Not enough gold to uphold the reward!', 'danger')
-            
-            else:
-                try:
-                    new_post = Posts(posterID=current_user.userID, title=posting_form.post_name.data, description=posting_form.post_description.data, reward=posting_form.post_reward.data)
-                    db.session.add(new_post)
-                    db.session.flush() # Push new post to database to assign its postID (used for logging)
-                    new_post.create_post_log(current_user.userID)
-                    db.session.commit()
-                    flash('ReQuest posted successfully!', 'success')
-                    return redirect(url_for('main.home'))
-            
-                except Exception as e:
-                    db.session.rollback()
-                    if debug:
-                        flash('Error adding ReQuest to database. {}'.format(e), 'danger')
-                    else: 
-                        flash('Failed posting ReQuest. Please try again later or contact staff.', 'danger')
+            try:
+                try_post_quest(posting_form)
+                flash('ReQuest posted successfully!', 'success')
+                return redirect(url_for('main.home'))
+            except InvalidAction as e:
+                flash(e, 'danger')
+            except Exception as e:
+                flash_db_error(debug, e, "Failed posting ReQuest.")
 
     gold = current_user.gold_available # Get user's available gold
     return render_template("posting.html", posting_form=posting_form, gold_available=gold)
