@@ -26,13 +26,12 @@ class BasicUnitTest(TestCase):
         self.app_context = testApp.app_context()
         self.app_context.push()
         db.create_all()
-        # add_test_data_to_db()
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
-
+ 
     def test_user_creation(self):
         user_data = {
         'username': 'test_user',
@@ -79,46 +78,64 @@ class BasicUnitTest(TestCase):
             self.assertIn(b'Incorrect account details.', response.data)
   
     def test_signup_form_validation(self):
-        response = self.client.post('/signup', data=dict(
-            username='user name with space',
-            email='test@email.com',
-            password='Testpassword123'
-        ), follow_redirects=True)
+        # Test case: username with space
+        # Test case: username with space
+        signup_form_data = {
+            'username': 'user name with space',
+            'email': 'test@email.com',
+            'password': 'Testpassword123'
+        }
         with self.assertRaises(Exception):
-            self.assertIn(b'The username must not contain spaces.', response.data)
-          
-        response = self.client.post('/signup', data=dict(
-            username='validusername',
-            email='invalidemail',
-            password='Testpassword123'
-        ), follow_redirects=True)
+            try_signup_user(forms.SignupForm(data=signup_form_data))
+
+        # Test case: invalid email
+        signup_form_data = {
+            'username': 'validusername',
+            'email': 'invalidemail',
+            'password': 'Testpassword123'
+        }
         with self.assertRaises(Exception):
-            self.assertIn(b'Invalid email address.', response.data)
-        
-        response = self.client.post('/signup', data=dict(
-            username='validusername',
-            email='test@email.com',
-            password='testpassword123'
-        ), follow_redirects=True)
+            try_signup_user(forms.SignupForm(data=signup_form_data))
+
+        # Test case: password without uppercase letter
+        signup_form_data = {
+            'username': 'validusername',
+            'email': 'test@email.com',
+            'password': 'testpassword123'
+        }
         with self.assertRaises(Exception):
-            self.assertIn(b'Password must include at least one uppercase letter.', response.data)
-        
-        response = self.client.post('/signup', data=dict(
-            username='validusername',
-            email='test@email.com',
-            password='testpassword123%&$#'
-        ), follow_redirects=True)
+            try_signup_user(forms.SignupForm(data=signup_form_data))
+
+        # Test case: password with invalid special characters
+        signup_form_data = {
+            'username': 'validusername',
+            'email': 'test@email.com',
+            'password': 'testpassword123%&$#'
+        }
         with self.assertRaises(Exception):
-            self.assertIn(b'Password can only include letters, numbers, and the following special characters: !, ?, +, -, _.', response.data)
-        
-        response = self.client.post('/signup', data=dict(
-            username='validusername',
-            email='test@email.com',
-            password='Testpassword'
-        ), follow_redirects=True)
+            try_signup_user(forms.SignupForm(data=signup_form_data))
+
+        # Test case: password without number
+        signup_form_data = {
+            'username': 'validusername',
+            'email': 'test@email.com',
+            'password': 'Testpassword'
+        }
         with self.assertRaises(Exception):
-            self.assertIn(b'Password must include at least one number.', response.data)
-    
+            try_signup_user(forms.SignupForm(data=signup_form_data))
+
+        # Test case: valid data, no exception expected
+        signup_form_data = {
+            'username': 'validusername',
+            'email': 'test@email.com',
+            'password': 'Testpassword123'
+        }
+        try:
+            try_signup_user(forms.SignupForm(data=signup_form_data))
+        except Exception as e:
+            self.fail(f"Exception raised: {e}")
+                
+            
     def test_post_creation(self):
         self.client.post('/login',data=dict(username='test_user',password='Testpass123'), follow_redirects=True)
         
@@ -126,7 +143,7 @@ class BasicUnitTest(TestCase):
             post_name='Test Post',
             post_description='This is a test post description.',
             post_reward=0
-        ), follow_redirects=True)
+        ), follow_redirects=True)   
         
         with self.assertRaises(Exception):
             self.assertIn(b'Test Post', response.data)
@@ -172,8 +189,10 @@ class BasicUnitTest(TestCase):
             'login': 'test_user',
             'password': 'Testpassword123'
         }
-        with self.assertRaises(Exception):
-            try_login_user(login_form_data)
+        try:
+            try_login_user(login_form_data['log in'],login_form_data['password'])
+        except AssertionError:
+            self.fail("try_login_user raised an unexpected exception")
 
         # Try to login with incorrect password
         login_form_data = {
@@ -181,4 +200,4 @@ class BasicUnitTest(TestCase):
             'password': 'wrongpassword'
         }
         with self.assertRaises(Exception):
-            try_login_user(login_form_data)
+            try_login_user(login_form_data['login'],login_form_data['password'])
