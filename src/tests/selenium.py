@@ -34,5 +34,14 @@ class SeleniumTestCase(TestCase):
         self.driver.close()
 
     def test_user_signup(self):
-        time.sleep(1)
-        self.assertTrue(True)
+        signup_element = self.driver.find_element(By.ID, "signup-username")
+        signup_element.send_keys("testUser")
+        signup_element = self.driver.find_element(By.ID, "signup-email")
+        signup_element.send_keys("test@example.com")
+        signup_element = self.driver.find_element(By.ID, "signup-password")
+        signup_element.send_keys("Password25")
+        submit_element = self.driver.find_element(By.ID, "login-submit-button")
+        submit_element.click()
+        messages = self.driver.find_element(By.CLASS_NAME, "toast-body")
+        self.assertEqual(len(messages), 1, "Expected success message on correct signup.")
+        self.assertEqual(messages[0].text, "Logged in successfully!")

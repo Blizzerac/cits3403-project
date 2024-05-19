@@ -14,11 +14,11 @@
       {% endif %}
       <div>
         {{ login_form.login.label }}
-        {{ login_form.login() }}
+        {{ login_form.login(id='login-username-or-email') }}
       </div>
       <div>
         {{ login_form.password.label }}
-        {{ login_form.password()  }}
+        {{ login_form.password(id='login-password')  }}
       </div>
       <div>
         {{ login_form.remember_me() }} {{ login_form.remember_me.label }}
@@ -47,7 +47,7 @@
       {% endif %}
       <div>
         {{ signup_form.username.label }}
-        {{ signup_form.username() }}
+        {{ signup_form.username(id='signup-username') }}
         {% if is_signup %}
         {% for error in signup_form.username.errors %}
           <div class="form-error alert alert-danger">{{ error }}</div>
@@ -56,7 +56,7 @@
       </div>
       <div>
         {{ signup_form.email.label }}
-        {{ signup_form.email() }}
+        {{ signup_form.email(id='signup-email') }}
         {% if is_signup %}
         {% for error in signup_form.email.errors %}
           <div class="form-error alert alert-danger">{{ error }}</div>
@@ -65,7 +65,7 @@
       </div>
       <div>
         {{ signup_form.password.label }}
-        {{ signup_form.password() }}
+        {{ signup_form.password(id='signup-password') }}
         {% if is_signup %}
         {% for error in signup_form.password.errors %}
           <div class="form-error alert alert-danger">{{ error }}</div>
