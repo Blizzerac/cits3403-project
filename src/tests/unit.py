@@ -267,4 +267,13 @@ class BasicUnitTest(TestCase):
         with self.assertRaises(Exception) as cm:
             posts = try_search_quests(None, None, 'active')
 
+    def test_try_signup_user(self):
+        with self.assertRaises(Exception) as cm:
+            signup_form_data = {
+                'username': 'test_user',
+                'email': 'test@email.com',
+                'password': 'Testpassword123'
+            }
+            try_signup_user(signup_form_data)
+
     
