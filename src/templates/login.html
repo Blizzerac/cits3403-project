@@ -3,24 +3,24 @@
 {% block content %}
 
 <div class="col-md-6 rounded form-container {{ 'hidden' if is_signup }}" id="login-form-container">
-  <fieldset>
-    <legend class="text-center" id="legend">
+  <fieldset class="d-flex flex-column align-items-center justify-content-center col-md-6 offset-md-3">
+    <legend class="text-center">
       <h1><span class="toggle-login">Sign-up</span> | <span class="other-toggle active">Login</span></h1>
     </legend>
-    <form method='POST' id='login-form' action='/login'>
+    <form method='POST' id='login-form' action='/login' class="w-100 text-center">
       {{ login_form.hidden_tag() }}
       {% if next %}
       <input type="hidden" name="next" value="{{ next }}">
       {% endif %}
-      <div>
+      <div class="mb-3">
         {{ login_form.login.label }}
         {{ login_form.login() }}
       </div>
-      <div>
+      <div class="mb-3">
         {{ login_form.password.label }}
-        {{ login_form.password()  }}
+        {{ login_form.password() }}
       </div>
-      <div>
+      <div class="mb-3 d-flex justify-content-center">
         {{ login_form.remember_me() }} {{ login_form.remember_me.label }}
       </div>
       <div class="d-flex justify-content-center">
@@ -36,16 +36,16 @@
 </div>
 
 <div class="col-md-5 rounded form-container {{ 'hidden' if not is_signup }}" id="signup-form-container">
-  <fieldset>
-    <legend class="text-center" id="legend">
+  <fieldset class="d-flex flex-column align-items-center justify-content-center col-md-6 offset-md-3">
+    <legend class="text-center">
       <h1><span class="other-toggle active">Sign-up</span> | <span class="toggle-login">Login</span></h1>
     </legend>
-    <form method='POST' id='signup-form' action='/signup'>
+    <form method='POST' id='signup-form' action='/signup' class="w-100 text-center">
       {{ signup_form.hidden_tag() }}
       {% if next %}
       <input type="hidden" name="next" value="{{ next }}">
       {% endif %}
-      <div>
+      <div class="mb-3 text-center">
         {{ signup_form.username.label }}
         {{ signup_form.username() }}
         {% if is_signup %}
@@ -54,7 +54,7 @@
         {% endfor %}
         {% endif %}
       </div>
-      <div>
+      <div class="mb-3 text-center">
         {{ signup_form.email.label }}
         {{ signup_form.email() }}
         {% if is_signup %}
@@ -63,7 +63,7 @@
         {% endfor %}
         {% endif %}
       </div>
-      <div>
+      <div class="mb-3 text-center">
         {{ signup_form.password.label }}
         {{ signup_form.password() }}
         {% if is_signup %}

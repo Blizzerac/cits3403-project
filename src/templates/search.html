@@ -7,7 +7,7 @@
     <div class="col-sm-6 border p-4 rounded" id="search-form">
       <fieldset>
         <h2 class="text-center">Search</h2>
-        <form method="post" action="">
+        <form method="POST" action="#">
           {{ searching_form.hidden_tag() }}
           <div class="form-group">
               {{ searching_form.post_search_name.label }}
@@ -29,7 +29,7 @@
         {% for post in posts %}
           {% if not post.private or (current_user.userID == post.posterID or current_user.userID == post.claimerID) or current_user.isAdmin %}
           {% if not post.deleted or current_user.isAdmin %}
-          <div class="border p-4 rounded bg-success my-4">
+          <div class="border p-4 rounded my-4 {{ 'bg-danger' if post.completed else 'bg-warning' if post.claimed else 'bg-success' }}">
             <div class="d-flex justify-content-between align-items-center">
               <div class="flex-grow-1">
                 <h3 class="text-wrap text-center underline">{{ post.title }}</h3>
