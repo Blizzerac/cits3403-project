@@ -76,23 +76,27 @@ class BasicUnitTest(TestCase):
         ), follow_redirects=True)
         with self.assertRaises(Exception):
             self.assertIn(b'Incorrect account details.', response.data)
-            
+    
+    #Unit test: test post creation
     def test_post_creation(self):
+        #login
         self.client.post('/login',data=dict(username='test_user',password='Testpass123'), follow_redirects=True)
         
+        #create post
         response = self.client.post('/create_post', data=dict(
             post_name='Test Post',
             post_description='This is a test post description.',
             post_reward=0
         ), follow_redirects=True)   
         
+        #check post exists
         with self.assertRaises(Exception):
             self.assertIn(b'Test Post', response.data)
             self.assertIn(b'This is a test post description.', response.data)
     
     #unit test: test search
     def test_search(self):
-        #add psots to db
+        #add posts to db
         post1 = Posts(posterID=1,title='Test Post 1', description='Description for Test Post 1', reward=50)
         post2 = Posts(posterID=1,title='Test Post 2', description='Description for Test Post 2', reward=100)
         db.session.add_all([post1, post2])
