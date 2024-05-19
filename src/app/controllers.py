@@ -8,11 +8,6 @@ from sqlalchemy import func, or_ , desc
 from sqlalchemy.exc import SQLAlchemyError
 
 # Errors to raise
-class DatabaseError(Exception):
-    def __init__(self, message):
-        self.message = message
-        super().__init__(self.message)
-
 class InvalidLogin(Exception):
     def __init__(self, message):
         self.message = message
@@ -36,7 +31,7 @@ class InvalidPermissions(Exception):
 def flash_db_error(debug, error, msg):
     # Ensure message is a string
     error = str(error)
-    
+
     if debug:
         flash(f'Database error: {error}', 'danger')
     else: 
