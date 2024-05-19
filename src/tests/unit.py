@@ -113,7 +113,7 @@ class BasicUnitTest(TestCase):
     #unit test for creating a test post
     def test_post_creation(self):
         #login as test user 
-        self.client.post('/login',data={login:'test_user',password:'Testpass123'}, follow_redirects=True)
+        self.client.post('/login',data=dict(username='test_user',password='Testpass123'), follow_redirects=True)
         
         #create test post
         response = self.client.post('/create_post', data=dict(
