@@ -224,7 +224,7 @@ class BasicUnitTest(TestCase):
             email='test@email.com',
             password='testpassword123%&$#'
         ), follow_redirects=True)
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             self.assertIn(b'Password can only include letters, numbers, and the following special characters: !, ?, +, -, _.', response.data)
         
         response = self.client.post('/signup', data=dict(
