@@ -34,6 +34,9 @@ class InvalidPermissions(Exception):
         super().__init__(self.message)
 
 def flash_db_error(debug, error, msg):
+    # Ensure message is a string
+    error = str(error)
+    
     if debug:
         flash(f'Database error: {error}', 'danger')
     else: 
@@ -135,3 +138,225 @@ def try_quest_respond(post, response_form):
     except Exception as e:
         db.session.rollback()
         raise e
+    
+def try_search_quests(request, searching_form, quest_type):
+    try:
+        # Determine the base query based on user and quest type
+        if quest_type == 'active':
+            base_query = Posts.query.filter_by(posterID=current_user.userID, completed=False)  # Active quests posted by the user
+        elif quest_type == 'claimed':
+            base_query = Posts.query.filter_by(claimerID=current_user.userID, claimed=True, completed=False)  # Claimed quests by the user, not yet completeds
+        elif quest_type == 'completed':
+            base_query = Posts.query.filter_by(claimerID=current_user.userID, completed=True)  # Completed quests by the user
+        elif quest_type == 'inactive':
+            base_query = Posts.query.filter(Posts.posterID == current_user.userID, Posts.completed==True, Posts.claimerID != current_user.userID) # Complex inequality query, completed quests by others posted by user
+        else:
+            base_query = Posts.query.filter(Posts.claimed==False, Posts.posterID != current_user.userID, Posts.completed==False, Posts.private==False) # Complex inequality query, default
+
+        # Searching or showing all
+        if request.method == 'POST' and searching_form.validate_on_submit():
+            if 'show_all' in request.form:
+                posts = base_query.all()
+            else:
+                search_query = searching_form.post_search_name.data
+                posts = base_query.filter(
+                    or_(
+                        Posts.title.contains(search_query),
+                        Posts.description.contains(search_query)
+                    )
+                ).all()
+        # GET request for page
+        else:
+            posts = base_query.all()
+
+        return posts
+    
+    except SQLAlchemyError as e:
+        raise e
+    
+def try_redeem_gold(request):
+    try:
+        data = request.get_json()
+        coinsToAdd = data['coins']
+        current_user.add_gold(coinsToAdd)
+        db.session.commit()
+        flash('You earned ' + str(coinsToAdd) + 'G!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        raise e
+    
+def try_claim_quest(post_id):
+    try:
+        post = Posts.query.get(post_id)
+    except SQLAlchemyError as e:
+        raise e
+    
+    if not post:
+        raise InvalidAction("No ReQuest wiht that ID.")
+        
+    # Check if a post is deleted -> Can't modify
+    if post.deleted:
+        raise InvalidAction("Cannot modify cancelled ReQuest.")
+
+    if post and not post.claimed and current_user.userID != post.posterID:
+        try:
+            post.claim_post(current_user.userID)
+            db.session.commit()
+            return
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    raise InvalidAction("Unable to claim ReQuest. Is it already claimed?")
+
+def try_claim_quest(post_id):
+    try:
+        post = Posts.query.get(post_id)
+    except SQLAlchemyError as e:
+        raise e
+
+    if not post:
+        raise InvalidAction("No ReQuest with that ID.")
+    if post.deleted:
+        raise InvalidAction("Cannot modify cancelled ReQuest.")
+    if post and not post.claimed and current_user.userID != post.posterID:
+        try:
+            post.claim_post(current_user.userID)
+            db.session.commit()
+            return
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    raise InvalidAction("Unable to claim ReQuest. Is it already claimed?")
+
+def try_finalise_quest(post_id):
+    try:
+        post = Posts.query.get(post_id)
+    except SQLAlchemyError as e:
+        raise e
+
+    if not post:
+        raise InvalidAction("No ReQuest with that ID.")
+    if post.deleted:
+        raise InvalidAction("Cannot modify cancelled ReQuest.")
+    if post and post.claimed and current_user.userID == post.claimerID and not post.waitingApproval:
+        try:
+            post.finalise_submission(current_user.userID)
+            db.session.commit()
+            return
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    raise InvalidAction("Unable to finalise ReQuest. Have you claimed it?")
+
+def try_relinquish_claim(post_id):
+    try:
+        post = Posts.query.get(post_id)
+    except SQLAlchemyError as e:
+        raise e
+
+    if not post:
+        raise InvalidAction("No ReQuest with that ID.")
+    if post.deleted:
+        raise InvalidAction("Cannot modify cancelled ReQuest.")
+    if post and post.claimed and current_user.userID == post.claimerID:
+        try:
+            post.unclaim_post(current_user.userID)
+            db.session.commit()
+            return
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    raise InvalidAction("Unable to relinquish ReQuest claim. Have you claimed it?")
+
+def try_approve_submission(post_id):
+    try:
+        post = Posts.query.get(post_id)
+    except SQLAlchemyError as e:
+        raise e
+
+    if not post:
+        raise InvalidAction("No ReQuest with that ID.")
+    if post.deleted:
+        raise InvalidAction("Cannot modify cancelled ReQuest.")
+    if post and post.waitingApproval and current_user.userID == post.posterID:
+        try:
+            post.approve_submission(current_user.userID)
+            gold = post.reward
+            post.poster.quest_payout(gold)
+            post.claimer.quest_completed(gold)
+            db.session.commit()
+            return
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    raise InvalidAction("Unable to approve ReQuest submission. Has it been submitted for approval?")
+
+def try_deny_submission(post_id):
+    try:
+        post = Posts.query.get(post_id)
+    except SQLAlchemyError as e:
+        raise e
+
+    if not post:
+        raise InvalidAction("No ReQuest with that ID.")
+    if post.deleted:
+        raise InvalidAction("Cannot modify cancelled ReQuest.")
+    if post and post.waitingApproval and current_user.userID == post.posterID:
+        try:
+            post.deny_submission(current_user.userID)
+            db.session.commit()
+            return
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    raise InvalidAction("Unable to deny ReQuest submission. Has it been submitted for approval?")
+
+def try_private_request(post_id):
+    try:
+        post = Posts.query.get(post_id)
+    except SQLAlchemyError as e:
+        raise e
+
+    if not post:
+        raise InvalidAction("No ReQuest with that ID.")
+    if post.deleted:
+        raise InvalidAction("Cannot modify cancelled ReQuest.")
+    if post and post.claimed and current_user.userID == post.posterID:
+        try:
+            post.private_post(current_user.userID)
+            db.session.commit()
+            return
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    raise InvalidAction("Unable to change ReQuest privacy. Is it claimed?")
+
+def try_cancel_request(post_id):
+    try:
+        post = Posts.query.get(post_id)
+    except SQLAlchemyError as e:
+        raise e
+
+    if not post:
+        raise InvalidAction("No ReQuest with that ID.")
+    if post.deleted:
+        raise InvalidAction("Cannot modify cancelled ReQuest.")
+    if post and not post.completed and (current_user.userID == post.posterID or current_user.isAdmin):
+        try:
+            post.cancel_post(current_user.userID)
+            gold = post.reward
+            post.poster.quest_refund(gold)
+            db.session.commit()
+            return
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    raise InvalidAction("Unable to cancel ReQuest. Do you own it?")
