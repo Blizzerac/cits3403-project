@@ -37,10 +37,10 @@ def flash_db_error(debug, error, msg):
     else: 
         flash(f'{msg} Please try again later or contact staff.', 'danger')
     
-def try_signup_user(signup_form):
+def try_signup_user(username, email, password):
     try:
-        existing_user = Users.query.filter_by(username=signup_form.username.data).first()
-        existing_email = Users.query.filter_by(email=signup_form.email.data.lower()).first() # MUST lower email (case insensitive)
+        existing_user = Users.query.filter_by(username=username).first()
+        existing_email = Users.query.filter_by(email=email.lower()).first() # MUST lower email (case insensitive)
     except SQLAlchemyError as e:
         raise e
 
@@ -51,14 +51,13 @@ def try_signup_user(signup_form):
         raise AccountAlreadyExists('An account with this email already exists.')
 
     if not existing_user and not existing_email:
-        new_user = Users(username=signup_form.username.data, email=signup_form.email.data.lower())
-        new_user.set_password(signup_form.password.data)
+        new_user = Users(username=username, email=email.lower())
+        new_user.set_password(password)
         db.session.add(new_user)
         # Try commit new user to database.
         try:
             db.session.commit()
-            login_user(new_user, remember=False) # Assuming dont remember them
-            flash('Account created successfully!', 'success')
+            return new_user
         # If failed, rollback database and warn user.
         except Exception as e:
             db.session.rollback()
