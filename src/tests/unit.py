@@ -276,4 +276,25 @@ class BasicUnitTest(TestCase):
             }
             try_signup_user(signup_form_data)
 
-    
+    def test_try_login_user(self):
+        # Create a user
+        user = Users(username='test_user', email='test@email.com')
+        user.set_password('Testpassword123')
+        db.session.add(user)
+        db.session.commit()
+
+        # Try to login with correct credentials
+        login_form_data = {
+            'login': 'test_user',
+            'password': 'Testpassword123'
+        }
+        with self.assertRaises(Exception) as cm:
+            try_login_user(login_form_data)
+
+        # Try to login with incorrect password
+        login_form_data = {
+            'login': 'test_user',
+            'password': 'wrongpassword'
+        }
+        with self.assertRaises(Exception) as cm:
+            try_login_user(login_form_data)
