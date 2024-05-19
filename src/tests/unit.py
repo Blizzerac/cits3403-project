@@ -171,4 +171,7 @@ class BasicUnitTest(TestCase):
             self.assertIsNotNone(retrieved_user)
             self.assertEqual(retrieved_user.email, 'test@email.com')
   
+    def test_is_this_working(self):
+        self.assertEqual(True,True)
+    
     
