@@ -28,6 +28,11 @@ class InvalidAction(Exception):
         self.message = message
         super().__init__(self.message)
 
+class InvalidPermissions(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
 def flash_db_error(debug, error, msg):
     if debug:
         flash(f'Database error: {error}', 'danger')
@@ -95,3 +100,38 @@ def try_post_quest(posting_form):
         except Exception as e:
             db.session.rollback()
             raise e
+        
+def try_quest_view(request):
+    # If no postID given, return user to the home screen
+    post_id = request.args.get('postID') # Get the post ID to show
+    if not post_id:
+        raise InvalidAction('Incorrect usage.')
+    
+    # If no post exists, return user to home screen
+    post = Posts.query.get(post_id)
+    if not post:
+        raise InvalidAction('ReQuest does not exist.')
+    
+    if post.private and not (current_user.userID == post.claimerID or current_user.userID == post.posterID):
+        raise InvalidPermissions('Cannot acces private ReQuest.')
+    
+    if post.deleted and not current_user.isAdmin:
+        raise InvalidPermissions('Cannot access cancelled ReQuest.')
+    
+    return post
+
+def try_quest_respond(post, response_form):
+    # Add the response to the database
+    new_response = Responses(
+        responderID=current_user.userID,
+        postID=post.postID,
+        msg=response_form.response.data
+    )
+    db.session.add(new_response)
+    try:
+        db.session.commit()
+
+    # If failed, rollback database and warn user.
+    except Exception as e:
+        db.session.rollback()
+        raise e

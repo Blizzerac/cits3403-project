@@ -9,8 +9,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 from sqlalchemy import func, or_ , desc # Methods to use when querying database
 from urllib.parse import urlparse, urljoin # URL checking
-from app.controllers import flash_db_error, try_signup_user, try_login_user, try_post_quest
-from app.controllers import InvalidLogin, AccountAlreadyExists, InvalidAction
+from app.controllers import flash_db_error, try_signup_user, try_login_user, try_post_quest, try_quest_view, try_quest_respond
+from app.controllers import InvalidLogin, AccountAlreadyExists, InvalidAction, InvalidPermissions
 
 ###########
 # Routes  #
@@ -136,22 +136,10 @@ def post_quest():
 @main.route('/view', methods=["POST", "GET"])
 @login_required
 def quest_view():
-    # If no postID given, return user to the home screen
-    post_id = request.args.get('postID') # Get the post ID to show
-    if not post_id:
-        flash('Incorrect usage.', 'danger')
-        return redirect(url_for('main.home'))
-    
-    # If no post exists, return user to home screen
-    post = Posts.query.get(post_id)
-    if not post:
-        flash('ReQuest does not exist.', 'danger')
-        return redirect(url_for('main.home'))
-    if post.private and not (current_user.userID == post.claimerID or current_user.userID == post.posterID):
-        flash('Cannot acces private ReQuest.', 'danger')
-        return redirect(url_for('main.home'))
-    if post.deleted and not current_user.isAdmin:
-        flash('Cannot access cancelled ReQuest.', 'danger')
+    try:
+        post = try_quest_view(request)
+    except Exception as e:
+        flash(e, 'danger')
         return redirect(url_for('main.home'))
     
     creation_date = post.creationDate.strftime('%Y-%m-%d')
@@ -159,27 +147,12 @@ def quest_view():
     response_form = forms.ResponseForm()
 
     if response_form.validate_on_submit():
-        # Add the response to the database
-        new_response = Responses(
-            responderID=current_user.userID,
-            postID=post.postID,
-            msg=response_form.response.data
-        )
-        db.session.add(new_response)
         try:
-            db.session.commit()
-        # If failed, rollback database and warn user.
+            try_quest_respond(post, response_form)
+            flash('Response added successfully!', 'success')
+            return redirect(url_for('main.quest_view', postID=post.postID)) # Ensure form cant be resubmitted by redirecting user to same page (deletes current form)
         except Exception as e:
-            db.session.rollback()
-            if debug:
-                flash('Error adding response to database. {}'.format(e), 'danger')
-            else: 
-                flash('Failed adding response. Please try again later or contact staff.', 'danger')
-
-        # Update posts
-        flash('Response added successfully!', 'success')
-        return redirect(url_for('main.quest_view', postID=post.postID)) # Ensure form cant be resubmitted by redirecting user to same page (deletes current form)
-
+            flash_db_error(debug, e, "Failed adding response.")
 
     return render_template('post-view.html', post=post, response_form=response_form, creation_date=creation_date, claim_date=claim_date)
 
