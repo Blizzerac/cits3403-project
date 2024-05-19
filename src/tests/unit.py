@@ -18,7 +18,7 @@ class BasicUnitTest(TestCase):
         db.drop_all()
         self.app_context.pop()
     
-    '''
+    
     #basic unit test to check user creation
     def test_user_creation(self):
         # Create a test user
@@ -112,12 +112,12 @@ class BasicUnitTest(TestCase):
     #unit test for creating a test post
     def test_post_creation(self):
         #login as test user 
-        self.clientpost('/login',data=(login='test_user',password='Testpass123'), follow_redirects=True)
+        self.clientpost('/login',data={login:'test_user',password:'Testpass123'}, follow_redirects=True)
         
         #create test post
         response = self.client.post('/create_post', data=dict(
-            post_name='Test Post'
-            post_description='This is a test post description.'
+            post_name='Test Post',
+            post_description='This is a test post description.',
             post_reward=0
         ), follow_redirects=True)
         
@@ -140,4 +140,4 @@ class BasicUnitTest(TestCase):
         #check if search worked correctly (not sure if this is the correct way to test, I cannot run the web app rn)
         self.assertIn(b'Test Post 1', response.data)
         self.assertNotIn(b'Test Post 2', response.data)
-        '''
+        
