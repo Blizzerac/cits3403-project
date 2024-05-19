@@ -27,16 +27,6 @@ def create_app(config):
     
     from app.blueprints import main
     flaskApp.register_blueprint(main)
-
-    with flaskApp.app_context():
-        db.create_all()
                          
     return flaskApp
 
-# Import routes and models at the end to avoid circular imports
-#
-
-# Initialise database on startup (if it doesnt exist).
-#models.init_db()
-
-# User loader function
