@@ -86,7 +86,7 @@ class BasicUnitTest(TestCase):
             'password': 'Testpassword123'
         }
         with self.assertRaises(Exception):
-            try_signup_user(forms.SignupForm(data=signup_form_data))
+            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
 
         # Test case: invalid email
         signup_form_data = {
@@ -95,7 +95,7 @@ class BasicUnitTest(TestCase):
             'password': 'Testpassword123'
         }
         with self.assertRaises(Exception):
-            try_signup_user(forms.SignupForm(data=signup_form_data))
+            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
 
         # Test case: password without uppercase letter
         signup_form_data = {
@@ -104,7 +104,7 @@ class BasicUnitTest(TestCase):
             'password': 'testpassword123'
         }
         with self.assertRaises(Exception):
-            try_signup_user(forms.SignupForm(data=signup_form_data))
+            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
 
         # Test case: password with invalid special characters
         signup_form_data = {
@@ -113,7 +113,7 @@ class BasicUnitTest(TestCase):
             'password': 'testpassword123%&$#'
         }
         with self.assertRaises(Exception):
-            try_signup_user(forms.SignupForm(data=signup_form_data))
+            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
 
         # Test case: password without number
         signup_form_data = {
@@ -122,7 +122,7 @@ class BasicUnitTest(TestCase):
             'password': 'Testpassword'
         }
         with self.assertRaises(Exception):
-            try_signup_user(forms.SignupForm(data=signup_form_data))
+            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
 
         # Test case: valid data, no exception expected
         signup_form_data = {
@@ -131,7 +131,7 @@ class BasicUnitTest(TestCase):
             'password': 'Testpassword123'
         }
         try:
-            try_signup_user(forms.SignupForm(data=signup_form_data))
+            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
         except Exception as e:
             self.fail(f"Exception raised: {e}")
                 
@@ -169,13 +169,13 @@ class BasicUnitTest(TestCase):
             posts = try_search_quests(None, None, 'active')
 
     def test_try_signup_user(self):
-        with self.assertRaises(Exception):
+        with self.assertNoRaises():
             signup_form_data = {
                 'username': 'test_user',
                 'email': 'test@email.com',
                 'password': 'Testpassword123'
             }
-            try_signup_user(signup_form_data)
+            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
 
     def test_try_login_user(self):
         # Create a user
