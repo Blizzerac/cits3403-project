@@ -76,65 +76,6 @@ class BasicUnitTest(TestCase):
         ), follow_redirects=True)
         with self.assertRaises(Exception):
             self.assertIn(b'Incorrect account details.', response.data)
-  
-    def test_signup_form_validation(self):
-        # Test case: username with space
-        # Test case: username with space
-        signup_form_data = {
-            'username': 'user name with space',
-            'email': 'test@email.com',
-            'password': 'Testpassword123'
-        }
-        with self.assertRaises(Exception):
-            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
-
-        # Test case: invalid email
-        signup_form_data = {
-            'username': 'validusername',
-            'email': 'invalidemail',
-            'password': 'Testpassword123'
-        }
-        with self.assertRaises(Exception):
-            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
-
-        # Test case: password without uppercase letter
-        signup_form_data = {
-            'username': 'validusername',
-            'email': 'test@email.com',
-            'password': 'testpassword123'
-        }
-        with self.assertRaises(Exception):
-            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
-
-        # Test case: password with invalid special characters
-        signup_form_data = {
-            'username': 'validusername',
-            'email': 'test@email.com',
-            'password': 'testpassword123%&$#'
-        }
-        with self.assertRaises(Exception):
-            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
-
-        # Test case: password without number
-        signup_form_data = {
-            'username': 'validusername',
-            'email': 'test@email.com',
-            'password': 'Testpassword'
-        }
-        with self.assertRaises(Exception):
-            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
-
-        # Test case: valid data, no exception expected
-        signup_form_data = {
-            'username': 'validusername',
-            'email': 'test@email.com',
-            'password': 'Testpassword123'
-        }
-        try:
-            try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
-        except Exception as e:
-            self.fail(f"Exception raised: {e}")
-                
             
     def test_post_creation(self):
         self.client.post('/login',data=dict(username='test_user',password='Testpass123'), follow_redirects=True)
@@ -178,7 +119,8 @@ class BasicUnitTest(TestCase):
             try_signup_user(signup_form_data['username'],signup_form_data['email'],signup_form_data['password'])
         except Exception as e:
             self.fail(f"Exception raised: {e}")
-
+    
+    #Unit Test: check valid user
     def test_try_login_user_valid(self): 
         # Create a user
         user = Users(username='test_user', email='test@email.com')
@@ -196,7 +138,7 @@ class BasicUnitTest(TestCase):
         except AssertionError:
             self.fail("try_login_user raised an unexpected exception")
 
-            
+    #Unit Test: check invalid user 
     def test_try_login_user_invalid(self): 
         # Create a user
         user = Users(username='test_user', email='test@email.com')
