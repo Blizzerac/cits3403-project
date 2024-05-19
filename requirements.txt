@@ -1,0 +1,11 @@
+alembic==1.13.1
+Flask==3.0.3
+Flask_Login==0.6.3
+Flask_Migrate==4.0.7
+flask_sqlalchemy==3.1.1
+flask_wtf==1.2.1
+python-dotenv==1.0.1
+SQLAlchemy==2.0.29
+Werkzeug==3.0.3
+WTForms==3.1.2
+selenium==4.21.0
