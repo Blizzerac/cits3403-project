@@ -90,7 +90,7 @@ class BasicUnitTest(TestCase):
             self.assertIn(b'Test Post', response.data)
             self.assertIn(b'This is a test post description.', response.data)
     
-
+    #unit test: test search
     def test_search(self):
         post1 = Posts(posterID=1,title='Test Post 1', description='Description for Test Post 1', reward=50)
         post2 = Posts(posterID=1,title='Test Post 2', description='Description for Test Post 2', reward=100)
