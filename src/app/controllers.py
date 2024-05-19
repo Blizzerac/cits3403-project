@@ -34,7 +34,7 @@ def flash_db_error(debug, error, msg):
     else: 
         flash(f'{msg} Please try again later or contact staff.', 'danger')
     
-def try_signup_user(debug, signup_form):
+def try_signup_user(signup_form):
     try:
         existing_user = Users.query.filter_by(username=signup_form.username.data).first()
         existing_email = Users.query.filter_by(email=signup_form.email.data.lower()).first() # MUST lower email (case insensitive)
@@ -61,7 +61,7 @@ def try_signup_user(debug, signup_form):
             db.session.rollback()
             raise e
         
-def try_login_user(debug, login_form):
+def try_login_user(login_form):
     user_input = login_form.login.data
     # Determine if the input is an email or username
     try:
