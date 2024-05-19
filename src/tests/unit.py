@@ -22,7 +22,7 @@ class BasicUnitTest(TestCase):
     #basic unit test to check user creation
     def test_user_creation(self):
         # Create a test user
-        user = Users(username='test_user', email='test@email.com',password='Testpassword123',isAdmin=0,gold=1000,gold_available=0)
+        user = Users(username='test_user', email='test@email.com',password='Testpassword123',isAdmin=0,gold=1000,gold_available=0   )
         db.session.add(user)
         db.session.commit()
 
