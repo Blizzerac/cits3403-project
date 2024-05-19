@@ -90,7 +90,11 @@ def login():
         # If login form submitted
         elif login_form.validate_on_submit():
             try:
-                try_login_user(login_form)
+                user_info = login_form.login.data
+                password = login_form.password.data
+                user = try_login_user(user_info, password)
+                login_user(user, remember=login_form.remember_me.data)
+                flash('Logged in successfully!', 'success')
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page) # If user was trying to go somewhere earlier
                 return redirect(url_for('main.home'))

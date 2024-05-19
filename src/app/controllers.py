@@ -64,8 +64,7 @@ def try_signup_user(signup_form):
             db.session.rollback()
             raise e
         
-def try_login_user(login_form):
-    user_input = login_form.login.data
+def try_login_user(user_input, password):
     # Determine if the input is an email or username
     try:
         if "@" in user_input:
@@ -76,9 +75,8 @@ def try_login_user(login_form):
         raise e
 
     # Check password hash and login
-    if user and user.check_password(login_form.password.data):
-        login_user(user, remember=login_form.remember_me.data)
-        flash('Logged in successfully!', 'success')
+    if user and user.check_password(password):
+        return user
     else:
         raise InvalidLogin("Incorrect account details.")
 
