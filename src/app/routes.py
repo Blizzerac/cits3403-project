@@ -83,7 +83,7 @@ def login():
             except SQLAlchemyError as e:
                 flash_db_error(debug, str(e), "Failed loading user information.")
             except AccountAlreadyExists as e:
-                signup_form.username.errors.append(e)
+                signup_form.username.errors.append(str(e))
             except Exception as e:
                 flash_db_error(debug, str(e), "Failed creating an account.")
         
@@ -97,7 +97,7 @@ def login():
             except SQLAlchemyError as e:
                 flash_db_error(debug, str(e), "Failed loading user information.")
             except InvalidLogin as e:
-                login_form.login.errors.append(e)
+                login_form.login.errors.append(str(e))
 
     return render_template("login.html", login_form=login_form, signup_form=signup_form, is_signup=is_signup, next=next_page)
 
