@@ -27,7 +27,7 @@ class SeleniumTestCase(TestCase):
         self.server_process = multiprocessing.Process(target=self.testApp.run)
         self.server_process.start()
 
-        options = webdriver.ChromeOptions()
+        options = webdriver.ChromeOptions() # DOESNT WORK IN HEADLESS MODE!
         self.driver = webdriver.Chrome(options=options)
         self.driver.get(localHost)
 
@@ -103,9 +103,6 @@ class SeleniumTestCase(TestCase):
 
     def test_post_quest(self):
         self.post_quest("This is an example post!", "Example description.", 0) # Test default post submission
-
-    # def test_claim(self):
-    #     self.post_quest("SAMPLE CLAIM", "sample description", 0)
 
 
 
