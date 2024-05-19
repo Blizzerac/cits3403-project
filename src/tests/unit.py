@@ -161,15 +161,26 @@ class BasicUnitTest(TestCase):
     '''
 
     def test_user_creation(self):
-        user = Users(username='test_user', email='test@email.com',password='Testpassword123',isAdmin=0,gold=1000,gold_available=0)
+        user_data = {
+        'username': 'test_user',
+        'email': 'test@email.com',
+        'password': 'Testpassword123',
+        'isAdmin': 0,
+        'gold': 1000,
+        'gold_available': 0
+        }
+        
+        # Create the user
+        user = Users(**user_data)
         db.session.add(user)
         db.session.commit()
 
+        # Retrieve the user from the database
         retrieved_user = Users.query.filter_by(username='test_user').first()
 
-        with self.assertRaises(Exception):
-            self.assertIsNotNone(retrieved_user)
-            self.assertEqual(retrieved_user.email, 'test@email.com')
+        # Check if the user was successfully created
+        self.assertIsNotNone(retrieved_user)
+        self.assertEqual(retrieved_user.email, 'test@email.com')
   
     def test_is_this_working(self):
         self.assertEqual(True,True)
