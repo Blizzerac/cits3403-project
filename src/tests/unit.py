@@ -167,7 +167,7 @@ class BasicUnitTest(TestCase):
 
         retrieved_user = Users.query.filter_by(username='test_user').first()
 
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             self.assertIsNotNone(retrieved_user)
             self.assertEqual(retrieved_user.email, 'test@email.com')
   
@@ -184,14 +184,14 @@ class BasicUnitTest(TestCase):
             login='test_user',
             password='Testpassword123'
         ), follow_redirects=True)
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             self.assertIn(b'Logged in successfully!', response.data)
         
         response = self.client.post('/login', data=dict(
             login='test_user',
             password='wrongpassword'
         ), follow_redirects=True)
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             self.assertIn(b'Incorrect account details.', response.data)
   
     def test_signup_form_validation(self):
@@ -200,7 +200,7 @@ class BasicUnitTest(TestCase):
             email='test@email.com',
             password='Testpassword123'
         ), follow_redirects=True)
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             self.assertIn(b'The username must not contain spaces.', response.data)
           
         response = self.client.post('/signup', data=dict(
@@ -208,7 +208,7 @@ class BasicUnitTest(TestCase):
             email='invalidemail',
             password='Testpassword123'
         ), follow_redirects=True)
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             self.assertIn(b'Invalid email address.', response.data)
         
         response = self.client.post('/signup', data=dict(
@@ -216,7 +216,7 @@ class BasicUnitTest(TestCase):
             email='test@email.com',
             password='testpassword123'
         ), follow_redirects=True)
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             self.assertIn(b'Password must include at least one uppercase letter.', response.data)
         
         response = self.client.post('/signup', data=dict(
@@ -232,7 +232,7 @@ class BasicUnitTest(TestCase):
             email='test@email.com',
             password='Testpassword'
         ), follow_redirects=True)
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             self.assertIn(b'Password must include at least one number.', response.data)
     
     def test_post_creation(self):
@@ -244,7 +244,7 @@ class BasicUnitTest(TestCase):
             post_reward=0
         ), follow_redirects=True)
         
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             self.assertIn(b'Test Post', response.data)
             self.assertIn(b'This is a test post description.', response.data)
     
@@ -259,7 +259,7 @@ class BasicUnitTest(TestCase):
             post_search_name='Test Post 1'
         ), follow_redirects=True)
         
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             self.assertIn(b'Test Post 1', response.data)
             self.assertNotIn(b'Test Post 2', response.data)
 
@@ -268,7 +268,7 @@ class BasicUnitTest(TestCase):
             posts = try_search_quests(None, None, 'active')
 
     def test_try_signup_user(self):
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             signup_form_data = {
                 'username': 'test_user',
                 'email': 'test@email.com',
@@ -288,7 +288,7 @@ class BasicUnitTest(TestCase):
             'login': 'test_user',
             'password': 'Testpassword123'
         }
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             try_login_user(login_form_data)
 
         # Try to login with incorrect password
@@ -296,5 +296,5 @@ class BasicUnitTest(TestCase):
             'login': 'test_user',
             'password': 'wrongpassword'
         }
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(Exception):
             try_login_user(login_form_data)
