@@ -79,6 +79,8 @@ def login():
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page) # If user was trying to go somewhere earlier
                 return redirect(url_for('main.home'))
+            except SQLAlchemyError as e:
+                flash_db_error(debug, e, "Failed loading user information.")
             except AccountAlreadyExists as e:
                 signup_form.username.errors.append(e.message)
             except Exception as e:
@@ -92,7 +94,7 @@ def login():
                     return redirect(next_page) # If user was trying to go somewhere earlier
                 return redirect(url_for('main.home'))
             except SQLAlchemyError as e:
-                flash_db_error(debug, e, "Failed getting user information.")
+                flash_db_error(debug, e, "Failed loading user information.")
             except InvalidLogin as e:
                 login_form.login.errors.append(e.messsage)
 
